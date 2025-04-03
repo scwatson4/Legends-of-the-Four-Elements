@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 public class UnitSelectionManager : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class UnitSelectionManager : MonoBehaviour
 
     public LayerMask clickable;
     public LayerMask ground;
+
+    public LayerMask attackable;
+    public bool attackCursorVisible;
+
     public GameObject groundMarker;
 
     private Camera cam;
@@ -80,6 +85,49 @@ public class UnitSelectionManager : MonoBehaviour
                 groundMarker.SetActive(true);
             }
         }
+
+        // Attack Target
+        if(selectedUnitsList.Count > 0 && AtLeastOneOffensiveUnit(selectedUnitsList))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            //If we are hitting a clickable object
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, attackable))
+            {
+                Debug.Log("Enemy Hovered with mouse");
+
+                attackCursorVisible = true;
+
+                if(Input.GetMouseButton(1))
+                {
+                    Transform target = hit.transform;
+                    foreach (GameObject unit in selectedUnitsList)
+                    {
+                        if(unit.GetComponent<AttackController>() != null)
+                        {
+                            unit.GetComponent<AttackController>().targetToAttack = target;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                attackCursorVisible = false;
+            }
+        }
+    }
+
+    private bool AtLeastOneOffensiveUnit(List<GameObject> selectedUnitsList)
+    {
+        foreach (GameObject unit in selectedUnitsList)
+        {
+            if (unit.GetComponent<AttackController>())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void SelectMultiple(GameObject unit)
