@@ -29,7 +29,7 @@ public class UnitAttackState : StateMachineBehaviour
 
             var damageToInflict = attackController.unitDamage;
             // Actually attack the enemy
-            attackController.targetToAttack.GetComponent<Enemy>().ReceiveDamage(damageToInflict);
+            //attackController.targetToAttack.GetComponent<Enemy>().ReceiveDamage(damageToInflict);
 
             // Should unit still attack?
             float distanceFromTarget = Vector3.Distance(attackController.targetToAttack.position, animator.transform.position);
