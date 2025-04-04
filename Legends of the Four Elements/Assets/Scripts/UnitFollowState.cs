@@ -16,6 +16,7 @@ public class UnitFollowState : StateMachineBehaviour
     {
         attackController = animator.transform.GetComponent<AttackController>();
         agent = animator.transform.GetComponent<NavMeshAgent>();
+        attackController.SetFollowStateMaterial(); // Set the follow state material to green
 
     }
 
@@ -38,12 +39,12 @@ public class UnitFollowState : StateMachineBehaviour
                 animator.transform.LookAt(attackController.targetToAttack);
 
                 // Should Unit Transition to Attack State?
-                //float distanceFromTarget = Vector3.Distance(attackController.targetToAttack.position, animator.transform.position);
-                //if (distanceFromTarget < attackDistance)
-                //{
-                      //agent.SetDestination(animator.transform.position); // Stop moving
-                //    animator.SetBool("isAttacking", true); // Move to Attacking state
-                //}
+                float distanceFromTarget = Vector3.Distance(attackController.targetToAttack.position, animator.transform.position);
+                if (distanceFromTarget < attackDistance)
+                {
+                    agent.SetDestination(animator.transform.position); // Stop moving
+                    animator.SetBool("isAttacking", true); // Move to Attacking state
+                }
             }
         }
 
