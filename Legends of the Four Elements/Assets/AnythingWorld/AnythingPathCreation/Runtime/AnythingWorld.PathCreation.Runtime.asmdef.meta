@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cde7817a8c4029a40917e26900c4c686
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingPathCreation/Runtime/AnythingWorld.PathCreation.Runtime.asmdef
+  uploadId: 743603

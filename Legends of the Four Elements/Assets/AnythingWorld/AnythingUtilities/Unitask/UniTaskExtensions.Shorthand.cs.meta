@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 4b4ff020f73dc6d4b8ebd4760d61fb43
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingUtilities/Unitask/UniTaskExtensions.Shorthand.cs
+  uploadId: 743603

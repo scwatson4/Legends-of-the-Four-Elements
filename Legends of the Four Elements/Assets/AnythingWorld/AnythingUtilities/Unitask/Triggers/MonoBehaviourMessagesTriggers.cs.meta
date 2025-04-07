@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: c30655636c35c3d4da44064af3d2d9a7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingUtilities/Unitask/Triggers/MonoBehaviourMessagesTriggers.cs
+  uploadId: 743603

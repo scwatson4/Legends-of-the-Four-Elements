@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f8308a63cd6e9e14abc75f18b7dbc2ca
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingAnimation/Resources/DefaultStates/jump.anim
+  uploadId: 743603

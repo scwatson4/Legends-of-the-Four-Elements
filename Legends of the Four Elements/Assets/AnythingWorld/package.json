@@ -1,0 +1,26 @@
+{
+  "name": "com.anything.world",
+  "version": "1.2.1",
+  "displayName": "Anything World 3D Creation & Animation Studio",
+  "description": "Your ultimate game dev companion powered by Machine Learning, offering an expansive library of rigged, game-ready 3D animations. Embrace the power of AI and focus on unleashing your creative genius.",
+  "unity": "2020.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://anything-world.gitbook.io/anything-world/quickstart/unity-quickstart",
+  "changelogUrl": "https://anything-world.gitbook.io",
+  "licensesUrl": "https://anything-world.gitbook.io","dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.unity.ai.navigation": "1.0.0-exp.4",
+    "com.unity.formats.fbx": "5.1.1",
+    "com.unity.editorcoroutines": "1.0.0"
+  },
+  "keywords": [
+    "Anything",
+    "World",
+    "animate"
+  ],
+  "author": {
+    "name": "AnythingWorld",
+    "email": "plugins@Anything.World",
+    "url": "https://www.AnythingWorld.com"
+  }
+}

@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 316c502aee084c5da558dd0c2d03676d
+timeCreated: 1709706053
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/MoveToGoal/AnimateMovement.cs
+  uploadId: 743603

@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 30f27e776c88e27458a220f32156c7c7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - settings: {fileID: 11400000, guid: cb9ebb2a3fe2bc04aa83c737bd9a1eed, type: 2}
+  - uiAssets: {fileID: 11400000, guid: 191655e57008f3f4ea6a6228c8d966ed, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Editor/BehaviourTreeEditorWindow.cs
+  uploadId: 743603

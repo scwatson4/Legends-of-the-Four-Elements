@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e433cd48ccefa1d4cb6a456f6efa69f2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Editor/PropertyDrawers/NodePropertyPropertyDrawer.cs
+  uploadId: 743603

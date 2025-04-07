@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 8dd076edd5a2c7f418e14444f7660f86
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingAnimation/Loading/VehicleAnimationPipeline/Animators/FlyingVehicleAnimator.cs
+  uploadId: 743603

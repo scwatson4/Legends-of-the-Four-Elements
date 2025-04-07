@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 9b9ff2cd96e7d144f879b620d8e18a26
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/PlayerControllers/PointClickController/PointAndClickController.prefab
+  uploadId: 743603

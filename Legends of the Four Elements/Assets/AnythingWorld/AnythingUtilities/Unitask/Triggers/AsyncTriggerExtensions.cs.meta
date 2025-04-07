@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 59b61dbea1562a84fb7a38ae0a0a0f88
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingUtilities/Unitask/Triggers/AsyncTriggerExtensions.cs
+  uploadId: 743603

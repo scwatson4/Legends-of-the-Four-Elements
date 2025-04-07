@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 4fe9bf94c4f34d19aa277c6891946562
+timeCreated: 1707420890
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/RandomGoal/FishRandomGoal.cs
+  uploadId: 743603

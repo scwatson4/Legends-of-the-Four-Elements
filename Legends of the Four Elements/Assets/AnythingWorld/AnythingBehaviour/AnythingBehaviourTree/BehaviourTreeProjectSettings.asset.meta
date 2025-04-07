@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: cb9ebb2a3fe2bc04aa83c737bd9a1eed
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/BehaviourTreeProjectSettings.asset
+  uploadId: 743603

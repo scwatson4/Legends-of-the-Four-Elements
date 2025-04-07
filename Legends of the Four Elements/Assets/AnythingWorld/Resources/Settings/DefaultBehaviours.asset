@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2b1bffedef2e00478abefed5f04987b, type: 3}
+  m_Name: DefaultBehaviours
+  m_EditorClassIdentifier: 
+  behaviourRules:
+  - behaviourType: 2
+    treeAsset: {fileID: 11400000, guid: 10edeba53786ec2488cd5058ceff05da, type: 2}
+  - behaviourType: 1
+    treeAsset: {fileID: 11400000, guid: a25e47c17604fbc4b9730eb89d0787b6, type: 2}
+  - behaviourType: 3
+    treeAsset: {fileID: 11400000, guid: d63baba23407eee49a7b8ad09bab0cc3, type: 2}
+  - behaviourType: 4
+    treeAsset: {fileID: 11400000, guid: 6a50db742f7e62a4d91cce8109bb3aec, type: 2}
+  - behaviourType: 5
+    treeAsset: {fileID: 11400000, guid: 2e9369331a8d6fd459193b599a60fefb, type: 2}
+  - behaviourType: 6
+    treeAsset: {fileID: 11400000, guid: 759b0e028cf597b4cb3af0a8b53aa22b, type: 2}

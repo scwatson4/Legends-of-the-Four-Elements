@@ -1,0 +1,21 @@
+{
+    "name": "AnythingWorld.Networking.Editor",
+    "rootNamespace": "AnythingWorld.Networking.Editor",
+    "references": [
+        "GUID:67669b853f73931428f5b4975a9450a2",
+        "GUID:478a2357cc57436488a56e564b08d223",
+        "GUID:2c8b9c021f6d4934593e78f9a6f80810",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

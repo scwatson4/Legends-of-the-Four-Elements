@@ -1,0 +1,23 @@
+{
+    "name": "AnythingWorld.Core",
+    "rootNamespace": "AnythingWorld.Core",
+    "references": [
+        "GUID:478a2357cc57436488a56e564b08d223",
+        "GUID:85c93d3f7e548ee489040f457eb78a77",
+        "GUID:67669b853f73931428f5b4975a9450a2",
+        "GUID:b1da429baaf671f40b0e286bd3a2c42b",
+        "GUID:2c8b9c021f6d4934593e78f9a6f80810",
+        "GUID:83ccaaba7f2b6954f99418d0628db4a6",
+        "GUID:c5848ce28c498314d93f599b090fa341",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

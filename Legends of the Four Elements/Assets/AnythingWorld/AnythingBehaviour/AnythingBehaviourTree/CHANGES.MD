@@ -1,0 +1,22 @@
+- Fixed blackboard key selection and editing. Previously when clicking on value to change it the whole line with the key was selected. This made deleting via keyboard input impossible since there was no difference between deleting a numeric value being edited or deleting the key entirely.
+- Added deletion of blackboard keys on "delete" key press in addition to the context menu.
+- Added ability to delete multi selected keys at once.
+- Disabled blackboard key dragging and repositioning which led to unstable behaviour and bugs.
+- Fixed blackboard view of several types like Vector4 which had incorrect alignment or were folded.
+- Fixed node inspector view of the same types.
+- Fixed breadcrumbs bug when opening subtrees.
+- Added "Create new tree" menu with tree path and name options that can be closed to return to previously open tree.
+- Behaviour tree is cloned when added to instance runner. Allows to change it in Edit mode without changing the original asset making it closer to MonoBehaviour scripts workflow. 
+- Added a button to open cloned tree in BT editor.
+- Added a node deep copy option which copies values of most of the available types unlinking them from the original node in case of reference types.
+- Refactored BehaviourTreeEditorWindow class removing redundant calls and improving logic.
+- Introduced a lot of improvements and alternative functionalities via preprocessor directives to make the project work on all versions of Unity from 2020.3 and above. Some of them specific to 2022 but mostly mend issues with versions lower than 2021.3. Improvements consist of:
+	- Manual ListView binding and management for blackboard keys. Built-in listView doesn't function properly in earlier versions.
+	- Custom selection and highlighting logic for blackboard keys.
+	- Custom logic to retrieve SerializedProperty.managedReferenceValue via reflection for earlier versions which don't have a managedReferenceValue getter.
+	- Replaced DropdownField with PopupField since the former is unavailable in earlier versions.
+	- Added retrieval of PopupField available choices via reflection for earlier versions.
+- Added a multitude of Actions for random goal generation and goal seeking movement each suitable for a different kind of moving agent (aerial, ground, underwater).
+- Added pre-made behaviour trees for those agents that leverage new Actions.
+- Improved NavMesh navigation adding more realistic movement and rotation logic as well as support of jumping when traversing OffMeshLinks.
+- Other small bug fixes and QoL changes.

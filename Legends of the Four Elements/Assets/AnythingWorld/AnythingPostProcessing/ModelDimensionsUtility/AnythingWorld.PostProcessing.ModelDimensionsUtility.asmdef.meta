@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0367652a30b10774d9611512d10584c3
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingPostProcessing/ModelDimensionsUtility/AnythingWorld.PostProcessing.ModelDimensionsUtility.asmdef
+  uploadId: 743603

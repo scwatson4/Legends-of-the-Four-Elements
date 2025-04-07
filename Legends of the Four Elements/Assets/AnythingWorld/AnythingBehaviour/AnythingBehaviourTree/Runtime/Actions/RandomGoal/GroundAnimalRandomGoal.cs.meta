@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: de05f399768d4976b9a16da58dddfa06
+timeCreated: 1707418673
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/RandomGoal/GroundAnimalRandomGoal.cs
+  uploadId: 743603

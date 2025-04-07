@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 31025e2c125441e3ae4c977cfc42eb4a
+timeCreated: 1726835270
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingProceduralGeneration/Editor/ProcedualModelSpawnerEditor.cs
+  uploadId: 743603

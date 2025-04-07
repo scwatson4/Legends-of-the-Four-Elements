@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8819a75482bc2744296de059940fd9b4
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/PlayerControllers/FirstPersonController/FirstPersonController.prefab
+  uploadId: 743603

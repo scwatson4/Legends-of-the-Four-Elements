@@ -1,0 +1,20 @@
+{
+    "name": "AnythingWorld.Models",
+    "rootNamespace": "AnythingWorld.Models",
+    "references": [
+        "GUID:774f0e7b520e24644b448f5ac7fa5d94",
+        "GUID:144f03cc6644f0e44859d0975fbd5b17",
+        "GUID:67669b853f73931428f5b4975a9450a2",
+        "GUID:478a2357cc57436488a56e564b08d223",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

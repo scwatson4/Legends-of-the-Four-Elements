@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 48afb17b48d8ef945bb2a1245a8220b7
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/PlayerControllers/SideScrollController/SideScrollerController.prefab
+  uploadId: 743603

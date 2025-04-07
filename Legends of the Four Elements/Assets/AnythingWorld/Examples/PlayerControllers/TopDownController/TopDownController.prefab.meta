@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 0f2ad9c16fe0c0848833256fb6d6071f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/PlayerControllers/TopDownController/TopDownController.prefab
+  uploadId: 743603

@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d285eb63c2cdd74180de7cfceaa96ad, type: 3}
+  m_Name: SplineMovement
+  m_EditorClassIdentifier: 
+  rootNode:
+    id: 0
+  nodes:
+  - id: 0
+  - id: 1
+  - id: 2
+  - id: 3
+  treeState: 0
+  blackboard:
+    keys:
+    - id: 4
+    - id: 5
+  viewPosition: {x: 200.66667, y: 245.33333, z: 0}
+  viewScale: {x: 0.65751624, y: 0.65751624, z: 1}
+  references:
+    version: 1
+    00000000:
+      type: {class: RootNode, ns: AnythingWorld.Behaviour.Tree, asm: AnythingWorld.Behaviour.Tree.Runtime}
+      data:
+        state: 0
+        started: 0
+        guid: 4f46d33f-d85e-473f-aa02-6740c8b07b40
+        position: {x: 0, y: 0}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        child:
+          id: 1
+    00000001:
+      type: {class: Parallel, ns: AnythingWorld.Behaviour.Tree, asm: AnythingWorld.Behaviour.Tree.Runtime}
+      data:
+        state: 0
+        started: 0
+        guid: 3298510bf5efc7e488d08e02cd4fdfc3
+        position: {x: 0, y: 120}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        children:
+        - id: 2
+        - id: 3
+    00000002:
+      type: {class: MoveAlongSpline, ns: AnythingWorld.Behaviour.Tree, asm: AnythingWorld.Behaviour.Tree.Runtime}
+      data:
+        state: 0
+        started: 0
+        guid: c0b2acc6bfb0e56489fe326460abf258
+        position: {x: -135, y: 270}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        scaleSpeedWithModelSpeed: 1
+        speed:
+          reference:
+            id: 4
+          defaultValue: 4
+        startAtClosestPathPoint:
+          reference:
+            id: 5
+          defaultValue: 1
+        speedScalar: 1
+    00000003:
+      type: {class: AnimateMovement, ns: AnythingWorld.Behaviour.Tree, asm: AnythingWorld.Behaviour.Tree.Runtime}
+      data:
+        state: 0
+        started: 0
+        guid: ebff89ddb1bd879408012ea46b41fed4
+        position: {x: 105, y: 270}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        speed:
+          reference:
+            id: 4
+          defaultValue: 0
+    00000004:
+      type: {class: FloatKey, ns: AnythingWorld.Behaviour.Tree, asm: AnythingWorld.Behaviour.Tree.Runtime}
+      data:
+        name: MovementSpeed
+        typeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        value: 4
+    00000005:
+      type: {class: BooleanKey, ns: AnythingWorld.Behaviour.Tree, asm: AnythingWorld.Behaviour.Tree.Runtime}
+      data:
+        name: StartAtClosestPoint
+        typeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        value: 1

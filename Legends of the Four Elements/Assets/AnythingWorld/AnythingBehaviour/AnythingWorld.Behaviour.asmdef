@@ -1,0 +1,21 @@
+{
+    "name": "AnythingWorld.Behaviour",
+    "rootNamespace": "AnythingWorld.Behaviour",
+    "references": [
+        "GUID:67669b853f73931428f5b4975a9450a2",
+        "GUID:85c93d3f7e548ee489040f457eb78a77",
+        "GUID:e88284e16fd647647a7b310ff1a88278",
+        "GUID:a7bd4d7ed0af7e7488cea3d1d436d49c",
+        "GUID:b5576c63d5c38ff45a20a312cbc8dbcb",
+        "GUID:5e30c40d834d91b4b94a7e9f56828026"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

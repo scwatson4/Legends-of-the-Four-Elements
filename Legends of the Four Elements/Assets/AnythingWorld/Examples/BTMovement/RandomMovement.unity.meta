@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: e80bbb76d7e1ee14e8c5d8fe80a2385f
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/BTMovement/RandomMovement.unity
+  uploadId: 743603

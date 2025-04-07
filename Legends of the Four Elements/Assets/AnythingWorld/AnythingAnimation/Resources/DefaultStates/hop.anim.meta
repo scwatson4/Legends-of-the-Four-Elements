@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 56d0d4e1d22c79a4c886c334feece2b7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingAnimation/Resources/DefaultStates/hop.anim
+  uploadId: 743603

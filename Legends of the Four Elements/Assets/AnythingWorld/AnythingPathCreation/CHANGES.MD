@@ -1,0 +1,6 @@
+- Removed spline color customizations.
+- Added snap to surface mode which allows to automatically snap anchor and \ or related controls to nearest surface. Useful when creating paths on uneven surfaces.
+- Added option to deselect PathCreator object when clicking outside of it.
+- Added ability to move flat XZ plane along Y axis with PathCreator transform. Initial xz plane height is also determined by PathCreator transform.
+- Removed XY plane space option due to redundancy. 
+- Improved code style and formatting.

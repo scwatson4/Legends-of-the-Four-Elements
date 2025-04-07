@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a3c3e36e0607da0459ef7eed1d0ee4de
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 299378
+  packageName: Martial Art Animations - Sample
+  packageVersion: 1.0
+  assetPath: Assets/Martial Art Animations Sample/Display Animator Controller.controller
+  uploadId: 705893

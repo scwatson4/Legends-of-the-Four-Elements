@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b834b7323d8af1b4bb98ad1df1ecef71
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Resources/UniversalRenderPipelineAsset_Renderer.asset
+  uploadId: 743603

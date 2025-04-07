@@ -1,0 +1,28 @@
+{
+    "name": "AnythingWorld.Editor",
+    "rootNamespace": "AnythingWorld.Editor",
+    "references": [
+        "GUID:67669b853f73931428f5b4975a9450a2",
+        "GUID:478a2357cc57436488a56e564b08d223",
+        "GUID:3b39abd246e6b854a94af972b35d0e8c",
+        "GUID:4aece4a37f7dc2c4fa7ebbc01c6e3b20",
+        "GUID:64c25ce27065a2e48860481a273e5cf3",
+        "GUID:a27f10cf2f1666a41bb6865bea42a9c8",
+        "GUID:0f9e8f73c69964f1e8176f9a0b86f9b2",
+        "GUID:b5576c63d5c38ff45a20a312cbc8dbcb",
+        "GUID:5e30c40d834d91b4b94a7e9f56828026",
+        "GUID:b1da429baaf671f40b0e286bd3a2c42b",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

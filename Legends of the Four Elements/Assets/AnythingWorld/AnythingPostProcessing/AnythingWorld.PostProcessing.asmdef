@@ -1,0 +1,20 @@
+{
+    "name": "AnythingWorld.PostProcessing",
+    "rootNamespace": "AnythingWorld.PostProcessing",
+    "references": [
+        "GUID:67669b853f73931428f5b4975a9450a2",
+        "GUID:b5576c63d5c38ff45a20a312cbc8dbcb",
+        "GUID:0367652a30b10774d9611512d10584c3",
+        "GUID:5e30c40d834d91b4b94a7e9f56828026",
+        "GUID:b1da429baaf671f40b0e286bd3a2c42b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

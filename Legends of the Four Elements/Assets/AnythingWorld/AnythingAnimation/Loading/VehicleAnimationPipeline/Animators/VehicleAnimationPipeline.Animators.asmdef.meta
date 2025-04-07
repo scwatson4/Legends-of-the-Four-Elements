@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a7bd4d7ed0af7e7488cea3d1d436d49c
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingAnimation/Loading/VehicleAnimationPipeline/Animators/VehicleAnimationPipeline.Animators.asmdef
+  uploadId: 743603

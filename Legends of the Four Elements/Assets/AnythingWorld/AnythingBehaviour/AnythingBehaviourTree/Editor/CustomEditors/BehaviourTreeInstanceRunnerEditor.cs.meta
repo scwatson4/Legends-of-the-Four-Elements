@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2900d9ef9a7008a48b1f934fe17885f2
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Editor/CustomEditors/BehaviourTreeInstanceRunnerEditor.cs
+  uploadId: 743603

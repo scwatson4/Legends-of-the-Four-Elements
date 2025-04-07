@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: aa276ae4d6ba90e488a8ef25cfc05e45
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273660
+  packageName: PolygonCharacters-Labourer
+  packageVersion: 1.0
+  assetPath: Assets/PolygonCharacters-Labourer/Scenes/Demo_Character/Global Volume
+    Profile.asset
+  uploadId: 738777

@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 867b3431cb184afc97219e15f4f86d4e
+timeCreated: 1707428569
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/RandomGoal/AerialRandomGoal.cs
+  uploadId: 743603
