@@ -20,8 +20,14 @@ public class AttackController : MonoBehaviour
         if(isPlayer && other.CompareTag("Enemy") && targetToAttack == null)
         {
             targetToAttack = other.transform;
-            // Add attack logic here
-            Debug.Log("Attacking " + targetToAttack.name);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (isPlayer && other.CompareTag("Enemy") && targetToAttack == null)
+        {
+            targetToAttack = other.transform;
         }
     }
 
