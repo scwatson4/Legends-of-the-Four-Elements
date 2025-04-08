@@ -9,10 +9,13 @@ public class UnitMovement : MonoBehaviour
     public LayerMask ground;
 
     public bool isCommandedToMove;
+
+    Animator animator;
     private void Start()
     {
         cam = Camera.main;
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -26,6 +29,7 @@ public class UnitMovement : MonoBehaviour
             {
                 isCommandedToMove = true;
                 agent.SetDestination(hit.point);
+                animator.SetBool("isMoving", true); 
             }
         }
 
@@ -33,6 +37,11 @@ public class UnitMovement : MonoBehaviour
         if (agent.hasPath == false || agent.remainingDistance <= agent.stoppingDistance)
         {
             isCommandedToMove = false;
+            animator.SetBool("isMoving", false);
+        }
+        else
+        {
+            animator.SetBool("isMoving", true);
         }
     }
 }

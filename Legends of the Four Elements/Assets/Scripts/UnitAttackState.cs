@@ -19,6 +19,7 @@ public class UnitAttackState : StateMachineBehaviour
         agent = animator.GetComponent<NavMeshAgent>();
         attackController = animator.GetComponent<AttackController>();
         attackController.SetAttackStateMaterial(); // Set the attack state material to red
+        attackController.flamethrowerEffect.SetActive(true); // Activate the flamethrower effect
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -72,6 +73,6 @@ public class UnitAttackState : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
+        attackController.flamethrowerEffect.SetActive(false); // Deactivate the flamethrower effect
     }
 }

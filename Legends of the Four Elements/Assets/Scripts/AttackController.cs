@@ -15,6 +15,8 @@ public class AttackController : MonoBehaviour
 
     public int unitDamage;
 
+    public GameObject flamethrowerEffect;
+
     private void OnTriggerEnter(Collider other)
     {
         if(isPlayer && other.CompareTag("Enemy") && targetToAttack == null)

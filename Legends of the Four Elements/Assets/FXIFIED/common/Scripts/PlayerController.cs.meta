@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2f5fc423f02d494479eb20e46d97e969
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 169179
+  packageName: Stylized VFX Free Pack
+  packageVersion: 1.0
+  assetPath: Assets/FXIFIED/common/Scripts/PlayerController.cs
+  uploadId: 369288
