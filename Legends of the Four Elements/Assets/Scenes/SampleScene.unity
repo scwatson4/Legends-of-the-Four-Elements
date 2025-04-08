@@ -3310,7 +3310,7 @@ GameObject:
   - component: {fileID: 5866666021496646232}
   - component: {fileID: 5866666021496646231}
   m_Layer: 7
-  m_Name: Character
+  m_Name: Firebender
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
