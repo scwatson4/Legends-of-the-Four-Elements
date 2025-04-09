@@ -58,6 +58,8 @@ public class UnitAttackState : StateMachineBehaviour
     {
         var damageToInflict = attackController.unitDamage;
 
+        SoundManager.Instance.PlayInfantryAttackSound(); // Play the attack sound
+
         // Actually attack the enemy
         attackController.targetToAttack.GetComponent<Unit>().TakeDamage(damageToInflict);
     }
@@ -74,5 +76,6 @@ public class UnitAttackState : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         attackController.flamethrowerEffect.SetActive(false); // Deactivate the flamethrower effect
+        SoundManager.Instance.StopInfantryAttackSound(); // Stop the attack sound
     }
 }
