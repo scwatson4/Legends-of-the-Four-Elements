@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bd157cbf347698644bd1a42730689e28
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 23800000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/BTMovement/RandomMovement/NavMesh-NavMeshSurface.asset
+  uploadId: 743603

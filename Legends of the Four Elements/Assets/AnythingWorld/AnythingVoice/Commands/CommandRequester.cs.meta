@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1524370646bbb65498efece2a83fcce0
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingVoice/Commands/CommandRequester.cs
+  uploadId: 743603

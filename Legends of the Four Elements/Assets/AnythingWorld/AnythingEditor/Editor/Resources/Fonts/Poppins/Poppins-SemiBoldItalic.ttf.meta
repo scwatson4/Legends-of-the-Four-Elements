@@ -1,0 +1,38 @@
+fileFormatVersion: 2
+guid: 97203018e0e77024081a50cfb5b5fb34
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 64
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Poppins
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f526f9800f6ee474d93be95ea32f6f53, type: 3}
+  - {fileID: 12800000, guid: c07b8901e0adcb143b7658fc9fe5f681, type: 3}
+  - {fileID: 12800000, guid: 84cc8102d8389174c9c85f5f0e7ab7e8, type: 3}
+  - {fileID: 12800000, guid: 51bd0d437b794524ea4b9cc368f6394d, type: 3}
+  - {fileID: 12800000, guid: e6ba43f498fc655408dcb480258d0141, type: 3}
+  - {fileID: 12800000, guid: 70c65fa692e799a4689d86671c2fc62b, type: 3}
+  - {fileID: 12800000, guid: 672ce53728c8ed34c91ff39ba592778a, type: 3}
+  - {fileID: 12800000, guid: 402dbd9b11f75e2409ec511ab62bd008, type: 3}
+  - {fileID: 12800000, guid: d08cc21cba40ca849bcddcee00311e60, type: 3}
+  - {fileID: 12800000, guid: a0a65e9c575854f4390d6581431fdfc6, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingEditor/Editor/Resources/Fonts/Poppins/Poppins-SemiBoldItalic.ttf
+  uploadId: 743603

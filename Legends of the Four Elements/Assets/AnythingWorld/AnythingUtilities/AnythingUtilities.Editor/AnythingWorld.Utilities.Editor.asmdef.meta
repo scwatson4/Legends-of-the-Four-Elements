@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a27f10cf2f1666a41bb6865bea42a9c8
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingUtilities/AnythingUtilities.Editor/AnythingWorld.Utilities.Editor.asmdef
+  uploadId: 743603

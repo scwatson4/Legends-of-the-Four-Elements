@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: dbb8de7300e32fe4c935f0923470e1b3
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/Resources/Controllers/PackController/WalkingAnimalsPackController.cs
+  uploadId: 743603

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a427f1e9247b3414eb2844332dd6d299
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingUtilities/Resources/DataContainers/JSON/Other.cs
+  uploadId: 743603

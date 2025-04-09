@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f4b2e2dc828334d4fb3e06926f387524
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/PlayerControllers/ThirdPersonController/ThirdPersonController.prefab
+  uploadId: 743603

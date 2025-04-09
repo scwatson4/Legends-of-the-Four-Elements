@@ -1,0 +1,17 @@
+{
+    "name": "AnythingWorld.ProceduralGeneration",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0367652a30b10774d9611512d10584c3",
+        "GUID:5e30c40d834d91b4b94a7e9f56828026"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,22 @@
+{
+    "name": "AnythingWorld.Animation",
+    "rootNamespace": "AnythingWorld.Animation",
+    "references": [
+        "Unity.EditorCoroutines.Editor",
+        "AnythingWorld.Utilities",
+        "AnythingWorld.Models",
+        "AnythingAnimation.Controllers",
+        "Anything.Animation.Loading.VehicleAnimationPipeline.Animators",
+        "AnythingWorld.Utilities.DefaultBehaviourType",
+        "AnythingWorld.Behaviour.Tree.Runtime"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

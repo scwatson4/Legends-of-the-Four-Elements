@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: f80fb1c9ed4c99447be1b0a47a8d980b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingUtilities/Unitask/Internal/DiagnosticsExtensions.cs
+  uploadId: 743603

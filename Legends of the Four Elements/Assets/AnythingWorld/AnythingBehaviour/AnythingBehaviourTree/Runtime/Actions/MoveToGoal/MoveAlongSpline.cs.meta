@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: e4df3730fe0c49f0b285c8c8b950b479
+timeCreated: 1708168525
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/MoveToGoal/MoveAlongSpline.cs
+  uploadId: 743603

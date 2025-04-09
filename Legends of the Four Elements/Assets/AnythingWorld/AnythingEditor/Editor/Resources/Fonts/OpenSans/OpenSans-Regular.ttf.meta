@@ -1,0 +1,31 @@
+fileFormatVersion: 2
+guid: 1662c5062db994e8e90f9c58df3b7726
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Open Sans
+  fontNames:
+  - Open Sans
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 0bf1f4203d8914b35b8990c4ab3eddee, type: 3}
+  - {fileID: 12800000, guid: 7dc16c1e8b6154bb18df4a49984a5bf0, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingEditor/Editor/Resources/Fonts/OpenSans/OpenSans-Regular.ttf
+  uploadId: 743603

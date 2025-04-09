@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 31ddec9e315d03b48a9d94ef33e67466
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingAnimation/Resources/DefaultStates/fly.anim
+  uploadId: 743603

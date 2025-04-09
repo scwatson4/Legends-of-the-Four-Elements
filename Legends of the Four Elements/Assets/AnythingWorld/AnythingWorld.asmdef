@@ -1,0 +1,21 @@
+{
+    "name": "AnythingWorld",
+    "rootNamespace": "AnythingWorld",
+    "references": [
+        "GUID:d9f93622f0164ef4d9a6421da63bcbfe",
+        "GUID:67669b853f73931428f5b4975a9450a2",
+        "GUID:85c93d3f7e548ee489040f457eb78a77",
+        "GUID:83ccaaba7f2b6954f99418d0628db4a6",
+        "GUID:b5576c63d5c38ff45a20a312cbc8dbcb",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

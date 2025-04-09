@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 9fac67052f0d4b2db9677f0ca9e08996
+timeCreated: 1707406686
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/MoveToGoal/NonJumpingMoveToGoalBase.cs
+  uploadId: 743603

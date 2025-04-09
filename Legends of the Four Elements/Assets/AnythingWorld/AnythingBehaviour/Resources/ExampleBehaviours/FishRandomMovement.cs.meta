@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: beac86a1626844c3ae11304f3665e022
+timeCreated: 1706792142
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/Resources/ExampleBehaviours/FishRandomMovement.cs
+  uploadId: 743603

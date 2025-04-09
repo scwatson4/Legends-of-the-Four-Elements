@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 87b1b2a1a5f1492dacd70ca7b769e641
+timeCreated: 1707411672
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/MoveToGoal/BirdMoveToGoal.cs
+  uploadId: 743603

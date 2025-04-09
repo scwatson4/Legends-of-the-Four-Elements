@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 1ddbab1e140e1234fae1dc56d0d0f479
+timeCreated: 1539024463
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingModels/GltfPipeline/GLTFUtility/GltfLoader/Scripts/Spec/GLTFMesh.cs
+  uploadId: 743603

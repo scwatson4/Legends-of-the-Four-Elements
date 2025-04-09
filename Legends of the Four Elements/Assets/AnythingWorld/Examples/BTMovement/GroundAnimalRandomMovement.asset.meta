@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: a25e47c17604fbc4b9730eb89d0787b6
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/BTMovement/GroundAnimalRandomMovement.asset
+  uploadId: 743603

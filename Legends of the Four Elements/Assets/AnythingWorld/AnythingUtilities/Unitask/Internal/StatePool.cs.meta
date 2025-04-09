@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 60cdf0bcaea36b444a7ae7263ae7598f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingUtilities/Unitask/Internal/StatePool.cs
+  uploadId: 743603

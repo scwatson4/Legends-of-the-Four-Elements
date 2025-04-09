@@ -1,0 +1,19 @@
+{
+    "name": "AnythingWorld.Utilities",
+    "rootNamespace": "AnythingWorld.Utilities",
+    "references": [
+        "Unity.EditorCoroutines.Editor",
+        "Unity.AI.Navigation",
+        "AnythingWorld.Behaviour.Tree.Runtime",
+        "AnythingWorld.Utilities.DefaultBehaviourType"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

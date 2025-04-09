@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 2c8b9c021f6d4934593e78f9a6f80810
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingNetworking/AnythingWorld.Networking.asmdef
+  uploadId: 743603

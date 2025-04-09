@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ae903da30ab9afc4fa0581639a2a7599
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingModels/ObjPipeline/OBJUtility/MaterialCaching/MaterialCacheUtil.cs
+  uploadId: 743603

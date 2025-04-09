@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: faf707bb9c20b984f8f4c52049a7195f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingNetworking/Editor/UserProcessedModels.cs
+  uploadId: 743603

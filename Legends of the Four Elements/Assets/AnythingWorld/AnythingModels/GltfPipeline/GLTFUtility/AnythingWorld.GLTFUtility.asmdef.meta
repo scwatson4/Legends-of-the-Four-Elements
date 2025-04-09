@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 774f0e7b520e24644b448f5ac7fa5d94
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingModels/GltfPipeline/GLTFUtility/AnythingWorld.GLTFUtility.asmdef
+  uploadId: 743603

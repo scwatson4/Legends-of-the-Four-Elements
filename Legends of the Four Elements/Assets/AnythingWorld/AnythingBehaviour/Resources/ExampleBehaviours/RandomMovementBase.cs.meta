@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: f31452ac124f4ee4a9972c6471a85e7f
+timeCreated: 1705485878
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/Resources/ExampleBehaviours/RandomMovementBase.cs
+  uploadId: 743603

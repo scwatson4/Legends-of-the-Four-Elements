@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 9ac05ac9fb254f308e2015b025183d0f
+timeCreated: 1707397074
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/Actions/MoveToGoal/GroundAnimalMoveToGoalBase.cs
+  uploadId: 743603

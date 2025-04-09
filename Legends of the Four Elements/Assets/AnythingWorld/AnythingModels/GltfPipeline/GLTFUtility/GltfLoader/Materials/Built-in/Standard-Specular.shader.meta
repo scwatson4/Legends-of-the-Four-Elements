@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d28fc76bfd3057e4c8f1c6f0b91590c8
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingModels/GltfPipeline/GLTFUtility/GltfLoader/Materials/Built-in/Standard-Specular.shader
+  uploadId: 743603

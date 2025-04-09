@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 1c40eaf2bf191f340b6a175655e2c760
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 625f186215c104763be7675aa2d941aa, type: 3}
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingAnimation/Resources/AnimationShaders/Fish
+    Vertical Animation.shadergraph
+  uploadId: 743603

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 759b0e028cf597b4cb3af0a8b53aa22b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/Examples/BTMovement/FishRandomMovement.asset
+  uploadId: 743603

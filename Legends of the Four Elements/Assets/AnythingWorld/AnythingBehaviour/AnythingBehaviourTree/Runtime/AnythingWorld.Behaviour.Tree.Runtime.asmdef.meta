@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 5e30c40d834d91b4b94a7e9f56828026
+AssemblyDefinitionImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 261647
+  packageName: Anything World 3D Creation & Animation Studio
+  packageVersion: 1.2.0.1
+  assetPath: Assets/AnythingWorld/AnythingBehaviour/AnythingBehaviourTree/Runtime/AnythingWorld.Behaviour.Tree.Runtime.asmdef
+  uploadId: 743603
