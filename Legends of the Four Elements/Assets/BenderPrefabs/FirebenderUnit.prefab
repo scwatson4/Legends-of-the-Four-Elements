@@ -6551,7 +6551,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6447605159382571855}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.9368249, z: -0, w: 0.34979868}
+  m_LocalRotation: {x: 0, y: 0.9368249, z: 0, w: 0.34979868}
   m_LocalPosition: {x: 7.7, y: 0.014, z: 8.23}
   m_LocalScale: {x: 0.20000002, y: 0.2, z: 0.20000002}
   m_ConstrainProportionsScale: 0
@@ -6720,7 +6720,7 @@ MonoBehaviour:
   followStateMaterial: {fileID: 2100000, guid: 22a62a2e1272bed45b6ca6e7d4bf2ca0, type: 2}
   attackStateMaterial: {fileID: 2100000, guid: 01eb9ec04e62a824d9477f4d5bcc1d15, type: 2}
   isPlayer: 1
-  unitDamage: 25
+  unitDamage: 10
   flamethrowerEffect: {fileID: 6655938629548842885}
 --- !u!1 &6534476817212408473
 GameObject:
