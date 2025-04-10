@@ -1050,6 +1050,7 @@ MonoBehaviour:
   attackStateMaterial: {fileID: 2100000, guid: 01eb9ec04e62a824d9477f4d5bcc1d15, type: 2}
   isPlayer: 0
   unitDamage: 10
+  flamethrowerEffect: {fileID: 0}
 --- !u!95 &5401003071480966681
 Animator:
   serializedVersion: 7
