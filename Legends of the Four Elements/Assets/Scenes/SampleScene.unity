@@ -3470,6 +3470,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1381353171567786570, guid: 40f34f2fa379eb64dacc8a5ce4d975ac, type: 3}
   m_PrefabInstance: {fileID: 2098978663}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1455397388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1455397390}
+  - component: {fileID: 1455397389}
+  m_Layer: 0
+  m_Name: MapLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1455397389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455397388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27443cf1d34033d4ba967e3b527cf8a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  VolcanoPrefab: {fileID: 3106330458764373224, guid: 4e325decf9310af4da33c46fa53e08ba, type: 3}
+  RiverPrefab: {fileID: 8473048632318822932, guid: affa7c945b4eaf441bb6b0874942560b, type: 3}
+  DesertPrefab: {fileID: 1917923611640249935, guid: e901fd7d6bb63d043a9b1569c74238d7, type: 3}
+  MountainPrefab: {fileID: 6959071094434822518, guid: 1ca11f43ea79dd342a3459a767ddc031, type: 3}
+  PlainsPrefab: {fileID: 1262413077931244510, guid: ba410d20a70818a4491db0e0d5d4a775, type: 3}
+  ClearedLandPrefab: {fileID: 9073511589664623937, guid: 21a5555492f9fa245ac394e7af6e25bb, type: 3}
+  fileName: rtsmap
+  tileWidth: 1
+  tileHeight: 0.5
+  buildablePlots: []
+  generateFromSeed: 0
+  seed: 12345
+  generatedWidth: 20
+  generatedHeight: 20
+  terrain: {fileID: 801136254}
+  terrainCollider: {fileID: 801136253}
+  navMeshSurface: {fileID: 801136252}
+--- !u!4 &1455397390
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1455397388}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1458282758
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4980,3 +5041,4 @@ SceneRoots:
   - {fileID: 682112776}
   - {fileID: 8740464}
   - {fileID: 591959431}
+  - {fileID: 1455397390}
