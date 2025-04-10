@@ -6,7 +6,7 @@ public class SimplePatrol : MonoBehaviour
 
     private bool movingForward = true;
     private float timer = 0.0f;
-    private float switchDirectionTime = 5.0f; // Time to switch direction
+    private float switchDirectionTime = 3.0f; // Time to switch direction
 
     void Update()
     {
