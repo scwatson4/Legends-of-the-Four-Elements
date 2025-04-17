@@ -78,14 +78,19 @@ public class PreviewSystem : MonoBehaviour
 
     private void ApplyFeedbackToPreview(bool validity)
     {
-        Color c = validity ? Color.white : Color.red;
+        Color c = validity ? Color.green : Color.red;
         c.a = 0.5f;
         previewMaterialInstance.color = c;
+
+        previewMaterialInstance.EnableKeyword("_EMISSION");
+
+        Color finalColor = c * Mathf.LinearToGammaSpace(1);
+        previewMaterialInstance.SetColor("_EmissionColor", finalColor);
     }
 
     private void ApplyFeedbackToCursor(bool validity)
     {
-        Color c = validity ? Color.white : Color.red;
+        Color c = validity ? Color.green : Color.red;
         c.a = 1f;
      
     }
