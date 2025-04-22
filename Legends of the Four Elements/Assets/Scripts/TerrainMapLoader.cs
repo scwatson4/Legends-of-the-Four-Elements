@@ -1,314 +1,199 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using Unity.AI.Navigation;
+using Unity.EditorCoroutines.Editor;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
-using Unity.AI.Navigation;
 
-public class TerrainMapLoader : MonoBehaviour
+[RequireComponent(typeof(NavMeshSurface))]
+public class NavMeshGenA : MonoBehaviour
 {
-    [Header("Terrain Prefabs")]
-    public GameObject VolcanoPrefab;
-    public GameObject RiverPrefab;
-    public GameObject DesertPrefab;
-    public GameObject MountainPrefab;
-    public GameObject PlainsPrefab;
-    public GameObject ClearedLandPrefab;
+    Terrain terrain;
+    TerrainData terrainData;
+    Vector3 terrainPos;
 
-    [Header("Map Settings")]
-    public string fileName = "rtsmap"; // Without .txt
-    public float tileWidth = 1f;
-    public float tileHeight = 0.5f;
+    public string NavAgentLayer = "Default";
+    public string defaultarea = "Walkable";
+    public bool includeTrees;
+    public float timeLimitInSecs = 30;
+    public int step = 10;
+    public List<string> areaID;
 
-    public List<Vector3> buildablePlots = new List<Vector3>();
+    [SerializeField] bool _destroyTempObjects;
+    [SerializeField] bool _break;
 
-    [Header("Map Generation Options")]
-    public bool generateFromSeed = false;
-    public int seed = 12345;
-    public int generatedWidth = 20;
-    public int generatedHeight = 20;
-
-    [Header("Terrain References")]
-    public Terrain terrain;
-    public TerrainCollider terrainCollider;
-    public NavMeshSurface navMeshSurface;
-
-    private string[,] terrainMap;
-
-    void Start()
+    [ContextMenu("Generate NavAreas")]
+    void Build()
     {
-        if (generateFromSeed)
-            GenerateMapFromSeed();
-        else
-            LoadMap();
+        EditorCoroutineUtility.StartCoroutine(GenMeshes(), this);
     }
 
-    void LoadMap()
+    IEnumerator GenMeshes()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, fileName + ".txt");
+        terrain = GetComponent<Terrain>();
+        terrainData = terrain.terrainData;
+        terrainPos = terrain.transform.position;
 
-        if (!File.Exists(path))
+        Vector3 size = terrainData.size;
+        Vector3 tpos = terrain.GetPosition();
+        float minX = tpos.x;
+        float maxX = minX + size.x;
+        float minZ = tpos.z;
+        float maxZ = minZ + size.z;
+
+        GameObject attachParent;
+        Transform childA = terrain.transform.Find("Delete me");
+
+        if (childA != null)
         {
-            Debug.LogError("Map file not found: " + path);
-            return;
+            attachParent = childA.gameObject;
+        }
+        else
+        {
+            attachParent = new GameObject("Delete me");
+            attachParent.transform.SetParent(terrain.transform);
+            attachParent.transform.localPosition = Vector3.zero;
         }
 
-        string[] lines = File.ReadAllLines(path);
-        int height = lines.Length;
-        int width = lines[0].Split(' ').Length;
-        terrainMap = new string[width, height];
+        yield return null;
 
-        for (int y = 0; y < height; y++)
+        int terrainLayer = LayerMask.NameToLayer(NavAgentLayer);
+        if (terrainLayer == -1)
         {
-            string[] cells = lines[y].Split(' ');
-            for (int x = 0; x < cells.Length; x++)
-            {
-                terrainMap[x, y] = cells[x];
-            }
+            Debug.LogError($"Invalid layer: {NavAgentLayer}. Using Default.");
+            terrainLayer = LayerMask.NameToLayer("Default");
         }
 
-        EnsureClearZonesOnOppositeSides();
+        float[,,] splatmapData = terrainData.GetAlphamaps(0, 0, terrainData.alphamapWidth, terrainData.alphamapHeight);
+        float alphaWidth = terrainData.alphamapWidth;
+        float alphaHeight = terrainData.alphamapHeight;
+        float tWidth = terrainData.size.x;
+        float tHeight = terrainData.size.z;
+        float startTime = Time.realtimeSinceStartup;
+        float xStepsize = tWidth / alphaWidth;
+        float zStepsize = tHeight / alphaHeight;
 
-        for (int y = 0; y < height; y++)
+        int volumeCount = 0;
+        for (int dx = 0; dx < alphaWidth; dx += step)
         {
-            for (int x = 0; x < width; x++)
+            float xOff = tWidth * (dx / alphaWidth);
+            for (int dz = 0; dz < alphaHeight; dz += step)
             {
-                string code = terrainMap[x, y];
-                if (IsInvalidPlacement(code, x, y))
+                if (_break || Time.realtimeSinceStartup > startTime + timeLimitInSecs)
                 {
-                    Debug.LogWarning($"Invalid adjacency: {code} at ({x},{y})");
+                    Debug.LogWarning($"NavMesh generation interrupted: _break={_break}, TimeLimit={Time.realtimeSinceStartup - startTime}s");
+                    yield break;
+                }
+
+                float zOff = tHeight * (dz / alphaHeight);
+                int surface = GetMainTextureA(dz, dx, ref splatmapData);
+                Debug.Log($"Texture at ({dx}, {dz}): {surface}");
+
+                if (!areaID.Contains(surface.ToString()))
+                {
+                    Debug.Log($"Skipping texture {surface} (not in areaID: {string.Join(",", areaID)})");
                     continue;
                 }
 
-                Vector3 position = GridToIsometric(x, height - y - 1);
-                InstantiateTile(code, position);
-                UpdateTerrainHeight(x, y, position);
-            }
-        }
+                Vector3 pos = new Vector3(minX + xOff, terrain.SampleHeight(new Vector3(minX + xOff, 0, minZ + zOff)), minZ + zOff);
 
-        RebuildNavMesh();
-    }
+                GameObject obj = new GameObject($"NavMod_{dx}_{dz}");
+                obj.layer = terrainLayer;
+                Transform objT = obj.transform;
+                objT.SetParent(attachParent.transform);
+                objT.position = pos;
 
-    void GenerateMapFromSeed()
-    {
-        Random.InitState(seed);
-        terrainMap = new string[generatedWidth, generatedHeight];
-
-        for (int y = 0; y < generatedHeight; y++)
-        {
-            for (int x = 0; x < generatedWidth; x++)
-            {
-                float r = Random.value;
-                string tile = r switch
+                NavMeshModifierVolume nmmv = obj.AddComponent<NavMeshModifierVolume>();
+                nmmv.size = new Vector3(xStepsize * step, 1, zStepsize * step);
+                nmmv.center = Vector3.zero;
+                int areaIndex = NavMesh.GetAreaFromName(defaultarea);
+                if (areaIndex == -1)
                 {
-                    < 0.05f => "VOL",
-                    < 0.15f => "MTN",
-                    < 0.50f => "PLA",
-                    < 0.80f => "DES",
-                    < 0.95f => "RIV",
-                    _       => "CLR"
-                };
-                terrainMap[x, y] = tile;
-            }
-        }
-
-        for (int y = 0; y < generatedHeight; y++)
-        {
-            for (int x = 0; x < generatedWidth; x++)
-            {
-                if (terrainMap[x, y] == "RIV" && IsInvalidPlacement("RIV", x, y))
-                {
-                    terrainMap[x, y] = "PLA";
+                    Debug.LogError($"Invalid NavMesh area: {defaultarea}. Using Walkable.");
+                    areaIndex = NavMesh.GetAreaFromName("Walkable");
                 }
+                nmmv.area = areaIndex;
+                volumeCount++;
+                Debug.Log($"Created NavMeshModifierVolume {volumeCount} at ({pos.x}, {pos.z}) with area {defaultarea} (index {areaIndex})");
+
+                yield return null;
             }
         }
 
-        EnsureClearZonesOnOppositeSides();
-
-        for (int y = 0; y < generatedHeight; y++)
+        if (includeTrees)
         {
-            for (int x = 0; x < generatedWidth; x++)
+            TreeInstance[] instances = terrainData.treeInstances;
+            TreePrototype[] prototypes = terrainData.treePrototypes;
+            Vector3 tsize = terrainData.size;
+
+            foreach (TreeInstance inst in instances)
             {
-                string code = terrainMap[x, y];
-                Vector3 position = GridToIsometric(x, generatedHeight - y - 1);
-                InstantiateTile(code, position);
-                UpdateTerrainHeight(x, y, position);
+                TreePrototype prototype = prototypes[inst.prototypeIndex];
+                Vector3 pos = Vector3.Scale(inst.position, tsize) + terrainPos;
+                GameObject tree = Instantiate(prototype.prefab, attachParent.transform);
+                tree.layer = terrainLayer;
+                Transform objT = tree.transform;
+                objT.position = pos;
+                objT.rotation = Quaternion.Euler(0, inst.rotation * Mathf.Rad2Deg, 0);
+                objT.localScale = new Vector3(inst.widthScale, inst.heightScale, inst.widthScale);
+                NavMeshObstacle obstacle = tree.AddComponent<NavMeshObstacle>();
+                obstacle.carving = true;
+                obstacle.size = new Vector3(1, 2, 1);
+                tree.isStatic = true;
             }
         }
 
-        RebuildNavMesh();
-    }
-
-    Vector3 GridToIsometric(int x, int y)
-    {
-        float isoX = (x - y) * tileWidth / 2;
-        float isoY = (x + y) * tileHeight / 2;
-        return new Vector3(isoX, isoY, 0);
-    }
-
-    void InstantiateTile(string code, Vector3 position)
-    {
-        GameObject prefab = code switch
+        NavMeshSurface nsurface = GetComponent<NavMeshSurface>();
+        if (nsurface != null)
         {
-            "VOL" => VolcanoPrefab,
-            "RIV" => RiverPrefab,
-            "DES" => DesertPrefab,
-            "MTN" => MountainPrefab,
-            "PLA" => PlainsPrefab,
-            "CLR" => ClearedLandPrefab,
-            _ => null
-        };
-
-        if (code == "CLR")
-            buildablePlots.Add(position);
-
-        if (prefab != null)
-            Instantiate(prefab, position, Quaternion.identity, transform);
-    }
-
-    bool IsInvalidPlacement(string code, int x, int y)
-    {
-        if (code != "RIV") return false;
-
-        string[] invalidNeighbors = { "VOL" };
-        int[,] directions = new int[,] {
-            { -1,  0 },
-            {  1,  0 },
-            {  0, -1 },
-            {  0,  1 }
-        };
-
-        for (int i = 0; i < directions.GetLength(0); i++)
-        {
-            int nx = x + directions[i, 0];
-            int ny = y + directions[i, 1];
-
-            if (nx >= 0 && ny >= 0 && nx < terrainMap.GetLength(0) && ny < terrainMap.GetLength(1))
-            {
-                string neighbor = terrainMap[nx, ny];
-                foreach (string bad in invalidNeighbors)
-                {
-                    if (neighbor == bad)
-                        return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    void EnsureClearZonesOnOppositeSides()
-    {
-        int width = terrainMap.GetLength(0);
-        int height = terrainMap.GetLength(1);
-
-        List<Vector2Int> clearZones = FindClearZones(2);
-
-        // Ensure we place two clear zones on opposite sides of the map
-        if (clearZones.Count < 2)
-        {
-            // Force placement of clear zones if they don't exist
-            Vector2Int leftZone = new Vector2Int(1, 1);
-            Vector2Int rightZone = new Vector2Int(width - 3, height - 3);
-
-            CreateClearZone(leftZone.x, leftZone.y);
-            CreateClearZone(rightZone.x, rightZone.y);
+            nsurface.BuildNavMesh();
+            Debug.Log("NavMesh built successfully.");
+            yield return null;
         }
         else
         {
-            // Otherwise, just ensure there are clear zones on opposite sides
-            Vector2Int leftZone = new Vector2Int(1, 1);
-            Vector2Int rightZone = new Vector2Int(width - 3, height - 3);
+            Debug.LogError("No NavMeshSurface found on this GameObject.");
+        }
 
-            CreateClearZone(leftZone.x, leftZone.y);
-            CreateClearZone(rightZone.x, rightZone.y);
+        if (_destroyTempObjects)
+        {
+            Debug.Log($"Destroying {attachParent.transform.childCount} temporary objects.");
+            DestroyImmediate(attachParent);
         }
     }
 
-    List<Vector2Int> FindClearZones(int size)
+    private float[] GetTextureMixA(int z, int x, ref float[,,] splatmapData)
     {
-        List<Vector2Int> found = new();
-        int width = terrainMap.GetLength(0);
-        int height = terrainMap.GetLength(1);
-
-        for (int y = 0; y < height - (size - 1); y++)
+        float[] cellMix = new float[splatmapData.GetLength(2)];
+        try
         {
-            for (int x = 0; x < width - (size - 1); x++)
+            for (int n = 0; n < cellMix.Length; n++)
             {
-                bool isClear = true;
-                for (int dy = 0; dy < size; dy++)
-                {
-                    for (int dx = 0; dx < size; dx++)
-                    {
-                        if (terrainMap[x + dx, y + dy] != "CLR")
-                        {
-                            isClear = false;
-                            break;
-                        }
-                    }
-                    if (!isClear) break;
-                }
-
-                if (isClear)
-                    found.Add(new Vector2Int(x, y));
+                cellMix[n] = splatmapData[z, x, n];
             }
         }
-
-        return found;
+        catch (Exception e)
+        {
+            Debug.LogError($"Error accessing splatmap at ({z}, {x}): {e}");
+        }
+        return cellMix;
     }
 
-    void CreateClearZone(int startX, int startY)
+    private int GetMainTextureA(int z, int x, ref float[,,] splatmapData)
     {
-        for (int dy = 0; dy < 2; dy++)
+        float[] mix = GetTextureMixA(z, x, ref splatmapData);
+        float maxMix = 0;
+        int maxIndex = 0;
+        for (int n = 0; n < mix.Length; n++)
         {
-            for (int dx = 0; dx < 2; dx++)
+            if (mix[n] > maxMix)
             {
-                terrainMap[startX + dx, startY + dy] = "CLR";
+                maxIndex = n;
+                maxMix = mix[n];
             }
         }
+        return maxIndex;
     }
-
-    void UpdateTerrainHeight(int x, int y, Vector3 position)
-    {
-        // Assuming terrain has a heightmap (set height at x, y based on position)
-        float terrainHeight = 0;
-
-        switch (terrainMap[x, y])
-        {
-            case "VOL": terrainHeight = 10f; break;
-            case "MTN": terrainHeight = 7f; break;
-            case "PLA": terrainHeight = 1f; break;
-            case "DES": terrainHeight = 0.5f; break;
-            case "RIV": terrainHeight = 0.2f; break;
-            case "CLR": terrainHeight = 0f; break;
-        }
-
-        // Set height on terrain for that specific tile
-        TerrainData terrainData = terrain.terrainData;
-        float[,] heights = terrainData.GetHeights(x, y, 1, 1);  // Get existing height for that tile
-
-        heights[0, 0] = terrainHeight;  // Update height
-
-        terrainData.SetHeights(x, y, heights);  // Apply the updated height
-    }
-
-    void RebuildNavMesh()
-    {
-        if (navMeshSurface != null)
-        {
-            navMeshSurface.BuildNavMesh();
-        }
-    }
-
-#if UNITY_EDITOR
-    void OnDrawGizmos()
-    {
-        if (terrainMap == null) return;
-
-        Gizmos.color = Color.green;
-        foreach (var pos in buildablePlots)
-        {
-            Gizmos.DrawWireCube(pos + Vector3.up * 0.1f, Vector3.one * 0.9f);
-        }
-    }
-#endif
 }
