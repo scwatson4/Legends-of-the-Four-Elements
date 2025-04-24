@@ -59,8 +59,9 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceStructure()
     {
-        if(inputManager.IsPointerOverUI()){
-            Debug.Log("Pointer was over UI - Returned");
+        if (inputManager.IsPointerOverUI())
+        {
+            Debug.Log("Pointer was over UI - Returning early.");
             return;
         }
         // When we click on a cell, we get the cell
@@ -74,7 +75,7 @@ public class PlacementSystem : MonoBehaviour
         ObjectData ob = database.GetObjectByID(selectedID);
        // ResourceManager.Instance.RemoveResourcesBasedOnRequirements(ob, database);
 
-        // ---- Add Buildable Benifits ---- // 
+        // ---- Add Buildable Benefits ---- // 
         foreach (BuildBenefits bf in ob.benefits)
         {
             CalculateAndAddBenefit(bf);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mono.Cecil;
 using UnityEngine;
 
 [CreateAssetMenu]
@@ -54,7 +55,7 @@ public class ObjectData
 [System.Serializable]
 public class BuildRequirement
 {
-    public string resource;
+    public ResourceManager.ResourceType resource;
     public int amount;
 }
 
