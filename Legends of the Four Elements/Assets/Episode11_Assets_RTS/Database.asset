@@ -17,7 +17,7 @@ MonoBehaviour:
     <ID>k__BackingField: 0
     description: 
     <Size>k__BackingField: {x: 3, y: 3}
-    <Prefab>k__BackingField: {fileID: 5524711897730934337, guid: f57ffade3adfe6949bca7cc6cef023d5, type: 3}
+    <Prefab>k__BackingField: {fileID: 2318559926197995587, guid: f509f0f2a9ea2e64a98d2497df900f98, type: 3}
     <requirements>k__BackingField:
     - resource: 0
       amount: 150
