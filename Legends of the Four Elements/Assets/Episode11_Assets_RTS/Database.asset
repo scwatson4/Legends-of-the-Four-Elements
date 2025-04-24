@@ -15,41 +15,41 @@ MonoBehaviour:
   objectsData:
   - <Name>k__BackingField: Command Center
     <ID>k__BackingField: 0
+    <thisBuildingType>k__BackingField: 1
     description: 
     <Size>k__BackingField: {x: 3, y: 3}
     <Prefab>k__BackingField: {fileID: 2318559926197995587, guid: f509f0f2a9ea2e64a98d2497df900f98, type: 3}
-    <requirements>k__BackingField:
+    <resourceRequirements>k__BackingField:
     - resource: 0
-      amount: 150
-    - resource: 1
       amount: 100
-    - resource: 2
-      amount: 50
-    - resource: 5
-      amount: 25
+    <buildDependency>k__BackingField: 
     <benefits>k__BackingField: []
   - <Name>k__BackingField: Spirit Energy Harvester
     <ID>k__BackingField: 1
+    <thisBuildingType>k__BackingField: 2
     description: 
-    <Size>k__BackingField: {x: 3, y: 3}
-    <Prefab>k__BackingField: {fileID: 3548703922924899360, guid: 286149cce8caa8243866ed7d9c79c34e, type: 3}
-    <requirements>k__BackingField:
+    <Size>k__BackingField: {x: 2, y: 2}
+    <Prefab>k__BackingField: {fileID: 9034032642083481396, guid: c5ca2044d33083145b6d282513714403, type: 3}
+    <resourceRequirements>k__BackingField:
     - resource: 0
-      amount: 500
-    - resource: 1
-      amount: 150
+      amount: 200
+    <buildDependency>k__BackingField: 01000000
     <benefits>k__BackingField: []
   - <Name>k__BackingField: Fire Nation Citadel
     <ID>k__BackingField: 2
+    <thisBuildingType>k__BackingField: 0
     description: 
     <Size>k__BackingField: {x: 3, y: 3}
     <Prefab>k__BackingField: {fileID: 3219508662995562335, guid: eb3b9fb2bd13cdb4481d4252954cc756, type: 3}
-    <requirements>k__BackingField: []
+    <resourceRequirements>k__BackingField: []
+    <buildDependency>k__BackingField: 
     <benefits>k__BackingField: []
   - <Name>k__BackingField: Air Nation Temple
     <ID>k__BackingField: 3
+    <thisBuildingType>k__BackingField: 0
     description: 
     <Size>k__BackingField: {x: 3, y: 3}
     <Prefab>k__BackingField: {fileID: 3548703922924899360, guid: 286149cce8caa8243866ed7d9c79c34e, type: 3}
-    <requirements>k__BackingField: []
+    <resourceRequirements>k__BackingField: []
+    <buildDependency>k__BackingField: 
     <benefits>k__BackingField: []

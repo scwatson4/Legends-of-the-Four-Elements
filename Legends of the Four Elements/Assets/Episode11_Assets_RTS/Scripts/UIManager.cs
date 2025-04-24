@@ -17,5 +17,6 @@ public class UIManager : MonoBehaviour
     {
         Debug.Log("clicked");
         placement.StartPlacement(id);
+
     }
 }

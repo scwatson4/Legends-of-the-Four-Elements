@@ -28,6 +28,7 @@ public class ResourceManager : MonoBehaviour
     public int spiritEnergy = 150;
 
     public event Action OnResourceChanged;
+    public event Action OnBuildingsChanged;
 
     public TextMeshProUGUI creditsUI;
     public TextMeshProUGUI goldUI;
@@ -35,6 +36,8 @@ public class ResourceManager : MonoBehaviour
     public TextMeshProUGUI stoneUI;
     public TextMeshProUGUI foodUI;
     public TextMeshProUGUI spiritEnergyUI;
+
+    public List<BuildingType> allExistingBuildings;
 
     public enum ResourceType
     {
@@ -49,6 +52,20 @@ public class ResourceManager : MonoBehaviour
     private void Start()
     {
         UpdateUI();
+    }
+
+    public void UpdateBuildingChanged(BuildingType buildingType, bool isNew)
+    {
+        if (isNew)
+        {
+            allExistingBuildings.Add(buildingType);
+        }
+        else
+        {
+            allExistingBuildings.Remove(buildingType);
+        }
+
+        OnBuildingsChanged?.Invoke();
     }
 
     public int GetCredits()
@@ -160,7 +177,7 @@ public class ResourceManager : MonoBehaviour
 
     internal void DecreaseResourcesBasedOnRequirement(ObjectData objectData)
     {
-        foreach (BuildRequirement req in objectData.requirements)
+        foreach (BuildRequirement req in objectData.resourceRequirements)
         {
             Debug.Log($"Reducing {req.resource} by {req.amount}");  // Add this
             DecreaseResource(req.resource, req.amount);
@@ -175,14 +192,13 @@ public class ResourceManager : MonoBehaviour
     {
         OnResourceChanged -= UpdateUI;
     }
-
     private void UpdateUI()
     {
         creditsUI.text = $"{credits}";
-        goldUI.text = $"{gold}";
-        woodUI.text = $"{wood}";
-        stoneUI.text = $"{stone}";
-        foodUI.text = $"{food}";
-        spiritEnergyUI.text = $"{spiritEnergy}";
+        //goldUI.text = $"{gold}";
+        //woodUI.text = $"{wood}";
+        //stoneUI.text = $"{stone}";
+        //foodUI.text = $"{food}";
+        //spiritEnergyUI.text = $"{spiritEnergy}";
     }
 }

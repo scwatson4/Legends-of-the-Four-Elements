@@ -35,7 +35,7 @@ public class PlacementSystem : MonoBehaviour
         Debug.Log("Should Start Placement");
 
         selectedID = ID;
-
+        Debug.Log($"StartPlacement called with ID: {ID}");
         Debug.Log("Placement ID: " + ID);
 
 
@@ -79,6 +79,12 @@ public class PlacementSystem : MonoBehaviour
         foreach (BuildBenefits bf in ob.benefits)
         {
             CalculateAndAddBenefit(bf);
+        }
+
+        // Refresh buy slot buttons to reflect new resource state
+        foreach (BuySlot slot in UnityEngine.Object.FindObjectsByType<BuySlot>(FindObjectsSortMode.None))
+        {
+            slot.SendMessage("HandleResourcesChanged");
         }
 
         // ---- Stop the placement after every build ---- // 
