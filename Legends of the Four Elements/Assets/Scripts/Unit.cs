@@ -8,13 +8,13 @@ public class Unit : MonoBehaviour
 {
     private float unitHealth;
     public float maxUnitHealth = 100f;
+    public Team team = Team.Player; // Team affiliation
 
     public HealthTracker healthTracker;
 
     Animator animator;
     NavMeshAgent navMeshAgent;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         UnitSelectionManager.Instance.allUnitsList.Add(gameObject);
@@ -24,27 +24,49 @@ public class Unit : MonoBehaviour
 
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
+
+        // Ensure unit is on NavMesh
+        NavMeshHit hit;
+        if (!NavMesh.SamplePosition(transform.position, out hit, 10f, NavMesh.AllAreas))
+        {
+            Debug.LogWarning("Unit not on NavMesh: " + gameObject.name + " at " + transform.position);
+        }
+        else
+        {
+            transform.position = hit.position;
+        }
     }
 
     private void OnDestroy()
     {
-        UnitSelectionManager.Instance.allUnitsList.Remove(gameObject);
+        // Notify UnitSelectionManager to remove this unit
+        if (UnitSelectionManager.Instance != null)
+        {
+            UnitSelectionManager.Instance.OnUnitDestroyed(gameObject);
+        }
     }
 
     private void UpdateHealthUI()
     {
         healthTracker.UpdateSliderValue(unitHealth, maxUnitHealth);
 
-        // Unit dies
-        if(unitHealth <= 0)
+        if (unitHealth <= 0)
         {
-            // Dying logic
+            // Play dying animation
+            if (animator != null)
+            {
+                animator.SetTrigger("Die");
+            }
 
-            //Destruction or dying animation
+            // Play dying sound effect
+            SoundManager.Instance.PlayUnitDeathSound();
 
-            //Dying sound effect
+            if (navMeshAgent != null)
+            {
+                navMeshAgent.enabled = false; // Disable agent to prevent Update errors
+            }
 
-            Destroy(gameObject);
+            Destroy(gameObject, 1f); // Delay destruction to allow animation
         }
     }
 
@@ -56,13 +78,24 @@ public class Unit : MonoBehaviour
 
     private void Update()
     {
-        if (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
+        if (navMeshAgent != null && navMeshAgent.enabled && navMeshAgent.isOnNavMesh)
         {
-            animator.SetBool("isMoving", true);
+            if (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
+            {
+                animator.SetBool("isMoving", true);
+            }
+            else
+            {
+                animator.SetBool("isMoving", false);
+            }
         }
         else
         {
-            animator.SetBool("isMoving", false);
+            // Ensure animator reflects stationary state if agent is invalid
+            if (animator != null)
+            {
+                animator.SetBool("isMoving", false);
+            }
         }
     }
 }

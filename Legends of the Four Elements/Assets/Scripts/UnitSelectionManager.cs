@@ -1,10 +1,6 @@
-using NUnit.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using static UnityEngine.GraphicsBuffer;
 
 public class UnitSelectionManager : MonoBehaviour
 {
@@ -15,17 +11,13 @@ public class UnitSelectionManager : MonoBehaviour
 
     public LayerMask clickable;
     public LayerMask ground;
-
     public LayerMask attackable;
     public bool attackCursorVisible;
-
     public GameObject groundMarker;
 
     private Camera cam;
 
     private void Awake()
-
-
     {
         if (Instance != null && Instance != this)
         {
@@ -37,19 +29,22 @@ public class UnitSelectionManager : MonoBehaviour
         }
     }
 
-
     private void Start()
     {
         cam = Camera.main;
     }
+
     private void Update()
     {
+        // Clean up destroyed units from selectedUnitsList
+        selectedUnitsList.RemoveAll(unit => unit == null);
+
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            //If we are hitting a clickable object
+            // If we are hitting a clickable object
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
@@ -61,7 +56,6 @@ public class UnitSelectionManager : MonoBehaviour
                     SelectByClicking(hit.collider.gameObject);
                 }
             }
-
             else // If we are NOT hitting a clickable object
             {
                 if (!Input.GetKey(KeyCode.LeftShift))
@@ -76,7 +70,7 @@ public class UnitSelectionManager : MonoBehaviour
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            //If we are hitting a clickable object
+            // If we are hitting a clickable object
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
             {
                 groundMarker.transform.position = hit.point;
@@ -87,24 +81,24 @@ public class UnitSelectionManager : MonoBehaviour
         }
 
         // Attack Target
-        if(selectedUnitsList.Count > 0 && AtLeastOneOffensiveUnit(selectedUnitsList))
+        if (selectedUnitsList.Count > 0 && AtLeastOneOffensiveUnit(selectedUnitsList))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            //If we are hitting a clickable object
+            // If we are hitting a clickable object
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, attackable))
             {
                 Debug.Log("Enemy Hovered with mouse");
 
                 attackCursorVisible = true;
 
-                if(Input.GetMouseButton(1))
+                if (Input.GetMouseButton(1))
                 {
                     Transform target = hit.transform;
                     foreach (GameObject unit in selectedUnitsList)
                     {
-                        if(unit.GetComponent<AttackController>() != null)
+                        if (unit != null && unit.GetComponent<AttackController>() != null)
                         {
                             unit.GetComponent<AttackController>().targetToAttack = target;
                         }
@@ -147,7 +141,7 @@ public class UnitSelectionManager : MonoBehaviour
     {
         foreach (GameObject unit in selectedUnitsList)
         {
-            if (unit.GetComponent<AttackController>())
+            if (unit != null && unit.GetComponent<AttackController>() != null)
             {
                 return true;
             }
@@ -173,7 +167,10 @@ public class UnitSelectionManager : MonoBehaviour
     {
         foreach (var unit in selectedUnitsList)
         {
-            SelectUnit(unit, false);
+            if (unit != null)
+            {
+                SelectUnit(unit, false);
+            }
         }
 
         groundMarker.SetActive(false);
@@ -183,7 +180,7 @@ public class UnitSelectionManager : MonoBehaviour
 
     internal void DragSelect(GameObject unit)
     {
-        if(selectedUnitsList.Contains(unit) == false)
+        if (selectedUnitsList.Contains(unit) == false)
         {
             selectedUnitsList.Add(unit);
             SelectUnit(unit, true);
@@ -192,8 +189,11 @@ public class UnitSelectionManager : MonoBehaviour
 
     private void SelectUnit(GameObject unit, bool isSelected)
     {
-        TriggerSelectionIndicator(unit, isSelected);
-        EnableUnitMovement(unit, isSelected);
+        if (unit != null)
+        {
+            TriggerSelectionIndicator(unit, isSelected);
+            EnableUnitMovement(unit, isSelected);
+        }
     }
 
     private void SelectByClicking(GameObject unit)
@@ -207,11 +207,36 @@ public class UnitSelectionManager : MonoBehaviour
 
     private void EnableUnitMovement(GameObject unit, bool shouldMove)
     {
-        unit.GetComponent<UnitMovement>().enabled = shouldMove;
+        if (unit != null)
+        {
+            var movement = unit.GetComponent<UnitMovement>();
+            if (movement != null)
+            {
+                movement.enabled = shouldMove;
+            }
+        }
     }
 
     private void TriggerSelectionIndicator(GameObject unit, bool isVisible)
     {
-        unit.transform.Find("Indicator").gameObject.SetActive(isVisible);
+        if (unit != null)
+        {
+            var indicator = unit.transform.Find("Indicator");
+            if (indicator != null)
+            {
+                indicator.gameObject.SetActive(isVisible);
+            }
+        }
+    }
+
+    // Called by Unit.cs when a unit is destroyed
+    public void OnUnitDestroyed(GameObject unit)
+    {
+        if (selectedUnitsList.Contains(unit))
+        {
+            SelectUnit(unit, false);
+            selectedUnitsList.Remove(unit);
+        }
+        allUnitsList.Remove(unit);
     }
 }

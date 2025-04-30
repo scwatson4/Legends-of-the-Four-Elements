@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 8761694961488216923}
   m_Layer: 7
   m_Name: Unit
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -298,6 +298,7 @@ MonoBehaviour:
   attackStateMaterial: {fileID: 2100000, guid: 01eb9ec04e62a824d9477f4d5bcc1d15, type: 2}
   isPlayer: 1
   unitDamage: 10
+  flamethrowerEffect: {fileID: 0}
 --- !u!95 &4877485609997610285
 Animator:
   serializedVersion: 7
