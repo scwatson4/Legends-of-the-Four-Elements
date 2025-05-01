@@ -35,7 +35,7 @@ public class PlacementSystem : MonoBehaviour
         Debug.Log("Should Start Placement");
 
         selectedID = ID;
-
+        Debug.Log($"StartPlacement called with ID: {ID}");
         Debug.Log("Placement ID: " + ID);
 
 
@@ -59,8 +59,9 @@ public class PlacementSystem : MonoBehaviour
 
     private void PlaceStructure()
     {
-        if(inputManager.IsPointerOverUI()){
-            Debug.Log("Pointer was over UI - Returned");
+        if (inputManager.IsPointerOverUI())
+        {
+            Debug.Log("Pointer was over UI - Returning early.");
             return;
         }
         // When we click on a cell, we get the cell
@@ -74,10 +75,16 @@ public class PlacementSystem : MonoBehaviour
         ObjectData ob = database.GetObjectByID(selectedID);
        // ResourceManager.Instance.RemoveResourcesBasedOnRequirements(ob, database);
 
-        // ---- Add Buildable Benifits ---- // 
+        // ---- Add Buildable Benefits ---- // 
         foreach (BuildBenefits bf in ob.benefits)
         {
             CalculateAndAddBenefit(bf);
+        }
+
+        // Refresh buy slot buttons to reflect new resource state
+        foreach (BuySlot slot in UnityEngine.Object.FindObjectsByType<BuySlot>(FindObjectsSortMode.None))
+        {
+            slot.SendMessage("HandleResourcesChanged");
         }
 
         // ---- Stop the placement after every build ---- // 

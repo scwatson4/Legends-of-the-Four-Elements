@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1229676393744977835}
   - component: {fileID: 5616587290532763039}
   m_Layer: 7
-  m_Name: House
+  m_Name: Command Center
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,7 @@ NavMeshObstacle:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4498761622683806075}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Shape: 1
   m_Extents: {x: 1.3870001, y: 1.365, z: 1.1980001}
