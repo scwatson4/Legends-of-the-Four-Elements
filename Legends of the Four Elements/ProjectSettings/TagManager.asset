@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
+  - Unit
+  - CommandCenter
+  - AI_Player
+  - NeutralVillage
+  - HostileVillage
+  - Spirit
   layers:
   - Default
   - TransparentFX
@@ -15,7 +21,7 @@ TagManager:
   - Ground
   - Clickable
   - Attackable
-  - 
+  - Preview
   - 
   - 
   - 

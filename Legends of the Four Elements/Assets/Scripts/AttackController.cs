@@ -4,42 +4,85 @@ using UnityEngine;
 
 public class AttackController : MonoBehaviour
 {
-
     public Transform targetToAttack;
-
     public Material idleStateMaterial;
     public Material followStateMaterial;
     public Material attackStateMaterial;
-
-    public bool isPlayer;
-
-    public int unitDamage;
-
+    public Unit unit; // Reference to this GameObject's Unit script
+    public Team team; // Team affiliation
+    public int unitDamage = 10;
     public GameObject flamethrowerEffect;
+    public float detectionRadius = 10f; // Radius to detect enemies
+    public float attackDistance = 1f; // Distance to start attacking
+
+    private void Start()
+    {
+        unit = GetComponent<Unit>();
+        //team = GetComponent<Unit>().team; // Sync with Unit's team
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(isPlayer && other.CompareTag("Enemy") && targetToAttack == null)
+        if (other.CompareTag("Unit"))
         {
-            targetToAttack = other.transform;
+            Unit otherUnit = other.GetComponent<Unit>();
+            if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
+            {
+                targetToAttack = other.transform;
+            }
+        }
+        else if (other.CompareTag("CommandCenter"))
+        {
+            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
+            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
+            {
+                targetToAttack = other.transform;
+            }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (isPlayer && other.CompareTag("Enemy") && targetToAttack == null)
+        if (other.CompareTag("Unit"))
         {
-            targetToAttack = other.transform;
+            Unit otherUnit = other.GetComponent<Unit>();
+            if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
+            {
+                targetToAttack = other.transform;
+            }
+        }
+        else if (other.CompareTag("CommandCenter"))
+        {
+            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
+            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
+            {
+                targetToAttack = other.transform;
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if(isPlayer && other.CompareTag("Enemy") && targetToAttack != null)
+        if (targetToAttack != null && targetToAttack == other.transform)
         {
-            targetToAttack = null;
-            // Stop attack logic here
-            Debug.Log("Stopped attacking " + other.name);
+            if (other.CompareTag("Unit"))
+            {
+                Unit otherUnit = other.GetComponent<Unit>();
+                if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
+                {
+                    targetToAttack = null;
+                    Debug.Log("Stopped attacking " + other.name);
+                }
+            }
+            else if (other.CompareTag("CommandCenter"))
+            {
+                CommandCenter commandCenter = other.GetComponent<CommandCenter>();
+                if (commandCenter != null && commandCenter.team != team)
+                {
+                    targetToAttack = null;
+                    Debug.Log("Stopped attacking " + other.name);
+                }
+            }
         }
     }
 
@@ -60,16 +103,11 @@ public class AttackController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Follow Distance
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, 10f*0.2f); // Follow Distance Area
-
-        //Attack Distance
+        Gizmos.DrawWireSphere(transform.position, detectionRadius); // Detection radius
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, 1f); // Attack Distance Area
-
-        //Stop Attack Distance  / Area
+        Gizmos.DrawWireSphere(transform.position, attackDistance); // Attack distance
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, 1.5f); // Stop Attack Distance Area
+        Gizmos.DrawWireSphere(transform.position, 1.5f); // Stop attack distance
     }
 }

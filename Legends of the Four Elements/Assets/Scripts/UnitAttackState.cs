@@ -8,74 +8,99 @@ public class UnitAttackState : StateMachineBehaviour
 {
     NavMeshAgent agent;
     AttackController attackController;
-
     public float stopAttackingDistance = 1.5f;
-
     private float attackRate = 2f; // Attacks per second
     private float attackTimer;
+    private EnemyAI enemyAI;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         agent = animator.GetComponent<NavMeshAgent>();
         attackController = animator.GetComponent<AttackController>();
-        attackController.SetAttackStateMaterial(); // Set the attack state material to red
-        attackController.flamethrowerEffect.SetActive(true); // Activate the flamethrower effect
+        enemyAI = animator.GetComponent<EnemyAI>();
+        attackController.SetAttackStateMaterial();
+        attackController.flamethrowerEffect.SetActive(true);
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(attackController.targetToAttack != null && animator.transform.GetComponent<UnitMovement>().isCommandedToMove == false)
+        if (attackController.targetToAttack != null && !animator.transform.GetComponent<UnitMovement>().isCommandedToMove)
         {
             LookAtTarget();
 
-            // Keep moving towards enemy
-            //agent.SetDestination(attackController.targetToAttack.position);
-
-            if(attackTimer <= 0)
+            if (attackTimer <= 0)
             {
                 Attack();
-                attackTimer = 1f / attackRate; ; // Reset the attack timer
+                attackTimer = 1f / attackRate;
             }
             else
             {
-                attackTimer -= Time.deltaTime; // Decrease the attack timer
+                attackTimer -= Time.deltaTime;
             }
 
-            // Should unit still attack?
             float distanceFromTarget = Vector3.Distance(attackController.targetToAttack.position, animator.transform.position);
             if (distanceFromTarget > stopAttackingDistance || attackController.targetToAttack == null)
             {
-                animator.SetBool("isAttacking", false); // Move to Following state
+                animator.SetBool("isAttacking", false);
             }
         }
         else if (attackController.targetToAttack == null)
         {
-            animator.SetBool("isAttacking", false); // Move to Following state
+            animator.SetBool("isAttacking", false);
         }
     }
 
     private void Attack()
     {
         var damageToInflict = attackController.unitDamage;
+        SoundManager.Instance.PlayInfantryAttackSound();
 
-        SoundManager.Instance.PlayInfantryAttackSound(); // Play the attack sound
+        if (attackController.targetToAttack != null)
+        {
+            Unit targetUnit = attackController.targetToAttack.GetComponent<Unit>();
+            CommandCenter targetCommandCenter = attackController.targetToAttack.GetComponent<CommandCenter>();
 
-        // Actually attack the enemy
-        attackController.targetToAttack.GetComponent<Unit>().TakeDamage(damageToInflict);
+            if (targetUnit != null && attackController.unit.IsHostileTo(targetUnit.team))
+            {
+                targetUnit.TakeDamage(damageToInflict);
+                if (targetUnit == null || !targetUnit.gameObject.activeSelf)
+                {
+                    enemyAI?.OnTargetDestroyed();
+                }
+            }
+
+            else if (targetCommandCenter != null && targetCommandCenter.team != attackController.team)
+            {
+                targetCommandCenter.TakeDamage(damageToInflict);
+                // Check if the command center is destroyed (null or disabled)
+                if (targetCommandCenter == null || !targetCommandCenter.gameObject.activeSelf)
+                {
+                    if (enemyAI != null)
+                    {
+                        enemyAI.OnTargetDestroyed();
+                    }
+                }
+            }
+        }
+
+        //NavMeshHit hit;
+        //if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
+        //{
+        //    transform.position = hit.position;
+        //}
     }
 
     private void LookAtTarget()
     {
         Vector3 direction = attackController.targetToAttack.position - agent.transform.position;
         agent.transform.rotation = Quaternion.LookRotation(direction);
-
         var yRotation = agent.transform.eulerAngles.y;
         agent.transform.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        attackController.flamethrowerEffect.SetActive(false); // Deactivate the flamethrower effect
-        SoundManager.Instance.StopInfantryAttackSound(); // Stop the attack sound
+        attackController.flamethrowerEffect.SetActive(false);
+        SoundManager.Instance.StopInfantryAttackSound();
     }
 }

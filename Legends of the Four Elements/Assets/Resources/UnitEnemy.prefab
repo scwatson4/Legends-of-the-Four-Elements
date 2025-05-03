@@ -878,11 +878,11 @@ GameObject:
   - component: {fileID: 5129811091403304361}
   - component: {fileID: 5401003071480966681}
   - component: {fileID: 4835562556261236201}
-  - component: {fileID: 3086788226718971541}
   - component: {fileID: 3687117775702545582}
+  - component: {fileID: -418406022051440875}
   m_Layer: 8
   m_Name: UnitEnemy
-  m_TagString: Enemy
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1031,6 +1031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxUnitHealth: 100
+  team: 1
   healthTracker: {fileID: 5009218778321356926}
 --- !u!114 &5129811091403304361
 MonoBehaviour:
@@ -1048,9 +1049,11 @@ MonoBehaviour:
   idleStateMaterial: {fileID: 2100000, guid: 247ec4b08f144a342927627cd7c466bd, type: 2}
   followStateMaterial: {fileID: 2100000, guid: 22a62a2e1272bed45b6ca6e7d4bf2ca0, type: 2}
   attackStateMaterial: {fileID: 2100000, guid: 01eb9ec04e62a824d9477f4d5bcc1d15, type: 2}
-  isPlayer: 0
+  team: 0
   unitDamage: 10
   flamethrowerEffect: {fileID: 0}
+  detectionRadius: 10
+  attackDistance: 1
 --- !u!95 &5401003071480966681
 Animator:
   serializedVersion: 7
@@ -1094,19 +1097,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 10
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3086788226718971541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8046533231446399689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 679110277bc60f34691f72a377978078, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 0.5
 --- !u!54 &3687117775702545582
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1134,3 +1124,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &-418406022051440875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8046533231446399689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 177eccc84b8dbdc49be8e21c64388d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  searchInterval: 2
