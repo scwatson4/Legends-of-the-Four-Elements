@@ -7,6 +7,10 @@ TagManager:
   - Enemy
   - Unit
   - CommandCenter
+  - AI_Player
+  - NeutralVillage
+  - HostileVillage
+  - Spirit
   layers:
   - Default
   - TransparentFX

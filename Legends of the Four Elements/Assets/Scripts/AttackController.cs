@@ -8,6 +8,7 @@ public class AttackController : MonoBehaviour
     public Material idleStateMaterial;
     public Material followStateMaterial;
     public Material attackStateMaterial;
+    public Unit unit; // Reference to this GameObject's Unit script
     public Team team; // Team affiliation
     public int unitDamage = 10;
     public GameObject flamethrowerEffect;
@@ -16,7 +17,8 @@ public class AttackController : MonoBehaviour
 
     private void Start()
     {
-        team = GetComponent<Unit>().team; // Sync with Unit's team
+        unit = GetComponent<Unit>();
+        //team = GetComponent<Unit>().team; // Sync with Unit's team
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,7 +26,7 @@ public class AttackController : MonoBehaviour
         if (other.CompareTag("Unit"))
         {
             Unit otherUnit = other.GetComponent<Unit>();
-            if (otherUnit != null && otherUnit.team != team && targetToAttack == null)
+            if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
             {
                 targetToAttack = other.transform;
             }
@@ -44,7 +46,7 @@ public class AttackController : MonoBehaviour
         if (other.CompareTag("Unit"))
         {
             Unit otherUnit = other.GetComponent<Unit>();
-            if (otherUnit != null && otherUnit.team != team && targetToAttack == null)
+            if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
             {
                 targetToAttack = other.transform;
             }
@@ -66,7 +68,7 @@ public class AttackController : MonoBehaviour
             if (other.CompareTag("Unit"))
             {
                 Unit otherUnit = other.GetComponent<Unit>();
-                if (otherUnit != null && otherUnit.team != team)
+                if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
                 {
                     targetToAttack = null;
                     Debug.Log("Stopped attacking " + other.name);

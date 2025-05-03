@@ -60,18 +60,15 @@ public class UnitAttackState : StateMachineBehaviour
             Unit targetUnit = attackController.targetToAttack.GetComponent<Unit>();
             CommandCenter targetCommandCenter = attackController.targetToAttack.GetComponent<CommandCenter>();
 
-            if (targetUnit != null && targetUnit.team != attackController.team)
+            if (targetUnit != null && attackController.unit.IsHostileTo(targetUnit.team))
             {
                 targetUnit.TakeDamage(damageToInflict);
-                // Check if the unit is destroyed (null or disabled)
                 if (targetUnit == null || !targetUnit.gameObject.activeSelf)
                 {
-                    if (enemyAI != null)
-                    {
-                        enemyAI.OnTargetDestroyed();
-                    }
+                    enemyAI?.OnTargetDestroyed();
                 }
             }
+
             else if (targetCommandCenter != null && targetCommandCenter.team != attackController.team)
             {
                 targetCommandCenter.TakeDamage(damageToInflict);
@@ -84,6 +81,12 @@ public class UnitAttackState : StateMachineBehaviour
                     }
                 }
             }
+        }
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
+        {
+            transform.position = hit.position;
         }
     }
 
