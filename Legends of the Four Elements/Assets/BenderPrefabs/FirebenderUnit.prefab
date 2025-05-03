@@ -6540,7 +6540,8 @@ GameObject:
   - component: {fileID: 5587418389147098101}
   - component: {fileID: 3327993452994348592}
   - component: {fileID: 8123434715505973503}
-  - component: {fileID: 4715486398394380324}
+  - component: {fileID: 6720950488965766325}
+  - component: {fileID: 1391907256045099600}
   m_Layer: 8
   m_Name: FirebenderUnit
   m_TagString: AI_Player
@@ -6893,7 +6894,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   searchInterval: 2
---- !u!114 &4715486398394380324
+--- !u!114 &6720950488965766325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6906,6 +6907,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   searchInterval: 2
+--- !u!114 &1391907256045099600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6447605159382571855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62f0214a3d681784d850279e26c5ef5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkInterval: 1.5
 --- !u!1 &6534476817212408473
 GameObject:
   m_ObjectHideFlags: 0
