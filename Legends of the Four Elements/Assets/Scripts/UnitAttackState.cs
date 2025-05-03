@@ -83,11 +83,11 @@ public class UnitAttackState : StateMachineBehaviour
             }
         }
 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
-        {
-            transform.position = hit.position;
-        }
+        //NavMeshHit hit;
+        //if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
+        //{
+        //    transform.position = hit.position;
+        //}
     }
 
     private void LookAtTarget()
