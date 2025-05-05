@@ -36,7 +36,7 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (!unit.CanSendWavesOfUnits()) return;
+        if (unit.team != Team.Enemy) return; // Only run for enemy units
 
         searchTimer -= Time.deltaTime;
         if (searchTimer <= 0)
@@ -97,7 +97,7 @@ public class EnemyAI : MonoBehaviour
         foreach (Collider hit in hits)
         {
             Unit targetUnit = hit.GetComponent<Unit>();
-            if (targetUnit != null && unit.IsHostileTo(targetUnit.team))
+            if (targetUnit != null && targetUnit.team != unit.team)
             {
                 float distance = Vector3.Distance(transform.position, hit.transform.position);
                 if (distance < closestDistance)
@@ -122,12 +122,6 @@ public class EnemyAI : MonoBehaviour
 
     public void OnTargetDestroyed()
     {
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
-        {
-            transform.position = hit.position;
-        }
-
         // Called when the current target is destroyed
         attackController.targetToAttack = null;
         isTargetingCommandCenter = true; // Resume targeting command center

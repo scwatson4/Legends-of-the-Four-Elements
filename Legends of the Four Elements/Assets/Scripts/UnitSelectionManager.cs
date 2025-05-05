@@ -77,6 +77,16 @@ public class UnitSelectionManager : MonoBehaviour
 
                 groundMarker.SetActive(false);
                 groundMarker.SetActive(true);
+
+                // Clear attack targets for selected units
+                foreach (GameObject unit in selectedUnitsList)
+                {
+                    if (unit != null && unit.GetComponent<AttackController>() != null)
+                    {
+                        unit.GetComponent<AttackController>().targetToAttack = null;
+                        Debug.Log($"{unit.name} cleared attack target for ground movement");
+                    }
+                }
             }
         }
 

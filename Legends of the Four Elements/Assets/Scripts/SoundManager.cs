@@ -27,15 +27,15 @@ public class SoundManager : MonoBehaviour
 
         // Initialize AudioSource components
         infantryAttackChannel = gameObject.AddComponent<AudioSource>();
-        infantryAttackChannel.volume = 0.5f;
+        infantryAttackChannel.volume = 0.1f;
         infantryAttackChannel.playOnAwake = false;
 
         unitDeathChannel = gameObject.AddComponent<AudioSource>();
-        unitDeathChannel.volume = 0.5f;
+        unitDeathChannel.volume = 0.1f;
         unitDeathChannel.playOnAwake = false;
 
         structureDestructionChannel = gameObject.AddComponent<AudioSource>();
-        structureDestructionChannel.volume = 0.5f;
+        structureDestructionChannel.volume = 0.2f;
         structureDestructionChannel.playOnAwake = false;
     }
 

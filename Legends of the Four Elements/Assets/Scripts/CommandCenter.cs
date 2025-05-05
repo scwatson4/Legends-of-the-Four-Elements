@@ -5,6 +5,7 @@ public class CommandCenter : MonoBehaviour
     public float maxHealth = 500f;
     private float health;
     public HealthTracker healthTracker;
+    public GameObject CommandCenterModel;
     public Team team = Team.Player; // Team affiliation
 
     void Start()
@@ -22,7 +23,8 @@ public class CommandCenter : MonoBehaviour
         {
             // Play destruction animation or effect if available
             SoundManager.Instance.PlayStructureDestructionSound();
-            Destroy(gameObject, 1f); // Delay for effect
+            Destroy(CommandCenterModel, 1f); // Delay for effect
+            Destroy(gameObject);
         }
     }
 
