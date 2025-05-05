@@ -6,9 +6,17 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
+
+    public enum UnitType
+    {
+        Airbender,
+        Firebender
+    }
+
     private float unitHealth;
     public float maxUnitHealth = 100f;
     public Team team = Team.Player;
+    public UnitType unitType;
 
     public HealthTracker healthTracker;
 

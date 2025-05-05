@@ -12,12 +12,14 @@ public class UnitAttackState : StateMachineBehaviour
     private float attackRate = 2f; // Attacks per second
     private float attackTimer;
     private EnemyAI enemyAI;
+    private Unit unit;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         agent = animator.GetComponent<NavMeshAgent>();
         attackController = animator.GetComponent<AttackController>();
         enemyAI = animator.GetComponent<EnemyAI>();
+        unit = animator.GetComponent<Unit>();
         attackController.SetAttackStateMaterial();
         attackController.flamethrowerEffect.SetActive(true);
         Debug.Log($"{animator.gameObject.name} entered attack state. Target: {attackController.targetToAttack?.name}");
@@ -58,7 +60,7 @@ public class UnitAttackState : StateMachineBehaviour
         if (attackController.targetToAttack == null) return;
 
         var damageToInflict = attackController.unitDamage;
-        SoundManager.Instance.PlayInfantryAttackSound();
+        SoundManager.Instance.PlayAttackSound(unit.unitType);
 
         Unit targetUnit = attackController.targetToAttack.GetComponent<Unit>();
         CommandCenter targetCommandCenter = attackController.targetToAttack.GetComponent<CommandCenter>();
@@ -99,7 +101,7 @@ public class UnitAttackState : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         attackController.flamethrowerEffect.SetActive(false);
-        SoundManager.Instance.StopInfantryAttackSound();
+        SoundManager.Instance.StopAttackSound();
         Debug.Log($"{animator.gameObject.name} exited attack state.");
     }
 }
