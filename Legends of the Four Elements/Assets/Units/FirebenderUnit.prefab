@@ -560,10 +560,10 @@ MonoBehaviour:
   followStateMaterial: {fileID: 2100000, guid: 22a62a2e1272bed45b6ca6e7d4bf2ca0, type: 2}
   attackStateMaterial: {fileID: 2100000, guid: 01eb9ec04e62a824d9477f4d5bcc1d15, type: 2}
   team: 1
-  unitDamage: 50
+  unitDamage: 25
   flamethrowerEffect: {fileID: 2366277059392729408}
   detectionRadius: 10
-  attackDistance: 1.8
+  attackDistance: 2.5
 --- !u!120 &8922425860612073777
 LineRenderer:
   serializedVersion: 2

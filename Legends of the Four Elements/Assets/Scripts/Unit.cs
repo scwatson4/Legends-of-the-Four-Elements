@@ -110,12 +110,12 @@ public class Unit : MonoBehaviour
                 if (distanceToTarget <= attackController.attackDistance && !(unitMovement != null && unitMovement.isCommandedToMove))
                 {
                     animator.SetBool("isAttacking", true);
-                    Debug.Log($"{gameObject.name} setting isAttacking = true for target {attackController.targetToAttack.name}");
+                    //Debug.Log($"{gameObject.name} setting isAttacking = true for target {attackController.targetToAttack.name}");
                 }
                 else
                 {
                     animator.SetBool("isAttacking", false);
-                    Debug.Log($"{gameObject.name} setting isAttacking = false (distance: {distanceToTarget}, commanded: {unitMovement?.isCommandedToMove})");
+                    //Debug.Log($"{gameObject.name} setting isAttacking = false (distance: {distanceToTarget}, commanded: {unitMovement?.isCommandedToMove})");
                 }
             }
             else
@@ -123,7 +123,7 @@ public class Unit : MonoBehaviour
                 animator.SetBool("isAttacking", false);
                 if (unitMovement != null && unitMovement.isCommandedToMove)
                 {
-                    Debug.Log($"{gameObject.name} stopping attack due to movement command");
+                    //Debug.Log($"{gameObject.name} stopping attack due to movement command");
                 }
             }
         }

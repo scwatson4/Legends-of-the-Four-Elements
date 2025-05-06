@@ -7,6 +7,7 @@ public class CommandCenter : MonoBehaviour
     public Team team;
     private float structureHealth;
     public float maxStructureHealth = 1000f;
+    public GameObject CommandCenterModel;
     public HealthTracker healthTracker;
 
     void Start()
@@ -37,8 +38,8 @@ public class CommandCenter : MonoBehaviour
                 else
                     Debug.LogError("GameManager.Instance is null! Cannot trigger Win.");
             }
-
-            Destroy(gameObject);
+            Destroy(CommandCenterModel);
+            Destroy(gameObject, 1f);
         }
     }
 

@@ -16323,6 +16323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxUnitHealth: 100
   team: 0
+  unitType: 0
   healthTracker: {fileID: 1152157513311486550}
 --- !u!195 &3653948299579472597
 NavMeshAgent:
@@ -16423,7 +16424,7 @@ MonoBehaviour:
   followStateMaterial: {fileID: 2100000, guid: 22a62a2e1272bed45b6ca6e7d4bf2ca0, type: 2}
   attackStateMaterial: {fileID: 2100000, guid: 01eb9ec04e62a824d9477f4d5bcc1d15, type: 2}
   team: 0
-  unitDamage: 50
+  unitDamage: 25
   flamethrowerEffect: {fileID: 3516541352159668230}
   detectionRadius: 10
   attackDistance: 3
