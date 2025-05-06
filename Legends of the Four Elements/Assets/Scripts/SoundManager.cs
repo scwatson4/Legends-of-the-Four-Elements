@@ -42,7 +42,7 @@ public class SoundManager : MonoBehaviour
 
     public void PlayAttackSound(Unit.UnitType unitType)
     {
-        //if (unitAttackChannel.isPlaying) return; // To avoid overlapping sounds
+        if (unitAttackChannel.isPlaying) return; // To avoid overlapping sounds
 
         AudioClip clip = null;
         switch (unitType)
