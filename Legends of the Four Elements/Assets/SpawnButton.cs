@@ -1,22 +1,27 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SpawnButton : MonoBehaviour
 {
-    public CommandCenterSpawner commandCenter;
-    public GameObject prefab;
+    public UnitSpawner unitSpawner;
+    public GameObject unitPrefab;
     public int cost = 100;
     public float buildTime = 3f;
 
-    public void OnClickSpawn()
+    public void Spawn()
     {
-        var unit = new CommandCenterSpawner.UnitToBuild
+        if (unitSpawner == null || unitPrefab == null)
         {
-            prefab = prefab,
+            Debug.LogWarning("Spawner or prefab not assigned.");
+            return;
+        }
+
+        UnitSpawner.UnitToBuild unit = new UnitSpawner.UnitToBuild
+        {
+            prefab = unitPrefab,
             cost = cost,
             buildTime = buildTime
         };
 
-        commandCenter.QueueUnit(unit);
+        unitSpawner.QueueUnit(unit);
     }
 }
