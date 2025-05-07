@@ -9,6 +9,11 @@ public class BisonManager : MonoBehaviour
     public Vector3 spawnAreaSize = new Vector3(25f, 0f, 25f);
     public Vector3 individualRoamBounds = new Vector3(15f, 3f, 15f);
 
+    [Header("Optional: Bison Size Variation")]
+    public bool varySize = false;
+    [Range(0.5f, 3f)] public float minScale = 0.8f;
+    [Range(0.5f, 3f)] public float maxScale = 1.2f;
+
     void Start()
     {
         for (int i = 0; i < bisonCount; i++)
@@ -19,7 +24,6 @@ public class BisonManager : MonoBehaviour
 
     void SpawnBison()
     {
-        // Use the BisonManager's position as spawn center
         Vector3 spawnCenter = transform.position;
 
         Vector3 spawnPos = new Vector3(
@@ -30,10 +34,18 @@ public class BisonManager : MonoBehaviour
 
         GameObject bison = Instantiate(bisonPrefab, spawnPos, Quaternion.identity);
 
+        // Optional: vary size
+        if (varySize)
+        {
+            float scale = Random.Range(minScale, maxScale);
+            bison.transform.localScale = new Vector3(scale, scale, scale);
+        }
+
+        // Assign wandering behavior
         BisonWanderer wanderer = bison.GetComponent<BisonWanderer>();
         if (wanderer != null)
         {
-            wanderer.centerPoint = spawnPos; // they roam around their own spawn point
+            wanderer.centerPoint = spawnPos;
             wanderer.bounds = individualRoamBounds;
         }
     }
