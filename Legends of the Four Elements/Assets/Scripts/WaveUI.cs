@@ -30,13 +30,13 @@ public class WaveUI : MonoBehaviour
 
     private void UpdateWaveText(int waveNumber)
     {
-        waveText.text = $"Wave: {waveNumber}";
+        waveText.text = $"{waveNumber}";
         Debug.Log($"WaveUI: Updated to Wave {waveNumber}");
     }
 
     private void UpdateTimerText(float timeRemaining)
     {
-        timerText.text = $"Next Wave: {Mathf.CeilToInt(timeRemaining)}";
+        timerText.text = $"{Mathf.CeilToInt(timeRemaining)}s";
     }
 
     private void OnDestroy()

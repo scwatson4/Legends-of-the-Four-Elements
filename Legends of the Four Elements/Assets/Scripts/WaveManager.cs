@@ -67,5 +67,10 @@ public class WaveManager : MonoBehaviour
 
         enemyCommandCenter.SpawnWave(enemyCount);
         OnWaveStarted?.Invoke(currentWave);
+
+        int creditsToAdd = 50 + (currentWave * 20);
+        PlayerResources.Instance.AddCredits(creditsToAdd);
+        Debug.Log($"Gained {creditsToAdd} credits for wave {currentWave}.");
+
     }
 }
