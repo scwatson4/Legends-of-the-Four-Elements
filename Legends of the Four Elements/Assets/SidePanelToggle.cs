@@ -5,7 +5,7 @@ public class SidePanelToggle : MonoBehaviour
 {
     [Header("Animation Settings")]
     public float animationDuration = 0.3f;
-    public Vector2 hiddenPosition = new Vector2(500f, 0f); // adjust based on canvas layout
+    public Vector2 hiddenPosition = new Vector2(500f, 0f); // How far off-screen the panel slides
     private Vector2 visiblePosition;
 
     private CanvasGroup canvasGroup;
@@ -14,7 +14,7 @@ public class SidePanelToggle : MonoBehaviour
     private bool isAnimating = false;
 
     [Header("Optional UI Button")]
-    public Button toggleButton; // Optional toggle button
+    public Button toggleButton;
 
     private void Awake()
     {
@@ -25,6 +25,13 @@ public class SidePanelToggle : MonoBehaviour
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
         visiblePosition = rectTransform.anchoredPosition;
+
+        // Start hidden
+        rectTransform.anchoredPosition = visiblePosition + hiddenPosition;
+        canvasGroup.alpha = 0f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+        isVisible = false;
 
         if (toggleButton != null)
             toggleButton.onClick.AddListener(TogglePanel);
@@ -41,7 +48,6 @@ public class SidePanelToggle : MonoBehaviour
     public void TogglePanel()
     {
         if (isAnimating) return;
-
         StopAllCoroutines();
         StartCoroutine(AnimatePanel(!isVisible));
     }
