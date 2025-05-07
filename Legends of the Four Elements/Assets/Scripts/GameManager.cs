@@ -80,13 +80,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("GoToMainMenu called. Checking MainMenu scene validity.");
         if (SceneUtility.GetBuildIndexByScenePath("Scenes/MainMenuScene") == -1)
         {
-            Debug.LogError("MainMenu scene not found in Build Settings! Add Scenes/MainMenu.unity to File > Build Settings > Scenes in Build.");
+            Debug.LogError("MainMenu scene not found in Build Settings! Add Scenes/MainMenuScene.unity to File > Build Settings > Scenes in Build.");
             return;
         }
 
         Time.timeScale = 1f;
         Debug.Log("GoToMainMenu: Loading MainMenu scene.");
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MainMenuScene");
         Debug.Log("GoToMainMenu: MainMenu scene load initiated.");
     }
 
