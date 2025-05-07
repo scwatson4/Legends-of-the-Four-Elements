@@ -13,7 +13,7 @@ public class MainMenuMusic : MonoBehaviour
         }
 
         audioSource.loop = true;
-        audioSource.volume = 0.1f;
+        audioSource.volume = 0.5f;
         audioSource.playOnAwake = true;
 
         if (audioSource.clip == null)
