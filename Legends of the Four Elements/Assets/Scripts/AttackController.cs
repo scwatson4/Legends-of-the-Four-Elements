@@ -8,27 +8,31 @@ public class AttackController : MonoBehaviour
     public Material idleStateMaterial;
     public Material followStateMaterial;
     public Material attackStateMaterial;
-    public Unit unit; // Reference to this GameObject's Unit script
-    public Team team; // Team affiliation
+    public Team team;
     public int unitDamage = 10;
     public GameObject flamethrowerEffect;
-    public float detectionRadius = 10f; // Radius to detect enemies
-    public float attackDistance = 1f; // Distance to start attacking
+    public float detectionRadius = 10f;
+    public float attackDistance = 1f;
+
+    private UnitMovement unitMovement; // Added to check isCommandedToMove
 
     private void Start()
     {
-        unit = GetComponent<Unit>();
-        //team = GetComponent<Unit>().team; // Sync with Unit's team
+        team = GetComponent<Unit>().team;
+        unitMovement = GetComponent<UnitMovement>(); // Initialize UnitMovement
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (unitMovement != null && unitMovement.isCommandedToMove) return; // Skip if moving
+
         if (other.CompareTag("Unit"))
         {
             Unit otherUnit = other.GetComponent<Unit>();
-            if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
+            if (otherUnit != null && otherUnit.team != team && targetToAttack == null)
             {
                 targetToAttack = other.transform;
+                Debug.Log($"{gameObject.name} set target to Unit: {other.name}");
             }
         }
         else if (other.CompareTag("CommandCenter"))
@@ -37,18 +41,31 @@ public class AttackController : MonoBehaviour
             if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
             {
                 targetToAttack = other.transform;
+                Debug.Log($"{gameObject.name} set target to CommandCenter: {other.name}");
+            }
+        }
+        else if (other.CompareTag("EnemyCommandCenter"))
+        {
+            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
+            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
+            {
+                targetToAttack = other.transform;
+                Debug.Log($"{gameObject.name} set target to EnemyCommandCenter: {other.name}");
             }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
+        if (unitMovement != null && unitMovement.isCommandedToMove) return; // Skip if moving
+
         if (other.CompareTag("Unit"))
         {
             Unit otherUnit = other.GetComponent<Unit>();
-            if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
+            if (otherUnit != null && otherUnit.team != team && targetToAttack == null)
             {
                 targetToAttack = other.transform;
+                Debug.Log($"{gameObject.name} set target to Unit (stay): {other.name}");
             }
         }
         else if (other.CompareTag("CommandCenter"))
@@ -57,6 +74,16 @@ public class AttackController : MonoBehaviour
             if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
             {
                 targetToAttack = other.transform;
+                Debug.Log($"{gameObject.name} set target to CommandCenter (stay): {other.name}");
+            }
+        }
+        else if (other.CompareTag("EnemyCommandCenter"))
+        {
+            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
+            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
+            {
+                targetToAttack = other.transform;
+                Debug.Log($"{gameObject.name} set target to EnemyCommandCenter (stay): {other.name}");
             }
         }
     }
@@ -68,10 +95,10 @@ public class AttackController : MonoBehaviour
             if (other.CompareTag("Unit"))
             {
                 Unit otherUnit = other.GetComponent<Unit>();
-                if (otherUnit != null && unit.IsHostileTo(otherUnit.team) && targetToAttack == null)
+                if (otherUnit != null && otherUnit.team != team)
                 {
                     targetToAttack = null;
-                    Debug.Log("Stopped attacking " + other.name);
+                    Debug.Log($"{gameObject.name} stopped attacking Unit: {other.name}");
                 }
             }
             else if (other.CompareTag("CommandCenter"))
@@ -80,7 +107,16 @@ public class AttackController : MonoBehaviour
                 if (commandCenter != null && commandCenter.team != team)
                 {
                     targetToAttack = null;
-                    Debug.Log("Stopped attacking " + other.name);
+                    Debug.Log($"{gameObject.name} stopped attacking CommandCenter: {other.name}");
+                }
+            }
+            else if (other.CompareTag("EnemyCommandCenter"))
+            {
+                CommandCenter commandCenter = other.GetComponent<CommandCenter>();
+                if (commandCenter != null && commandCenter.team != team)
+                {
+                    targetToAttack = null;
+                    Debug.Log($"{gameObject.name} stopped attacking EnemyCommandCenter: {other.name}");
                 }
             }
         }
@@ -104,10 +140,10 @@ public class AttackController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius); // Detection radius
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackDistance); // Attack distance
+        Gizmos.DrawWireSphere(transform.position, attackDistance);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, 1.5f); // Stop attack distance
+        Gizmos.DrawWireSphere(transform.position, 1.5f);
     }
 }

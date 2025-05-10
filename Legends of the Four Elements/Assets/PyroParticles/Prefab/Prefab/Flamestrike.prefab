@@ -10093,7 +10093,7 @@ MonoBehaviour:
   ProjectileDirection: {x: 0, y: -1, z: 0}
   ProjectileCollisionLayers:
     serializedVersion: 2
-    m_Bits: 4294967039
+    m_Bits: 759
   ProjectileDestroyParticleSystemsOnCollision: []
 --- !u!1 &136118
 GameObject:

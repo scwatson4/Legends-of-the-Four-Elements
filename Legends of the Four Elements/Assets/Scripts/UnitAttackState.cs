@@ -12,14 +12,17 @@ public class UnitAttackState : StateMachineBehaviour
     private float attackRate = 2f; // Attacks per second
     private float attackTimer;
     private EnemyAI enemyAI;
+    private Unit unit;
 
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         agent = animator.GetComponent<NavMeshAgent>();
         attackController = animator.GetComponent<AttackController>();
         enemyAI = animator.GetComponent<EnemyAI>();
+        unit = animator.GetComponent<Unit>();
         attackController.SetAttackStateMaterial();
         attackController.flamethrowerEffect.SetActive(true);
+        Debug.Log($"{animator.gameObject.name} entered attack state. Target: {attackController.targetToAttack?.name}");
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -41,53 +44,50 @@ public class UnitAttackState : StateMachineBehaviour
             float distanceFromTarget = Vector3.Distance(attackController.targetToAttack.position, animator.transform.position);
             if (distanceFromTarget > stopAttackingDistance || attackController.targetToAttack == null)
             {
+                Debug.Log($"{animator.gameObject.name} exiting attack state. Distance: {distanceFromTarget}, Target: {attackController.targetToAttack?.name}");
                 animator.SetBool("isAttacking", false);
             }
         }
-        else if (attackController.targetToAttack == null)
+        else
         {
+            Debug.Log($"{animator.gameObject.name} exiting attack state. Target null or commanded to move.");
             animator.SetBool("isAttacking", false);
         }
     }
 
     private void Attack()
     {
+        if (attackController.targetToAttack == null) return;
+
         var damageToInflict = attackController.unitDamage;
-        SoundManager.Instance.PlayInfantryAttackSound();
+        SoundManager.Instance.PlayAttackSound(unit.unitType);
 
-        if (attackController.targetToAttack != null)
+        Unit targetUnit = attackController.targetToAttack.GetComponent<Unit>();
+        CommandCenter targetCommandCenter = attackController.targetToAttack.GetComponent<CommandCenter>();
+
+        if (targetUnit != null && targetUnit.team != attackController.team)
         {
-            Unit targetUnit = attackController.targetToAttack.GetComponent<Unit>();
-            CommandCenter targetCommandCenter = attackController.targetToAttack.GetComponent<CommandCenter>();
-
-            if (targetUnit != null && attackController.unit.IsHostileTo(targetUnit.team))
+            targetUnit.TakeDamage(damageToInflict);
+            if (targetUnit == null || !targetUnit.gameObject.activeSelf)
             {
-                targetUnit.TakeDamage(damageToInflict);
-                if (targetUnit == null || !targetUnit.gameObject.activeSelf)
+                if (enemyAI != null)
                 {
-                    enemyAI?.OnTargetDestroyed();
-                }
-            }
-
-            else if (targetCommandCenter != null && targetCommandCenter.team != attackController.team)
-            {
-                targetCommandCenter.TakeDamage(damageToInflict);
-                // Check if the command center is destroyed (null or disabled)
-                if (targetCommandCenter == null || !targetCommandCenter.gameObject.activeSelf)
-                {
-                    if (enemyAI != null)
-                    {
-                        enemyAI.OnTargetDestroyed();
-                    }
+                    enemyAI.OnTargetDestroyed();
                 }
             }
         }
-
-        //NavMeshHit hit;
-        //if (NavMesh.SamplePosition(transform.position, out hit, 5f, NavMesh.AllAreas))
-        //{
-        //    transform.position = hit.position;
-        //}
+        else if (targetCommandCenter != null && targetCommandCenter.team != attackController.team)
+        {
+            targetCommandCenter.TakeDamage(damageToInflict);
+            Debug.Log($"{attackController.gameObject.name} attacking CommandCenter: {targetCommandCenter.name}, Damage: {damageToInflict}");
+            if (targetCommandCenter == null || !targetCommandCenter.gameObject.activeSelf)
+            {
+                if (enemyAI != null)
+                {
+                    enemyAI.OnTargetDestroyed();
+                }
+            }
+        }
     }
 
     private void LookAtTarget()
@@ -101,6 +101,7 @@ public class UnitAttackState : StateMachineBehaviour
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         attackController.flamethrowerEffect.SetActive(false);
-        SoundManager.Instance.StopInfantryAttackSound();
+        SoundManager.Instance.StopAttackSound();
+        Debug.Log($"{animator.gameObject.name} exited attack state.");
     }
 }

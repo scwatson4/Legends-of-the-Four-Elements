@@ -11,6 +11,7 @@ TagManager:
   - NeutralVillage
   - HostileVillage
   - Spirit
+  - EnemyCommandCenter
   layers:
   - Default
   - TransparentFX
