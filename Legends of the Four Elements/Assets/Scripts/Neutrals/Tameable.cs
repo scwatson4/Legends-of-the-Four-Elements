@@ -22,6 +22,10 @@ public class Tameable : MonoBehaviour
     public float maxHealthFractionToTame = 1f;
     public float tameRadius = 4f;
 
+    [Tooltip("Only an energy bender (the Avatar) can perform the taming. " +
+             "Turn off to let any unit befriend this creature.")]
+    public bool requiresEnergyBender = true;
+
     [Header("After Taming")]
     [Tooltip("Layer used by your selectable player units, so the tamed being can be selected.")]
     public string tamedLayerName = "Clickable";
@@ -45,10 +49,22 @@ public class Tameable : MonoBehaviour
         return unit.HealthFraction <= maxHealthFractionToTame + 0.0001f;
     }
 
+    /// <summary>True if this unit is allowed to channel the taming
+    /// (energy bending is the Avatar's gift alone).</summary>
+    public bool CanBeTamedBy(GameObject tamer)
+    {
+        if (tamer == null) return false;
+        if (!requiresEnergyBender) return true;
+
+        AvatarUnit avatar = tamer.GetComponent<AvatarUnit>();
+        return avatar != null && avatar.canEnergyBend;
+    }
+
     /// <summary>Orders a unit to walk over and start channeling.</summary>
     public void OrderTame(GameObject tamer)
     {
         if (IsTamed || tamer == null) return;
+        if (!CanBeTamedBy(tamer)) return;
         if (!tamers.Contains(tamer)) tamers.Add(tamer);
 
         AttackController attack = tamer.GetComponent<AttackController>();

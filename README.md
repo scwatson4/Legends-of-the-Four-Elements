@@ -17,6 +17,19 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
   Army Men RTS / Halo Wars style. Last team standing wins.
 - **Online multiplayer** — host/join co-op or versus matches (Netcode for
   GameObjects, server-authoritative).
+- **Living economy** — one Silver currency earned by kingdom tax, worker
+  units harvesting fish/crystal/coal/spirit-grove nodes, income buildings,
+  village tribute and spirit-hunting bounties; players and AI earn identically.
+- **Full rosters** — humans, war animals (sky bison, badgermoles, komodo
+  rhinos...), ships/tanks/war balloons, workers, buildings with ghost-preview
+  placement, defense towers, and per-nation upgrade tracks
+  (see [`docs/ROSTERS.md`](docs/ROSTERS.md)).
+- **The Avatar** — each player's unique hero: bends all four elements,
+  unleashes the Avatar State, and is the only being able to energy-bend wild
+  spirits onto your side.
+- **Maps & climates** — map selector with seeded random map generation, and
+  elemental biomes (volcanoes, glaciers, rivers, windy peaks, quarries,
+  spirit wilds) that empower or weaken units by element.
 
 ## Docs
 

@@ -43,6 +43,9 @@ public class UnitSelectionManager : MonoBehaviour
         // Clean up destroyed units from selectedUnitsList
         selectedUnitsList.RemoveAll(unit => unit == null);
 
+        // While placing a building, the mouse belongs to the BuildingPlacer.
+        if (BuildingPlacer.IsPlacing) return;
+
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -75,6 +78,7 @@ public class UnitSelectionManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             // Befriend/tame command: right-click on a tameable being.
+            // Only energy benders (the Avatar) can channel it.
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 Tameable tameable = hit.collider.GetComponentInParent<Tameable>();
@@ -82,7 +86,18 @@ public class UnitSelectionManager : MonoBehaviour
                 {
                     foreach (GameObject unit in selectedUnitsList)
                     {
-                        if (unit != null) tameable.OrderTame(unit);
+                        if (unit != null && tameable.CanBeTamedBy(unit)) tameable.OrderTame(unit);
+                    }
+                }
+
+                // Harvest order: right-click a resource node with workers selected.
+                ResourceNode node = hit.collider.GetComponentInParent<ResourceNode>();
+                if (node != null && !node.IsDepleted)
+                {
+                    foreach (GameObject unit in selectedUnitsList)
+                    {
+                        ResourceCollector collector = unit != null ? unit.GetComponent<ResourceCollector>() : null;
+                        if (collector != null) collector.SetTargetNode(node);
                     }
                 }
             }

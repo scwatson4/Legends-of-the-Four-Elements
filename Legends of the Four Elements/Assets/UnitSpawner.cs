@@ -10,6 +10,7 @@ public class UnitSpawner : MonoBehaviour
         public GameObject prefab;
         public int cost;
         public float buildTime;
+        [HideInInspector] public bool isAvatar;
     }
 
     [Header("Spawn Settings")]
@@ -27,6 +28,7 @@ public class UnitSpawner : MonoBehaviour
     private Queue<UnitToBuild> buildQueue = new Queue<UnitToBuild>();
     private bool isBuilding = false;
     private int builtUnitsThisSession = 0;
+    private int queuedAvatars = 0;
 
     /// <summary>The faction that owns units built here (from the FactionMember
     /// on this building, falling back to the local player).</summary>
@@ -57,7 +59,21 @@ public class UnitSpawner : MonoBehaviour
             return;
         }
 
-        QueueUnit(new UnitToBuild { prefab = entry.prefab, cost = entry.cost, buildTime = entry.buildTime });
+        // There can only be one Avatar per player, alive or in the queue.
+        if (entry.category == UnitCategory.Avatar &&
+            (AvatarUnit.FactionHasAvatar(OwnerFactionId) || queuedAvatars > 0))
+        {
+            Debug.Log("The Avatar already walks among your forces.");
+            return;
+        }
+
+        QueueUnit(new UnitToBuild
+        {
+            prefab = entry.prefab,
+            cost = entry.cost,
+            buildTime = entry.buildTime,
+            isAvatar = entry.category == UnitCategory.Avatar
+        });
     }
 
     private NationData ResolveNationData()
@@ -72,21 +88,18 @@ public class UnitSpawner : MonoBehaviour
 
     public void QueueUnit(UnitToBuild unit)
     {
-        if (PlayerResources.Instance == null)
+        // Spend from the OWNER's wallet - the local player's HUD credits, an
+        // AI faction's treasury, or (in multiplayer) the server-side wallet.
+        if (Economy.TrySpend(OwnerFactionId, unit.cost))
         {
-            Debug.LogWarning("PlayerResources not found.");
-            return;
-        }
-
-        if (PlayerResources.Instance.SpendCredits(unit.cost))
-        {
+            if (unit.isAvatar) queuedAvatars++;
             buildQueue.Enqueue(unit);
             if (!isBuilding)
                 StartCoroutine(ProcessQueue());
         }
         else
         {
-            Debug.Log("Not enough credits to queue unit.");
+            Debug.Log("Not enough silver to queue unit.");
         }
     }
 
@@ -105,6 +118,7 @@ public class UnitSpawner : MonoBehaviour
             Vector3 spawnPos = GetArcSpawnPosition(builtUnitsThisSession);
             GameObject spawned = Instantiate(next.prefab, spawnPos, Quaternion.identity);
             FactionUtility.SetFaction(spawned, OwnerFactionId);
+            if (next.isAvatar) queuedAvatars = Mathf.Max(0, queuedAvatars - 1);
 
             builtUnitsThisSession++;
         }

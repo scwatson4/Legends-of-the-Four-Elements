@@ -48,6 +48,12 @@ public class AttackController : MonoBehaviour
             return IsHostileTo(commandCenter.gameObject);
         }
 
+        Structure structure = other.GetComponentInParent<Structure>();
+        if (structure != null)
+        {
+            return IsHostileTo(structure.gameObject);
+        }
+
         return false;
     }
 

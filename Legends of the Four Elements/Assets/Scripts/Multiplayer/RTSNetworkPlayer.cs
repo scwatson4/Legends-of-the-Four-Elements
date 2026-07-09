@@ -11,6 +11,19 @@ public class RTSNetworkPlayer : NetworkBehaviour
 {
     public static RTSNetworkPlayer Local { get; private set; }
 
+    private static readonly System.Collections.Generic.List<RTSNetworkPlayer> allPlayers =
+        new System.Collections.Generic.List<RTSNetworkPlayer>();
+
+    /// <summary>Every connected player's wallet lives here; Economy uses this.</summary>
+    public static RTSNetworkPlayer FindByFaction(int factionId)
+    {
+        foreach (RTSNetworkPlayer player in allPlayers)
+        {
+            if (player != null && player.FactionId.Value == factionId) return player;
+        }
+        return null;
+    }
+
     public NetworkVariable<int> NationIndex = new NetworkVariable<int>(
         (int)Nation.Air, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -25,6 +38,8 @@ public class RTSNetworkPlayer : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if (!allPlayers.Contains(this)) allPlayers.Add(this);
+
         if (IsOwner)
         {
             Local = this;
@@ -48,6 +63,7 @@ public class RTSNetworkPlayer : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        allPlayers.Remove(this);
         if (Local == this) Local = null;
     }
 
@@ -116,6 +132,9 @@ public class RTSNetworkPlayer : NetworkBehaviour
             return;
         }
 
+        // One Avatar per player, in multiplayer too.
+        if (entry.category == UnitCategory.Avatar && AvatarUnit.FactionHasAvatar(FactionId.Value)) return;
+
         if (Credits.Value < entry.cost) return;
 
         Vector3 spawnPosition;
@@ -144,5 +163,85 @@ public class RTSNetworkPlayer : NetworkBehaviour
         NetworkUnit networkUnit = unitGo.GetComponent<NetworkUnit>();
         if (networkUnit != null) networkUnit.FactionId.Value = FactionId.Value;
         else FactionUtility.SetFaction(unitGo, FactionId.Value);
+    }
+
+    // ------------------------------------------------------------------
+    // Placing buildings
+    // ------------------------------------------------------------------
+
+    /// <summary>Called by BuildingPlacer. True = handled by the network layer.</summary>
+    public static bool TryRelayPlaceBuilding(int buildingIndex, Vector3 position, Quaternion rotation)
+    {
+        if (!NetworkGuard.IsNetworked || Local == null) return false;
+        Local.RequestPlaceBuildingServerRpc(buildingIndex, position, rotation);
+        return true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestPlaceBuildingServerRpc(int buildingIndex, Vector3 position, Quaternion rotation,
+        ServerRpcParams rpcParams = default)
+    {
+        if (rpcParams.Receive.SenderClientId != OwnerClientId) return;
+
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null ? db.Get((Nation)NationIndex.Value) : null;
+        NationData.BuildingEntry entry = data != null ? data.GetBuilding(buildingIndex) : null;
+        if (entry == null || entry.prefab == null) return;
+
+        if (Credits.Value < entry.cost) return;
+        Credits.Value -= entry.cost;
+
+        GameObject building = Instantiate(entry.prefab, position, rotation);
+        NetworkObject netObj = building.GetComponent<NetworkObject>();
+        if (netObj != null)
+        {
+            netObj.Spawn();
+            NetworkFactionSync sync = building.GetComponent<NetworkFactionSync>();
+            if (sync != null) { sync.FactionId.Value = FactionId.Value; return; }
+        }
+        FactionUtility.SetFaction(building, FactionId.Value);
+    }
+
+    // ------------------------------------------------------------------
+    // Buying upgrades
+    // ------------------------------------------------------------------
+
+    /// <summary>Called by UpgradePurchaser. True = handled by the network layer.</summary>
+    public static bool TryRelayPurchaseUpgrade(int upgradeIndex)
+    {
+        if (!NetworkGuard.IsNetworked || Local == null) return false;
+        Local.RequestPurchaseUpgradeServerRpc(upgradeIndex);
+        return true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestPurchaseUpgradeServerRpc(int upgradeIndex, ServerRpcParams rpcParams = default)
+    {
+        if (rpcParams.Receive.SenderClientId != OwnerClientId) return;
+
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null ? db.Get((Nation)NationIndex.Value) : null;
+        if (data == null || data.upgrades == null) return;
+        if (upgradeIndex < 0 || upgradeIndex >= data.upgrades.Length) return;
+
+        // Server applies the purchase, then tells everyone so stat bonuses
+        // stay identical on every client.
+        if (UpgradeManager.TryPurchase(FactionId.Value, data.upgrades[upgradeIndex]))
+        {
+            ApplyUpgradeClientRpc(upgradeIndex);
+        }
+    }
+
+    [ClientRpc]
+    private void ApplyUpgradeClientRpc(int upgradeIndex)
+    {
+        if (IsServer) return; // the server already applied it
+
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null ? db.Get((Nation)NationIndex.Value) : null;
+        if (data == null || data.upgrades == null) return;
+        if (upgradeIndex < 0 || upgradeIndex >= data.upgrades.Length) return;
+
+        UpgradeManager.ApplyPurchasedLevel(FactionId.Value, data.upgrades[upgradeIndex]);
     }
 }

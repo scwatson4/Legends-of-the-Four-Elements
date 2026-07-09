@@ -26,6 +26,14 @@ to bottom — each part builds on the previous one.
 | Neutrals | `Assets/Scripts/Neutrals/` | `Village` spawns wandering `Villager`s and pays tribute credits to whichever team controls it. `Spirit` (Friendly or Dark) roams the map; Dark spirits attack everyone. `Tameable` lets your units befriend/tame them — right-click a spirit with units selected. Dark spirits must be weakened below a health threshold first. |
 | Nation select | `NationSelectController.cs` | Menu panel: pick nation, pick Survival or Skirmish, pick AI count, start. |
 | Multiplayer | `Assets/Scripts/Multiplayer/` | Netcode for GameObjects: host/join by IP, per-player nation pick, co-op or versus teams, server-authoritative units, health and command relay. See `docs/MULTIPLAYER_SETUP.md`. |
+| Economy | `Assets/Scripts/Economy/` | One `Economy` API for every wallet (player HUD, AI treasuries, multiplayer server). Harvestable `ResourceNode`s worked by `ResourceCollector` units, `ResourceDropoff` buildings, `IncomeBuilding` trickle buildings, kill bounties. |
+| Buildings | `Assets/Scripts/Buildings/` | `Structure` health for any building, `DefenseTower`s, and `BuildingPlacer` ghost-preview construction (green/red, R to rotate). |
+| Upgrades | `Assets/Scripts/Upgrades/` | `UpgradeData` assets per nation; purchased levels boost damage/HP/speed of existing and future units. AI buys them too. |
+| Avatar | `Units/AvatarUnit.cs` | One-per-player hero: bends all four elements (T to cycle), Avatar State surge (G), and the only unit that can energy-bend spirits tame. |
+| Maps & biomes | `Assets/Scripts/World/` | `BiomeZone` elemental climates that buff/weaken units by element, and `MapGenerator` seeded random maps (biomes, nodes, villages, spirits, start points). Map selector in the menu. |
+
+Full faction design (every unit, building and upgrade with suggested costs):
+**`docs/ROSTERS.md`** — treat it as the fill-in sheet for the NationData assets.
 
 Key compatibility notes baked into the code:
 
@@ -220,6 +228,92 @@ Gameplay tuning knobs worth a pass once it's playable:
 2. Test matrix:
    - Survival as each of the 4 nations (build buttons show right roster?)
    - Skirmish vs 1–3 AI (AI trains and attacks? village tribute works?)
-   - Tame a friendly spirit; weaken + tame a dark spirit
+   - Workers harvest a node and deliver; income buildings tick; kill a dark
+     spirit and get the bounty
+   - Build the Avatar, cycle elements (T), pop Avatar State (G), energy-bend
+     a spirit; confirm regular units CANNOT tame
+   - Place a building (ghost turns red on units/buildings; refinery demands
+     its node); tower shoots raiders
+   - Buy an upgrade twice; confirm old AND new units hit harder
+   - Fight inside a volcano zone as Fire, then as Water — damage should differ
+   - Start a random-map match twice; layouts should differ (new seed each start)
    - Lose a match (base destroyed) and win one
    - Multiplayer: host + join, co-op and versus (see multiplayer doc)
+
+---
+
+# Round 2 additions — economy, buildings, upgrades, Avatar, maps
+
+## Part 9 — Economy on the map
+
+1. **Node prefabs** (make 4): a model + collider + `ResourceNode`, one per
+   type — Fish Shoal, Crystal Deposit, Coal Seam, Spirit Grove. ~1500 silver
+   each (0 = infinite). Suggested looks: rock/crystal meshes from your
+   terrain packs; a shimmering particle for the grove; rippling water decal
+   for the shoal.
+2. **Worker prefabs** (one per nation, see ROSTERS.md): a bender-prefab
+   duplicate minus AttackController, plus `ResourceCollector`,
+   `Unit.category = Worker`. Optional basket/sack child assigned to
+   **Carry Visual**.
+3. Add `ResourceDropoff` to every command center prefab (and docks/refineries
+   if you want shorter walk cycles).
+4. Scatter nodes near (but not inside) bases and at contested spots — or let
+   the MapGenerator do it (Part 12).
+5. Set `killBounty` on spirit prefabs (dark 40, friendly 15) — hunting evil
+   spirits is now an income stream, very Avatar.
+6. Relabel the HUD credits text to **Silver**.
+
+## Part 10 — Buildings & construction UI
+
+1. Building prefabs per ROSTERS.md. Recipe: model + collider +
+   `Structure` (+ `UnitSpawner` for production, `IncomeBuilding` for economy,
+   `DefenseTower` for towers, `ResourceDropoff` where sensible). Layer:
+   same as your attackable buildings so enemies can target them.
+2. For economy buildings that should demand a node (Mine/Refinery/Dock):
+   tick **Requires Nearby Node** on their `IncomeBuilding` and pick the type.
+3. Fill the **buildings** list in each NationData asset.
+4. Add one `BuildingPlacer` GameObject to each level scene: assign the
+   ground mask (same as UnitSelectionManager's) and leave obstruction mask
+   at Everything.
+5. Side panel: add a "Build" tab with buttons wired to
+   `BuildingPlacer.BeginPlacement(0..n)`. Left-click places, right-click/Esc
+   cancels, R rotates. Unit selection pauses automatically while placing.
+
+## Part 11 — Upgrades & the Avatar
+
+1. Create `UpgradeData` assets (Assets > Create > Legends > Upgrade) from the
+   ROSTERS.md tables; drag them into each NationData's **upgrades** list.
+2. Add an `UpgradePurchaser` to the side panel; wire upgrade buttons to
+   `Purchase(0..n)` (index into the nation's upgrade list — same buttons work
+   for all nations). Optional TMP label shows feedback.
+3. **Avatar prefab per nation**: duplicate that nation's bender prefab,
+   scale stats (HP ~400, damage ~25), add `AvatarUnit`, create four child
+   VFX objects (air/water/earth/fire — you already own packs for each) and
+   assign them, plus an aura VFX for the Avatar State. Set roster
+   **category = Avatar**, cost ~600, and `Unit.category = Avatar` on the
+   prefab. Add it as the LAST entry of each nation's unit roster with its own
+   build button.
+4. Spirits: leave `Tameable.requiresEnergyBender` ON — only the Avatar tames.
+
+## Part 12 — Map selector & random maps
+
+1. Build 2–3 handmade map scenes if you like (each: MatchManager +
+   StartLocations + villages/spirits/nodes/biomes) **plus one "RandomMap"
+   scene**: terrain + NavMeshSurface + GameManager/selection/HUD rig +
+   MatchManager (spawn bases ON) + one **MapGenerator** GameObject.
+2. MapGenerator setup: ground mask, map size to fit your terrain, and prefab
+   lists — biome zone prefabs (next step), the 4 node prefabs, village and
+   both spirit prefabs. Assign the scene's **NavMeshSurface** so paths
+   rebuild after generation.
+3. **Biome zone prefabs** (6): empty root + `BiomeZone` (climate + radius)
+   + themed props as children — lava rocks & smoke (Volcanic), ice shards
+   (Glacier), reeds/water decals (River Lands), swirling leaves (Windy
+   Peaks), boulders (Stone Quarry), glowing flora (Spirit Wilds). Props are
+   pure dressing; the zone component does the gameplay.
+4. Menu: add a map row to the nation-select panel — buttons wired to
+   `NationSelectController.SelectMap(0..n)`, and fill **Map Scene Names**
+   with your scene names (all added to Build Settings). Leave
+   **Randomize Seed Each Match** on: every match rolls a fresh layout.
+5. Multiplayer note: MapGenerator uses a fixed shared seed when networked so
+   all clients build the same map; vary `multiplayerSeed` per lobby later if
+   you want.

@@ -39,6 +39,12 @@ public static class GameSetup
     /// <summary>Set by the multiplayer lobby; co-op puts all humans on team 0.</summary>
     public static bool MultiplayerCoop = false;
 
+    /// <summary>Scene chosen in the map selector. Empty = the controller's default.</summary>
+    public static string MapSceneName = "";
+
+    /// <summary>Seed used by MapGenerator scenes. 0 = generator default.</summary>
+    public static int MapSeed = 0;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
     {
@@ -46,6 +52,8 @@ public static class GameSetup
         Mode = GameMode.Survival;
         AIOpponents.Clear();
         MultiplayerCoop = false;
+        MapSceneName = "";
+        MapSeed = 0;
     }
 
     public static void ConfigureSurvival(Nation playerNation)

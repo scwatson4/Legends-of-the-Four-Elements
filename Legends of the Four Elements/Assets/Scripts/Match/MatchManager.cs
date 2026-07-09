@@ -181,8 +181,13 @@ public class MatchManager : MonoBehaviour
 
         if (FactionManager.IsAIControlled(factionId))
         {
-            // AI units need the autonomous brain even on player-nation prefabs.
-            if (go.GetComponent<EnemyAI>() == null) go.AddComponent<EnemyAI>();
+            // AI combat units need the autonomous brain even on player-nation
+            // prefabs. Workers keep harvesting instead of fighting.
+            bool isWorker = go.GetComponent<ResourceCollector>() != null;
+            if (!isWorker && go.GetComponent<EnemyAI>() == null)
+            {
+                go.AddComponent<EnemyAI>();
+            }
         }
         return go;
     }
@@ -205,35 +210,11 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    public void AwardCredits(int factionId, int amount)
-    {
-        Faction faction = FactionManager.Get(factionId);
-        if (faction == null) return;
+    // Kept as pass-throughs so older callers stay valid; Economy is the
+    // single source of truth for every wallet.
+    public void AwardCredits(int factionId, int amount) => Economy.Award(factionId, amount);
 
-        if (faction.isLocalPlayer && PlayerResources.Instance != null)
-        {
-            PlayerResources.Instance.AddCredits(amount);
-        }
-        else
-        {
-            faction.credits += amount;
-        }
-    }
-
-    public bool TrySpendCredits(int factionId, int amount)
-    {
-        Faction faction = FactionManager.Get(factionId);
-        if (faction == null) return false;
-
-        if (faction.isLocalPlayer && PlayerResources.Instance != null)
-        {
-            return PlayerResources.Instance.SpendCredits(amount);
-        }
-
-        if (faction.credits < amount) return false;
-        faction.credits -= amount;
-        return true;
-    }
+    public bool TrySpendCredits(int factionId, int amount) => Economy.TrySpend(factionId, amount);
 
     // ------------------------------------------------------------------
     // Command centers & victory

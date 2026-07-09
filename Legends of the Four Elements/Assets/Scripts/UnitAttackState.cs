@@ -64,7 +64,10 @@ public class UnitAttackState : StateMachineBehaviour
     {
         if (attackController.targetToAttack == null) return;
 
-        var damageToInflict = attackController.unitDamage;
+        // Elemental climates buff or weaken the attacker (volcano vs glacier...).
+        float biomeMultiplier = BiomeZone.GetAttackMultiplier(attackController.gameObject);
+        int damageToInflict = Mathf.Max(1, Mathf.RoundToInt(attackController.unitDamage * biomeMultiplier));
+
         if (SoundManager.Instance != null && unit != null)
         {
             SoundManager.Instance.PlayAttackSound(unit.unitType);
@@ -72,27 +75,38 @@ public class UnitAttackState : StateMachineBehaviour
 
         Unit targetUnit = attackController.targetToAttack.GetComponent<Unit>();
         CommandCenter targetCommandCenter = attackController.targetToAttack.GetComponent<CommandCenter>();
+        Structure targetStructure = attackController.targetToAttack.GetComponent<Structure>();
 
         if (targetUnit != null && attackController.IsHostileTo(targetUnit.gameObject))
         {
             targetUnit.TakeDamage(damageToInflict);
-            if (targetUnit == null || !targetUnit.gameObject.activeSelf)
+
+            // Kill bounty: slaying spirits (or bounty-carrying units) pays silver.
+            if (targetUnit.CurrentHealth <= 0 && targetUnit.killBounty > 0)
             {
-                if (enemyAI != null)
-                {
-                    enemyAI.OnTargetDestroyed();
-                }
+                Economy.Award(FactionUtility.GetFactionId(attackController.gameObject), targetUnit.killBounty);
+            }
+
+            if (targetUnit.CurrentHealth <= 0 && enemyAI != null)
+            {
+                enemyAI.OnTargetDestroyed();
             }
         }
         else if (targetCommandCenter != null && attackController.IsHostileTo(targetCommandCenter.gameObject))
         {
             targetCommandCenter.TakeDamage(damageToInflict);
-            if (targetCommandCenter == null || !targetCommandCenter.gameObject.activeSelf)
+        }
+        else if (targetStructure != null && attackController.IsHostileTo(targetStructure.gameObject))
+        {
+            targetStructure.TakeDamage(damageToInflict);
+
+            if (targetStructure.CurrentHealth <= 0)
             {
-                if (enemyAI != null)
+                if (targetStructure.killBounty > 0)
                 {
-                    enemyAI.OnTargetDestroyed();
+                    Economy.Award(FactionUtility.GetFactionId(attackController.gameObject), targetStructure.killBounty);
                 }
+                if (enemyAI != null) enemyAI.OnTargetDestroyed();
             }
         }
     }

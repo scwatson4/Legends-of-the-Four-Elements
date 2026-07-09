@@ -20,6 +20,14 @@ public class NationSelectController : MonoBehaviour
     [Header("Skirmish")]
     [Range(1, 3)] public int aiOpponentCount = 1;
 
+    [Header("Maps")]
+    [Tooltip("Scene names selectable in the map list (add them to Build Settings). " +
+             "Include your 'RandomMap' scene (one with a MapGenerator) for randomized matches.")]
+    public string[] mapSceneNames;
+    [Tooltip("Pick a fresh random seed for MapGenerator scenes on every start.")]
+    public bool randomizeSeedEachMatch = true;
+    public TextMeshProUGUI selectedMapLabel;
+
     private Nation selectedNation = Nation.Air;
     private GameMode selectedMode = GameMode.Survival;
 
@@ -46,6 +54,14 @@ public class NationSelectController : MonoBehaviour
         aiOpponentCount = Mathf.Clamp(Mathf.RoundToInt(count), 1, 3);
     }
 
+    /// <summary>Wire map-list buttons to this (index into mapSceneNames).</summary>
+    public void SelectMap(int mapIndex)
+    {
+        if (mapSceneNames == null || mapIndex < 0 || mapIndex >= mapSceneNames.Length) return;
+        GameSetup.MapSceneName = mapSceneNames[mapIndex];
+        if (selectedMapLabel != null) selectedMapLabel.text = GameSetup.MapSceneName;
+    }
+
     public void StartGame()
     {
         if (selectedMode == GameMode.Survival)
@@ -57,8 +73,17 @@ public class NationSelectController : MonoBehaviour
             GameSetup.ConfigureSkirmish(selectedNation, aiOpponentCount);
         }
 
-        Debug.Log($"Starting {selectedMode} as {NationInfo.DisplayName(selectedNation)}");
-        SceneManager.LoadScene(levelSceneName);
+        if (randomizeSeedEachMatch)
+        {
+            GameSetup.MapSeed = Random.Range(1, int.MaxValue);
+        }
+
+        string scene = string.IsNullOrEmpty(GameSetup.MapSceneName)
+            ? levelSceneName
+            : GameSetup.MapSceneName;
+
+        Debug.Log($"Starting {selectedMode} as {NationInfo.DisplayName(selectedNation)} on {scene} (seed {GameSetup.MapSeed})");
+        SceneManager.LoadScene(scene);
     }
 
     private void RefreshLabels()

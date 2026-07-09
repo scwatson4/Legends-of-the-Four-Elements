@@ -24,6 +24,12 @@ public class Unit : MonoBehaviour
     public Team team = Team.Player;
     public UnitType unitType;
 
+    [Tooltip("Roster category: infantry, animal, vehicle, worker or Avatar. Drives upgrades and AI decisions.")]
+    public UnitCategory category = UnitCategory.Infantry;
+
+    [Tooltip("Silver awarded to the killer's faction (spirit energy, war spoils). 0 = none.")]
+    public int killBounty = 0;
+
     public HealthTracker healthTracker;
 
     /// <summary>Fired with (current, max) whenever health changes. Used by the network sync layer.</summary>
@@ -63,6 +69,9 @@ public class Unit : MonoBehaviour
         {
             transform.position = hit.position;
         }
+
+        // Apply any upgrade levels the owning faction has already purchased.
+        UpgradeManager.ApplyTo(this);
     }
 
     private void OnDestroy()
@@ -116,6 +125,24 @@ public class Unit : MonoBehaviour
     internal void SetHealthFromNetwork(float value)
     {
         ApplyHealth(value);
+    }
+
+    /// <summary>Restores health (waterbending healers), capped at max.</summary>
+    internal void Heal(int amount)
+    {
+        if (NetworkGuard.BlockLocalSimulation) return;
+        if (isDying || unitHealth >= maxUnitHealth) return;
+
+        ApplyHealth(Mathf.Min(maxUnitHealth, unitHealth + amount));
+    }
+
+    /// <summary>Upgrade system: rescale max health, keeping the same health fraction.</summary>
+    internal void SetMaxHealth(float newMax)
+    {
+        if (newMax <= 0f) return;
+        float fraction = HealthFraction;
+        maxUnitHealth = newMax;
+        ApplyHealth(newMax * fraction);
     }
 
     private void ApplyHealth(float value)

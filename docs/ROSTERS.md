@@ -1,0 +1,160 @@
+# Nation Rosters, Buildings & Upgrades — Design Sheet
+
+This is the complete faction design to enter into the four `NationData`
+assets (costs/stats are starting values — tune after playtests). Every
+mechanic referenced here is implemented in code; you supply prefabs and type
+the numbers into the inspector. Category legend: **[I]**nfantry, **[A]**nimal,
+**[V]**ehicle, **[W]**orker, **[AV]**atar — set on both the roster entry and
+the prefab's `Unit.category`.
+
+## How everyone earns silver (implemented)
+
+| Source | Who | How |
+|---|---|---|
+| Kingdom tax | all factions | `MatchManager` income tick (default 25 / 10s) |
+| Workers | all factions | `ResourceCollector` units haul loads from `ResourceNode`s (fish shoals, crystal deposits, coal seams, spirit groves) to any `ResourceDropoff` building |
+| Economy buildings | all factions | `IncomeBuilding` trickle; the strong ones must be placed next to a matching node and drain it |
+| Village tribute | whoever holds the village | `Village` control radius (default 15 / 8s) |
+| Spirit bounties | whoever lands the kill | `Unit.killBounty` — set 40 on dark spirits, 15 on friendly ones ("spirit energy") |
+| Survival waves | player | existing per-wave reward |
+
+The AI earns through the exact same systems (its commander trains workers,
+holds villages, and its treasury lives in `Faction.credits`). In the HUD,
+relabel the credits counter "**Silver**" — the show's coinage.
+
+---
+
+## Air Nomads — mobility & evasion
+
+**Units**
+
+| Unit | Cat | Cost | Build | Notes / model source |
+|---|---|---|---|---|
+| Air Acolyte | W | 40 | 4s | forager; `ResourceCollector` |
+| Airbender Monk | I | 50 | 3s | your existing AirbenderUnit |
+| Glider Warrior | I | 80 | 5s | faster (higher NavMeshAgent speed), lower HP |
+| Winged Lemur | A | 30 | 2s | cheap fast scout, tiny HP, no attack (omit AttackController) |
+| Sky Bison | A | 200 | 12s | flying tank — big HP, knock-back wind attack; reuse your bison models! |
+| War Glider | V | 150 | 9s | "vehicle" of a nation with no machines: multi-monk glider, hit-and-run |
+| **Avatar (Air-born)** | AV | 600 | 25s | see Avatar spec below |
+
+**Buildings** (all get `Structure`; production ones also get `UnitSpawner`)
+
+| Building | Cat | Cost | Notes |
+|---|---|---|---|
+| Air Temple | Command | — | command center + `ResourceDropoff` |
+| Meditation Pavilion | Economy | 120 | `IncomeBuilding` 8/6s, stronger near a **Spirit Grove** node |
+| Bison Stable | Production | 180 | trains Lemur / Sky Bison |
+| Wind Cannon Pagoda | Defense | 140 | `DefenseTower`, long range, low damage |
+| Spirit Shrine | Special | 250 | unlock flavor: place near Spirit Wilds; passive income + heals nearby units (add `Healer` with big radius) |
+
+**Upgrades** (`UpgradeData` assets)
+
+| Upgrade | Levels | Cost base | Effect/level | Applies |
+|---|---|---|---|---|
+| Tempest Training | 3 | 150 | +15% damage | Infantry |
+| Nomad's Endurance | 3 | 150 | +15% HP | Infantry, Animal |
+| Gale Stride | 2 | 200 | +10% speed | everything |
+
+## Water Tribe — sustain & control
+
+**Units**
+
+| Unit | Cat | Cost | Build | Notes |
+|---|---|---|---|---|
+| Fisherman | W | 40 | 4s | `ResourceCollector`; loves Fish Shoals |
+| Waterbender Warrior | I | 55 | 3s | balanced fighter |
+| Healer | I | 90 | 6s | `Healer` component — the nation's identity |
+| Polar Bear Dog | A | 130 | 8s | fast bruiser cavalry |
+| Ice Cutter | V | 170 | 10s | waterbending-driven warship (drives on shore/ice = your NavMesh) |
+| **Avatar (Water-born)** | AV | 600 | 25s | |
+
+**Buildings**: Ice Palace (command + dropoff) · Fishing Dock (Economy 130,
+`IncomeBuilding` requires **Fish Shoal** within 12) · Healing Hut (Production:
+Healers; give the hut itself a small `Healer` aura) · Ice Spike Tower
+(Defense 140) · Shipyard (Production: Ice Cutters, 200).
+
+**Upgrades**: Moonlight Discipline (+dmg, Infantry) · Glacial Hide (+HP,
+Animal/Vehicle) · Healing Waters (+HP, Infantry).
+
+## Earth Kingdom — toughness & siege
+
+**Units**
+
+| Unit | Cat | Cost | Build | Notes |
+|---|---|---|---|---|
+| Miner | W | 40 | 4s | `ResourceCollector`; loves Crystal Deposits |
+| Earthbender Soldier | I | 60 | 4s | high HP frontliner |
+| Boulder Hurler | I | 110 | 7s | siege: raise attackDistance/damage, slow |
+| Ostrich Horse Rider | A | 100 | 6s | fast cavalry |
+| Badgermole | A | 220 | 14s | living siege engine, huge HP & building damage |
+| Earth Tank | V | 190 | 11s | bender-crewed stone rig |
+| **Avatar (Earth-born)** | AV | 600 | 25s | |
+
+**Buildings**: Earthen Citadel (command + dropoff) · Crystal Mine (Economy
+140, requires **Crystal Deposit**) · Barracks (Production) · Badgermole
+Burrow (Production: animals) · Rock Launcher Tower (Defense 150, high dmg
+slow fire).
+
+**Upgrades**: Neutral Jing (+HP, Infantry) · Master Sculpting (+dmg,
+Infantry) · Reinforced Hide Plates (+HP, Animal/Vehicle).
+
+## Fire Nation — aggression & machines
+
+**Units**
+
+| Unit | Cat | Cost | Build | Notes |
+|---|---|---|---|---|
+| Coal Engineer | W | 40 | 4s | `ResourceCollector`; loves Coal Seams |
+| Firebender Soldier | I | 55 | 3s | your existing FirebenderUnit |
+| Fire Lancer | I | 85 | 5s | spear + flame, anti-animal |
+| Komodo Rhino Rider | A | 120 | 7s | shock cavalry |
+| Tundra Tank | V | 180 | 10s | armored crawler |
+| War Balloon | V | 240 | 15s | late-game flyer, strong vs buildings |
+| **Avatar (Fire-born)** | AV | 600 | 25s | |
+
+**Buildings**: Fire Citadel (command + dropoff) · Coal Refinery (Economy 140,
+requires **Coal Seam**) · War Academy (Production: infantry) · War Factory
+(Production: tanks/balloons, 220) · Flame Turret (Defense 140, fast fire).
+
+**Upgrades**: Sozin's Comet Doctrine (+dmg, everything, expensive) · Drill
+Plating (+HP, Vehicle) · Forced March (+speed, Infantry/Animal).
+
+---
+
+## The Avatar (all nations) — `AvatarUnit` component
+
+- **Cost ~600, one per player** — enforced in code (build buttons and the
+  multiplayer server both refuse a second while yours lives). If your Avatar
+  dies you may eventually train a "reincarnated" one (that's just building it
+  again — thematic!).
+- **Stats**: ~400 HP, 25 damage, normal speed. Category `Avatar`.
+- **Bends all four elements**: press **T** while selected to cycle
+  Air→Water→Earth→Fire. Assign one attack VFX per element on the component;
+  the active element also decides which biome zones empower it (bend Water on
+  a glacier!).
+- **Avatar State** (**G**): 10s of 2× damage / 1.5× speed, 60s cooldown.
+  Assign a glow aura VFX.
+- **Energy bending**: the ONLY unit that can tame wild spirits
+  (`Tameable.requiresEnergyBender` is on by default). Right-click a friendly
+  spirit to befriend it; dark spirits must first be beaten below half health.
+- Prefab recipe: everything a bender prefab has + `AvatarUnit` + 4 element
+  VFX children + aura. Give each nation a themed model (element of origin is
+  cosmetic).
+
+## Elemental climates (`BiomeZone`) — implemented modifiers
+
+| Climate | Empowers | Weakens |
+|---|---|---|
+| Volcanic | Fire +25% | Water −20% |
+| Glacier | Water +25% | Fire −20% |
+| River Lands | Water +15% | Fire −10% |
+| Windy Peaks | Air +25% | Earth −15% |
+| Stone Quarry | Earth +25% | Air −15% |
+| Spirit Wilds | Spirits +25% | all nations −10% |
+
+Element resolution: Avatar = current element; benders = their discipline;
+animals/vehicles/workers = their nation's element (a Tundra Tank struggles on
+a glacier). `MapGenerator` also seeds matching resource nodes inside biomes —
+coal in volcanic fields, fish along rivers/glaciers, crystals in quarries,
+spirit groves in the wilds — so climates are worth fighting over twice.
