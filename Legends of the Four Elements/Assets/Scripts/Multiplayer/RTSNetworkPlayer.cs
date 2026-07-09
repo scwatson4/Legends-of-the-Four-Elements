@@ -185,7 +185,13 @@ public class RTSNetworkPlayer : NetworkBehaviour
 
         NationDatabase db = NationDatabase.Load();
         NationData data = db != null ? db.Get((Nation)NationIndex.Value) : null;
-        NationData.BuildingEntry entry = data != null ? data.GetBuilding(buildingIndex) : null;
+        NationData.BuildingEntry entry = null;
+        if (data != null)
+        {
+            entry = buildingIndex == BuildingPlacer.CommandCenterIndex
+                ? BuildingPlacer.MakeCommandCenterEntry(data)
+                : data.GetBuilding(buildingIndex);
+        }
         if (entry == null || entry.prefab == null) return;
 
         if (Credits.Value < entry.cost) return;

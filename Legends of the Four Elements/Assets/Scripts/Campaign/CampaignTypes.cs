@@ -60,6 +60,17 @@ public class CampaignLevel
 
     public int chiReward = 100;
 
+    [Header("Scratch Start (Avatar + builder, build your own base)")]
+    [Tooltip("Starting silver: enough to place the command center and get going.")]
+    public int startingSilver = 600;
+
+    [Header("Enemy Waves")]
+    public float firstWaveDelay = 90f;
+    public float waveInterval = 70f;
+    public int waveBaseSize = 3;
+    [Tooltip("Extra units added to each successive wave.")]
+    public int waveGrowth = 1;
+
     public List<DialogueLine> dialogue = new List<DialogueLine>();
 }
 

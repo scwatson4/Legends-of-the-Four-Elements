@@ -26,6 +26,7 @@ public class CampaignManager : MonoBehaviour
     private string targetSceneName;
     private CampaignProgress progress;
     private bool levelFinished;
+    private bool setupDone;
     private float surviveRemaining;
     private bool surviving;
     private readonly HashSet<Nation> summonedThisLevel = new HashSet<Nation>();
@@ -52,6 +53,7 @@ public class CampaignManager : MonoBehaviour
     {
         CurrentLevel = level;
         levelFinished = false;
+        setupDone = false;
         surviving = false;
         summonedThisLevel.Clear();
         progress = CampaignProgress.Load();
@@ -107,6 +109,7 @@ public class CampaignManager : MonoBehaviour
         yield return null; // let scene Awake/Start (MatchManager, bases) run
 
         ApplyPermanentUpgrades();
+        SetupScratchStart();
 
         // Story first, then the fighting starts.
         DialogueUI.Play(CurrentLevel.dialogue, OnDialogueFinished);
@@ -114,6 +117,8 @@ public class CampaignManager : MonoBehaviour
 
     private void OnDialogueFinished()
     {
+        setupDone = true;
+
         if (CurrentLevel.boss != CampaignBoss.None)
         {
             SpawnBoss(CurrentLevel.boss);
@@ -123,6 +128,224 @@ public class CampaignManager : MonoBehaviour
         {
             surviveRemaining = CurrentLevel.surviveSeconds;
             surviving = true;
+        }
+
+        StartCoroutine(WaveLoop());
+        StartCoroutine(DefeatWatchdog());
+    }
+
+    // ------------------------------------------------------------------
+    // Scratch start: one Avatar + one builder + seed silver, no free base
+    // ------------------------------------------------------------------
+
+    private void SetupScratchStart()
+    {
+        // Seed silver: enough to found the base and get the economy going.
+        if (PlayerResources.Instance != null)
+        {
+            PlayerResources.Instance.SetCredits(CurrentLevel.startingSilver);
+        }
+
+        Vector3 startPos = FindPlayerStartPosition();
+
+        GameObject avatarPrefab = FindAvatarPrefab(GameSetup.PlayerNation);
+        if (avatarPrefab != null)
+        {
+            GameObject avatar = Instantiate(avatarPrefab, startPos + new Vector3(2f, 0f, 0f), Quaternion.identity);
+            FactionUtility.SetFaction(avatar, FactionManager.LocalPlayerFactionId);
+        }
+        else
+        {
+            Debug.LogError($"[Campaign] No Avatar prefab for {GameSetup.PlayerNation} - " +
+                           "add one (category Avatar) to the nation's roster.");
+        }
+
+        GameObject workerPrefab = FindWorkerPrefab(GameSetup.PlayerNation);
+        if (workerPrefab != null)
+        {
+            GameObject worker = Instantiate(workerPrefab, startPos + new Vector3(-2f, 0f, 0f), Quaternion.identity);
+            FactionUtility.SetFaction(worker, FactionManager.LocalPlayerFactionId);
+        }
+
+        Debug.Log($"[Campaign] Scratch start: Avatar + builder + {CurrentLevel.startingSilver} silver. " +
+                  "Press B (or the Found Base button) to place your command center!");
+    }
+
+    private Vector3 FindPlayerStartPosition()
+    {
+        // Hand-built scene with a player base already placed? Start beside it.
+        foreach (CommandCenter cc in FindObjectsByType<CommandCenter>(FindObjectsSortMode.None))
+        {
+            if (FactionUtility.IsLocallyControlled(cc.gameObject))
+            {
+                return cc.transform.position + new Vector3(8f, 0f, 0f);
+            }
+        }
+
+        // Otherwise the lowest-index StartLocation is the player's ground.
+        StartLocation best = null;
+        foreach (StartLocation location in FindObjectsByType<StartLocation>(FindObjectsSortMode.None))
+        {
+            if (best == null || location.index < best.index) best = location;
+        }
+        if (best != null) return best.transform.position;
+
+        Debug.LogWarning("[Campaign] No StartLocation in this scene - starting at origin.");
+        return Vector3.zero;
+    }
+
+    private static GameObject FindWorkerPrefab(Nation nation)
+    {
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null ? db.Get(nation) : null;
+        if (data == null || data.units == null) return null;
+
+        foreach (NationData.UnitEntry entry in data.units)
+        {
+            if (entry != null && entry.category == UnitCategory.Worker && entry.prefab != null)
+            {
+                return entry.prefab;
+            }
+        }
+        // No dedicated worker in the roster yet: fall back to the basic unit.
+        NationData.UnitEntry basic = data.GetUnit(0);
+        return basic != null ? basic.prefab : null;
+    }
+
+    // ------------------------------------------------------------------
+    // Enemy waves of slightly increasing difficulty
+    // ------------------------------------------------------------------
+
+    private IEnumerator WaveLoop()
+    {
+        int waveNumber = 0;
+        yield return new WaitForSeconds(CurrentLevel.firstWaveDelay);
+
+        while (!levelFinished && (GameManager.Instance == null || !GameManager.Instance.GameIsOver))
+        {
+            waveNumber++;
+            int waveSize = Mathf.Min(30, CurrentLevel.waveBaseSize + (waveNumber - 1) * CurrentLevel.waveGrowth);
+            SpawnWave(waveNumber, waveSize);
+
+            yield return new WaitForSeconds(CurrentLevel.waveInterval);
+        }
+    }
+
+    private void SpawnWave(int waveNumber, int waveSize)
+    {
+        // One wave source per surviving enemy base; boss arenas send spirits.
+        List<CommandCenter> sources = new List<CommandCenter>();
+        foreach (CommandCenter cc in FindObjectsByType<CommandCenter>(FindObjectsSortMode.None))
+        {
+            if (!FactionUtility.IsLocallyControlled(cc.gameObject)) sources.Add(cc);
+        }
+
+        if (sources.Count == 0)
+        {
+            SpawnSpiritWave(waveNumber, waveSize);
+            return;
+        }
+
+        Debug.Log($"[Campaign] Wave {waveNumber} incoming: {waveSize} units from {sources.Count} base(s)!");
+        foreach (CommandCenter source in sources)
+        {
+            int factionId = FactionUtility.GetFactionId(source.gameObject);
+            Faction faction = FactionManager.Get(factionId);
+            NationDatabase db = NationDatabase.Load();
+            NationData data = db != null && faction != null ? db.Get(faction.nation) : null;
+            if (data == null || data.units == null || data.units.Length == 0) continue;
+
+            for (int i = 0; i < waveSize; i++)
+            {
+                NationData.UnitEntry entry = PickCombatEntry(data);
+                if (entry == null) break;
+
+                Vector2 circle = Random.insideUnitCircle.normalized * 8f;
+                Vector3 pos = source.transform.position + new Vector3(circle.x, 0f, circle.y);
+
+                GameObject unit = MatchManager.Instance != null
+                    ? MatchManager.Instance.SpawnUnitFor(factionId, entry.prefab, pos)
+                    : Instantiate(entry.prefab, pos, Quaternion.identity);
+                if (MatchManager.Instance == null) FactionUtility.SetFaction(unit, factionId);
+
+                EnemyAI brain = unit.GetComponent<EnemyAI>();
+                if (brain == null) brain = unit.AddComponent<EnemyAI>();
+                brain.chaseCommandCenters = true; // waves march on the player
+            }
+        }
+    }
+
+    private void SpawnSpiritWave(int waveNumber, int waveSize)
+    {
+        GameObject spiritPrefab = Resources.Load<GameObject>("Campaign/DarkSpirit");
+        if (spiritPrefab == null)
+        {
+            if (waveNumber == 1)
+            {
+                Debug.LogWarning("[Campaign] No enemy base and no Resources/Campaign/DarkSpirit prefab - " +
+                                 "this boss arena relies on scene SpiritPortals for pressure.");
+            }
+            return;
+        }
+
+        Vector3 origin = FindBossSpawnPosition();
+        Debug.Log($"[Campaign] Wave {waveNumber}: {waveSize} dark spirits pour from the rupture!");
+        for (int i = 0; i < waveSize; i++)
+        {
+            Vector2 circle = Random.insideUnitCircle.normalized * 10f;
+            GameObject spirit = Instantiate(spiritPrefab,
+                origin + new Vector3(circle.x, 0f, circle.y), Quaternion.identity);
+            FactionUtility.SetFaction(spirit, FactionManager.HostileSpiritsFaction);
+        }
+    }
+
+    private static NationData.UnitEntry PickCombatEntry(NationData data)
+    {
+        for (int attempts = 0; attempts < 6; attempts++)
+        {
+            NationData.UnitEntry candidate = data.units[Random.Range(0, data.units.Length)];
+            if (candidate != null && candidate.prefab != null &&
+                candidate.category != UnitCategory.Worker &&
+                candidate.category != UnitCategory.Avatar)
+            {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    // ------------------------------------------------------------------
+    // Defeat watchdog: with no base AND no units left, the level is lost
+    // ------------------------------------------------------------------
+
+    private IEnumerator DefeatWatchdog()
+    {
+        WaitForSeconds wait = new WaitForSeconds(3f);
+        while (!levelFinished && (GameManager.Instance == null || !GameManager.Instance.GameIsOver))
+        {
+            yield return wait;
+            if (!setupDone) continue;
+
+            bool hasBase = false;
+            foreach (CommandCenter cc in FindObjectsByType<CommandCenter>(FindObjectsSortMode.None))
+            {
+                if (FactionUtility.IsLocallyControlled(cc.gameObject)) { hasBase = true; break; }
+            }
+            if (hasBase) continue;
+
+            bool hasUnits = false;
+            if (UnitSelectionManager.Instance != null)
+            {
+                foreach (GameObject go in UnitSelectionManager.Instance.allUnitsList)
+                {
+                    if (go != null && FactionUtility.IsLocallyControlled(go)) { hasUnits = true; break; }
+                }
+            }
+            if (hasUnits) continue;
+
+            Debug.Log("[Campaign] No base, no forces - the mission is lost.");
+            if (GameManager.Instance != null) GameManager.Instance.ShowDefeat();
+            yield break;
         }
     }
 
@@ -146,6 +369,12 @@ public class CampaignManager : MonoBehaviour
         for (int i = 0; i < SummonKeys.Length; i++)
         {
             if (Input.GetKeyDown(SummonKeys[i])) SummonRedeemedAvatar(i);
+        }
+
+        // B: found (or expand) your base - place a command center.
+        if (Input.GetKeyDown(KeyCode.B) && BuildingPlacer.Instance != null)
+        {
+            BuildingPlacer.Instance.BeginCommandCenterPlacement();
         }
     }
 

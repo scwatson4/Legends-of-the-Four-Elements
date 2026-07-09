@@ -28,6 +28,22 @@ Avatars themselves once redeemed.
 
 ## How the systems work (all implemented)
 
+- **Scratch starts**: every campaign level begins with **your Avatar, one
+  builder, and just enough silver to found a base** (~600, scaling up by
+  chapter) — no free command center. Press **B** (or a "Found Base" button
+  wired to `BuildingPlacer.BeginCommandCenterPlacement`) to place your
+  command center; its price is the new `commandCenterCost` field on each
+  NationData (default 400). Your builder then harvests while you build up.
+  Lose your base AND all your units, and the mission is lost.
+  (On hand-built scenes that already contain a player base, the Avatar +
+  builder simply spawn beside it.)
+- **Escalating waves**: campaign enemies don't macro like skirmish AI —
+  they attack in **scripted waves that grow each time** (`waveBaseSize` +
+  `waveGrowth` per wave, tuned per chapter by `ApplyDifficultyCurve`:
+  chapter 1 sends 2, 3, 4... units; chapter 5 sends 6, 9, 12... faster).
+  Waves spawn at each surviving enemy base and march on you; boss arenas
+  send waves of dark spirits from the rupture instead (uses the optional
+  `Resources/Campaign/DarkSpirit` prefab).
 - **Dialogue**: every level opens with a paused, typewriter dialogue scene
   (`DialogueUI` — builds its own panel if you don't style one; click/space
   advances, Esc skips).
@@ -88,6 +104,10 @@ Avatars themselves once redeemed.
 
 - [ ] Campaign menu lists 5 chapters / 25 levels; only 1-1 unlocked at first
 - [ ] Level intro dialogue plays paused; Esc skips; game resumes after
+- [ ] Level starts with Avatar + builder + starting silver, no base; B opens
+      command-center placement; builder auto-harvests once a dropoff exists
+- [ ] Waves arrive after the first-wave delay and visibly grow each time
+- [ ] Losing your base and every unit triggers defeat
 - [ ] Beat 1-1 (survive) → chi awarded, 1-2 unlocks after returning to menu
 - [ ] Chapter boss spawns far from your base, phase-shifts elements as it
       drops, and dies → console announces redemption; campaign menu lists it

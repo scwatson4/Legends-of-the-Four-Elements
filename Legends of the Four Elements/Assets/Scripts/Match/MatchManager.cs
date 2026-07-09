@@ -128,6 +128,16 @@ public class MatchManager : MonoBehaviour
                 Debug.LogWarning($"MatchManager: not enough StartLocations for faction {faction.displayName}.");
                 break;
             }
+
+            // Campaign scratch start: the player gets no free base - just an
+            // Avatar, a builder and silver (CampaignManager spawns them at
+            // this slot's location). AI factions still get their bases.
+            if (GameSetup.Mode == GameMode.Campaign && !faction.isAI)
+            {
+                slot++;
+                continue;
+            }
+
             SpawnBaseFor(faction, locations[slot].transform);
             slot++;
         }
@@ -152,7 +162,8 @@ public class MatchManager : MonoBehaviour
             cc.team = faction.isLocalPlayer ? Team.Player : Team.Enemy;
         }
 
-        // Starting units in a loose ring around the base.
+        // Starting units in a loose ring around the base - as defenders, not
+        // an immediate rush party.
         NationData.UnitEntry starterEntry = data.GetUnit(0);
         if (starterEntry != null && starterEntry.prefab != null)
         {
@@ -160,12 +171,17 @@ public class MatchManager : MonoBehaviour
             {
                 float angle = (360f / Mathf.Max(1, startingUnitsPerFaction)) * i * Mathf.Deg2Rad;
                 Vector3 offset = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * 6f;
-                SpawnUnitFor(faction.id, starterEntry.prefab, location.position + offset);
+                GameObject defender = SpawnUnitFor(faction.id, starterEntry.prefab, location.position + offset);
+
+                EnemyAI defenderBrain = defender.GetComponent<EnemyAI>();
+                if (defenderBrain != null) defenderBrain.chaseCommandCenters = false;
             }
         }
 
-        if (faction.isAI)
+        if (faction.isAI && GameSetup.Mode != GameMode.Campaign)
         {
+            // Skirmish AI builds its own army; campaign enemies attack in
+            // scripted waves driven by CampaignManager instead.
             AICommander commander = baseGo.AddComponent<AICommander>();
             commander.Configure(faction.id, data, this);
         }

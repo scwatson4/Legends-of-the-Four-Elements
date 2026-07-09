@@ -266,6 +266,28 @@ public static class DefaultCampaign
             D("Kesu", "For the villages. For the tribes. For EVERYONE. Light it up!")));
         chapters.Add(c5);
 
+        ApplyDifficultyCurve(chapters);
         return chapters;
+    }
+
+    /// <summary>
+    /// Waves grow gently across the campaign: later chapters send bigger
+    /// waves, sooner and more often. Levels keep any hand-set values by
+    /// tweaking these after Build() if you want bespoke pacing.
+    /// </summary>
+    private static void ApplyDifficultyCurve(List<CampaignChapter> chapters)
+    {
+        for (int c = 0; c < chapters.Count; c++)
+        {
+            for (int l = 0; l < chapters[c].levels.Count; l++)
+            {
+                CampaignLevel level = chapters[c].levels[l];
+                level.waveBaseSize = 2 + c;                       // ch1: 2 ... ch5: 6
+                level.waveGrowth = 1 + c / 2;                     // ch1-2: +1, ch3-4: +2, ch5: +3
+                level.waveInterval = Mathf.Max(40f, 75f - c * 6f);
+                level.firstWaveDelay = Mathf.Max(60f, 100f - c * 8f);
+                level.startingSilver = 600 + c * 50;              // costs rise, so does the stake
+            }
+        }
     }
 }

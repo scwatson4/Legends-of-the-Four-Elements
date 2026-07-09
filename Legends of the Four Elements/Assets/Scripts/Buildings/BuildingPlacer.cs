@@ -47,13 +47,30 @@ public class BuildingPlacer : MonoBehaviour
         cam = Camera.main;
     }
 
-    /// <summary>Wire building buttons to this (index into NationData.buildings).</summary>
+    /// <summary>Special index for command centers (campaign scratch starts, expansions).</summary>
+    public const int CommandCenterIndex = -1;
+
+    /// <summary>Place a new command center - wire a "Found Base" button to this,
+    /// or press B in campaign levels.</summary>
+    public void BeginCommandCenterPlacement()
+    {
+        BeginPlacement(CommandCenterIndex);
+    }
+
+    /// <summary>Wire building buttons to this (index into NationData.buildings;
+    /// -1 = the nation's command center).</summary>
     public void BeginPlacement(int buildingIndex)
     {
         CancelPlacement();
 
         NationData data = GetLocalNationData();
-        NationData.BuildingEntry entry = data != null ? data.GetBuilding(buildingIndex) : null;
+        NationData.BuildingEntry entry = null;
+        if (data != null)
+        {
+            entry = buildingIndex == CommandCenterIndex
+                ? MakeCommandCenterEntry(data)
+                : data.GetBuilding(buildingIndex);
+        }
         if (entry == null || entry.prefab == null)
         {
             Debug.LogWarning($"BuildingPlacer: no building at roster index {buildingIndex}. Fill in NationData.");
@@ -150,6 +167,18 @@ public class BuildingPlacer : MonoBehaviour
 
         GameObject building = Instantiate(entry.prefab, position, rotation);
         FactionUtility.SetFaction(building, FactionManager.LocalPlayerFactionId);
+    }
+
+    public static NationData.BuildingEntry MakeCommandCenterEntry(NationData data)
+    {
+        if (data == null || data.commandCenterPrefab == null) return null;
+        return new NationData.BuildingEntry
+        {
+            buildingName = data.displayName + " Command Center",
+            prefab = data.commandCenterPrefab,
+            cost = data.commandCenterCost,
+            category = BuildingCategory.Special
+        };
     }
 
     private NationData GetLocalNationData()

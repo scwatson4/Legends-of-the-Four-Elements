@@ -62,6 +62,8 @@ public class NationData : ScriptableObject
 
     [Header("Buildings")]
     public GameObject commandCenterPrefab;
+    [Tooltip("Silver cost to construct a command center (campaign scratch starts, expansions).")]
+    public int commandCenterCost = 400;
     public GameObject towerPrefab;
     public BuildingEntry[] buildings;
 
