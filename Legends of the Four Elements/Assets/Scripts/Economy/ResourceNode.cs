@@ -33,6 +33,7 @@ public class ResourceNode : MonoBehaviour
     {
         remaining = totalAmount;
         initialScale = transform.localScale;
+        MinimapPOI.Ensure(gameObject, MinimapPOI.POIType.ResourceNode);
     }
 
     /// <summary>Takes up to <paramref name="requested"/> from the node.

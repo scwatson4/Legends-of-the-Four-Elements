@@ -33,8 +33,8 @@ relabel the credits counter "**Silver**" — the show's coinage.
 | Air Acolyte | W | 40 | 4s | forager; `ResourceCollector` |
 | Airbender Monk | I | 50 | 3s | your existing AirbenderUnit |
 | Glider Warrior | I | 80 | 5s | faster (higher NavMeshAgent speed), lower HP |
-| Winged Lemur | A | 30 | 2s | cheap fast scout, tiny HP, no attack (omit AttackController) |
-| Sky Bison | A | 200 | 12s | flying tank — big HP, knock-back wind attack; reuse your bison models! |
+| Winged Lemur | A | 30 | 2s | cheap fast scout, tiny HP, no attack (omit AttackController); `VisionSource` 30 — your fog-of-war eyes |
+| Sky Bison | A | 200 | 12s | flying tank — big HP, knock-back wind attack; reuse your bison models! `VisionSource` 25 (sees far over the fog) |
 | War Glider | V | 150 | 9s | "vehicle" of a nation with no machines: multi-monk glider, hit-and-run |
 | **Avatar (Air-born)** | AV | 600 | 25s | see Avatar spec below |
 
@@ -97,7 +97,9 @@ Burrow (Production: animals) · Rock Launcher Tower (Defense 150, high dmg
 slow fire).
 
 **Upgrades**: Neutral Jing (+HP, Infantry) · Master Sculpting (+dmg,
-Infantry) · Reinforced Hide Plates (+HP, Animal/Vehicle).
+Infantry) · Reinforced Hide Plates (+HP, Animal/Vehicle) · **Seismic Sensing**
+(2 levels, 180 base, `sightBonus` +0.3/level, Infantry) — Toph-style: your
+earthbenders see much further through the fog of war.
 
 ## Fire Nation — aggression & machines
 

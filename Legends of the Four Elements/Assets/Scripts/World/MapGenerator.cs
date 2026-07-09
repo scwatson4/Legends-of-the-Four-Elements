@@ -45,6 +45,8 @@ public class MapGenerator : MonoBehaviour
     public GameObject friendlySpiritPrefab;
     public GameObject darkSpiritPrefab;
     public int spiritCount = 4;
+    public GameObject spiritPortalPrefab;
+    public int spiritPortalCount = 2;
 
     [Header("Start Locations")]
     [Tooltip("Created evenly around the map edge unless the scene already has StartLocations.")]
@@ -180,6 +182,14 @@ public class MapGenerator : MonoBehaviour
             for (int i = 0; i < villageCount; i++)
             {
                 Instantiate(villagePrefab, SnapToGround(RandomPoint()), RandomYRotation());
+            }
+        }
+
+        if (spiritPortalPrefab != null)
+        {
+            for (int i = 0; i < spiritPortalCount; i++)
+            {
+                Instantiate(spiritPortalPrefab, SnapToGround(RandomPoint()), RandomYRotation());
             }
         }
 

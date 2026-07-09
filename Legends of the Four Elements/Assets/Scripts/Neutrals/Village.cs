@@ -24,6 +24,7 @@ public class Village : MonoBehaviour
     private void Start()
     {
         tributeTimer = tributeInterval;
+        MinimapPOI.Ensure(gameObject, MinimapPOI.POIType.Village);
 
         if (villagerPrefab == null) return;
         for (int i = 0; i < villagerCount; i++)

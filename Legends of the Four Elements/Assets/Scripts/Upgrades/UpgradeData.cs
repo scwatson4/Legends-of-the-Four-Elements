@@ -25,6 +25,8 @@ public class UpgradeData : ScriptableObject
     public float damageBonus = 0.15f;
     public float healthBonus = 0f;
     public float speedBonus = 0f;
+    [Tooltip("Extends fog-of-war sight range, e.g. an earthbender 'seismic sensing' track.")]
+    public float sightBonus = 0f;
 
     [Header("Applies to")]
     public UnitCategory[] categories = { UnitCategory.Infantry };

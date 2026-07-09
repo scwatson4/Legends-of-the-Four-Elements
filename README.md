@@ -31,10 +31,17 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
   elemental biomes (volcanoes, glaciers, rivers, windy peaks, quarries,
   spirit wilds) that empower or weaken units by element.
 
+- **Fog of war & minimap** — unexplored land is hidden; scouts like winged
+  lemurs and sky bison (and "seismic sensing" upgrades) see further, and
+  discovered resources, villages and spirit portals stay on your minimap.
+
 ## Docs
 
-- [`docs/FINISHING_GUIDE.md`](docs/FINISHING_GUIDE.md) — step-by-step Unity
-  Editor checklist to finish the game (prefabs, data assets, UI wiring,
-  scenes, assets).
+- [`docs/EDITOR_WIRING.md`](docs/EDITOR_WIRING.md) — **start here**: the
+  master phase-by-phase checklist for wiring everything in the Unity Editor.
+- [`docs/ROSTERS.md`](docs/ROSTERS.md) — the full faction design sheet
+  (units, buildings, upgrades, Avatar, biomes, economy sources).
+- [`docs/FINISHING_GUIDE.md`](docs/FINISHING_GUIDE.md) — background detail
+  per system, same content the wiring checklist references.
 - [`docs/MULTIPLAYER_SETUP.md`](docs/MULTIPLAYER_SETUP.md) — NetworkManager
   setup, prefab registration, LAN/Relay play, and testing.

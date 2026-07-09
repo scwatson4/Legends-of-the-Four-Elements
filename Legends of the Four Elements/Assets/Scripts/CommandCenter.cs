@@ -27,6 +27,8 @@ public class CommandCenter : MonoBehaviour
         {
             MatchManager.Instance.RegisterCommandCenter(this);
         }
+
+        MinimapPOI.Ensure(gameObject, MinimapPOI.POIType.CommandCenter);
     }
 
     private void UpdateHealthUI()

@@ -68,7 +68,7 @@ public static class UpgradeManager
         NationData data = db != null ? db.Get(faction.nation) : null;
         if (data == null || data.upgrades == null || data.upgrades.Length == 0) return;
 
-        float damageMult = 1f, healthMult = 1f, speedMult = 1f;
+        float damageMult = 1f, healthMult = 1f, speedMult = 1f, sightMult = 1f;
         foreach (UpgradeData upgrade in data.upgrades)
         {
             if (upgrade == null || !upgrade.AppliesTo(unit.category)) continue;
@@ -78,15 +78,17 @@ public static class UpgradeManager
             damageMult += level * upgrade.damageBonus;
             healthMult += level * upgrade.healthBonus;
             speedMult += level * upgrade.speedBonus;
+            sightMult += level * upgrade.sightBonus;
         }
 
         if (Mathf.Approximately(damageMult, 1f) &&
             Mathf.Approximately(healthMult, 1f) &&
-            Mathf.Approximately(speedMult, 1f)) return;
+            Mathf.Approximately(speedMult, 1f) &&
+            Mathf.Approximately(sightMult, 1f)) return;
 
         UnitBaseStats baseStats = unit.GetComponent<UnitBaseStats>();
         if (baseStats == null) baseStats = unit.gameObject.AddComponent<UnitBaseStats>();
-        baseStats.ApplyMultipliers(damageMult, healthMult, speedMult);
+        baseStats.ApplyMultipliers(damageMult, healthMult, speedMult, sightMult);
     }
 
     private static void ReapplyToFaction(int factionId)
