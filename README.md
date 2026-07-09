@@ -34,6 +34,12 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
 - **Fog of war & minimap** — unexplored land is hidden; scouts like winged
   lemurs and sky bison (and "seismic sensing" upgrades) see further, and
   discovered resources, villages and spirit portals stay on your minimap.
+- **Story campaign: "The Rupture"** — 25 levels across 5 chapters with
+  dialogue, chi progression and permanent upgrades. Defeat a corrupted past
+  Avatar at the end of each chapter to redeem them into your arsenal, then
+  unite all four against Umbriss, the First Shadow — the source of the
+  imbalance, who can only be wounded while the Avatars stand together
+  (see [`docs/CAMPAIGN.md`](docs/CAMPAIGN.md)).
 
 ## Docs
 
@@ -41,6 +47,9 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
   master phase-by-phase checklist for wiring everything in the Unity Editor.
 - [`docs/ROSTERS.md`](docs/ROSTERS.md) — the full faction design sheet
   (units, buildings, upgrades, Avatar, biomes, economy sources).
+- [`docs/CAMPAIGN.md`](docs/CAMPAIGN.md) — the 25-level story campaign:
+  plot, bosses, redemption/summoning, chi progression, and its (tiny)
+  wiring needs.
 - [`docs/FINISHING_GUIDE.md`](docs/FINISHING_GUIDE.md) — background detail
   per system, same content the wiring checklist references.
 - [`docs/MULTIPLAYER_SETUP.md`](docs/MULTIPLAYER_SETUP.md) — NetworkManager

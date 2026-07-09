@@ -240,6 +240,13 @@ extras already handled by code: building placement, upgrades and Avatar
 uniqueness all validate on the server; fog of war is per-client
 automatically; random maps use the shared `multiplayerSeed`.
 
+## Phase 10 — Campaign mode
+
+The 25-level story campaign ("The Rupture") is code-driven — dialogue,
+bosses, progression and saves all bootstrap themselves. The only wiring is
+the campaign menu panel and one final-boss prefab in Resources. Full
+instructions + test checklist: **[`CAMPAIGN.md`](CAMPAIGN.md)**.
+
 ## Phase 9 — Full test matrix
 
 - [ ] Level1 plays like before (survival waves, win + lose)

@@ -44,6 +44,14 @@ public static class UpgradeManager
         return true;
     }
 
+    /// <summary>Campaign: seed an already-owned permanent level without paying.</summary>
+    public static void SetLevelDirect(int factionId, UpgradeData upgrade, int level)
+    {
+        if (upgrade == null || level <= 0) return;
+        levels[(factionId, upgrade.upgradeId)] = Mathf.Min(level, upgrade.maxLevel);
+        ReapplyToFaction(factionId);
+    }
+
     /// <summary>Multiplayer clients: mirror a level the server already paid for.</summary>
     public static void ApplyPurchasedLevel(int factionId, UpgradeData upgrade)
     {

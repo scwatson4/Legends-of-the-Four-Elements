@@ -96,7 +96,7 @@ public class MatchManager : MonoBehaviour
             SpawnBases();
         }
 
-        if (Mode == GameMode.Skirmish)
+        if (Mode != GameMode.Survival) // skirmish & campaign both use base income
         {
             StartCoroutine(IncomeLoop());
         }

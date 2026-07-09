@@ -8,6 +8,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public bool GameIsOver { get; private set; } // Added for wave system
 
+    /// <summary>Fired once when the local player wins / loses. Used by the campaign.</summary>
+    public static event System.Action VictoryEvent;
+    public static event System.Action DefeatEvent;
+
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private Button restartButton;
     [SerializeField] private Button mainMenuButton;
@@ -50,6 +54,7 @@ public class GameManager : MonoBehaviour
         sidePanel.SetActive(false);
         Time.timeScale = 0f;
         Debug.Log($"Game Over: Player lost in {currentLevel}");
+        DefeatEvent?.Invoke();
     }
 
     public void OnEnemyCommandCenterDestroyed()
@@ -65,6 +70,7 @@ public class GameManager : MonoBehaviour
         sidePanel.SetActive(false);
         Time.timeScale = 0f;
         Debug.Log("Level won");
+        VictoryEvent?.Invoke();
     }
 
     /// <summary>Generic defeat entry point used by the multi-faction MatchManager.</summary>

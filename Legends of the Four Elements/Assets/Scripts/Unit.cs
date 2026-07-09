@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>Lets a component (boss shields etc.) modify damage before it lands.</summary>
+public interface IDamageInterceptor
+{
+    int ModifyIncomingDamage(int damage);
+}
+
 public class Unit : MonoBehaviour
 {
     // Serialized in prefabs - append only, never reorder.
@@ -43,6 +49,7 @@ public class Unit : MonoBehaviour
     NavMeshAgent navMeshAgent;
     AttackController attackController;
     UnitMovement unitMovement;
+    IDamageInterceptor[] damageInterceptors;
     bool isDying;
 
     void Start()
@@ -117,6 +124,17 @@ public class Unit : MonoBehaviour
         // In multiplayer only the server applies damage; clients receive the
         // result through NetworkUnit's synced health.
         if (NetworkGuard.BlockLocalSimulation) return;
+
+        // Bosses and shields can modify or nullify incoming damage.
+        if (damageInterceptors == null)
+        {
+            damageInterceptors = GetComponents<IDamageInterceptor>();
+        }
+        foreach (IDamageInterceptor interceptor in damageInterceptors)
+        {
+            damageToInflict = interceptor.ModifyIncomingDamage(damageToInflict);
+        }
+        if (damageToInflict <= 0) return;
 
         ApplyHealth(unitHealth - damageToInflict);
     }

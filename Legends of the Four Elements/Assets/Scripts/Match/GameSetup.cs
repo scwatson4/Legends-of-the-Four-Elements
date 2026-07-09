@@ -7,7 +7,10 @@ public enum GameMode
     Survival = 0,
 
     /// <summary>Free-for-all / teams vs AI commanders, Halo Wars style.</summary>
-    Skirmish = 1
+    Skirmish = 1,
+
+    /// <summary>Story campaign level (CampaignManager drives objectives/bosses).</summary>
+    Campaign = 2
 }
 
 /// <summary>
