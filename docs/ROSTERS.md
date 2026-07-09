@@ -45,7 +45,7 @@ relabel the credits counter "**Silver**" — the show's coinage.
 | Air Temple | Command | — | command center + `ResourceDropoff` |
 | Meditation Pavilion | Economy | 120 | `IncomeBuilding` 8/6s, stronger near a **Spirit Grove** node |
 | Bison Stable | Production | 180 | trains Lemur / Sky Bison |
-| Wind Cannon Pagoda | Defense | 140 | `DefenseTower`, long range, low damage |
+| Wind Cannon Pagoda | Defense | 140 | `DefenseTower` element **Air**: shots knock enemies back; special is a tornado that damages and scatters the pack |
 | Spirit Shrine | Special | 250 | unlock flavor: place near Spirit Wilds; passive income + heals nearby units (add `Healer` with big radius) |
 
 **Upgrades** (`UpgradeData` assets)
@@ -72,7 +72,9 @@ relabel the credits counter "**Silver**" — the show's coinage.
 **Buildings**: Ice Palace (command + dropoff) · Fishing Dock (Economy 130,
 `IncomeBuilding` requires **Fish Shoal** within 12) · Healing Hut (Production:
 Healers; give the hut itself a small `Healer` aura) · Ice Spike Tower
-(Defense 140) · Shipyard (Production: Ice Cutters, 200).
+(Defense 140 — `DefenseTower` element **Water**: shots slow, special is a
+wave that hits and slows everything near the target) · Shipyard (Production:
+Ice Cutters, 200).
 
 **Upgrades**: Moonlight Discipline (+dmg, Infantry) · Glacial Hide (+HP,
 Animal/Vehicle) · Healing Waters (+HP, Infantry).
@@ -93,8 +95,8 @@ Animal/Vehicle) · Healing Waters (+HP, Infantry).
 
 **Buildings**: Earthen Citadel (command + dropoff) · Crystal Mine (Economy
 140, requires **Crystal Deposit**) · Barracks (Production) · Badgermole
-Burrow (Production: animals) · Rock Launcher Tower (Defense 150, high dmg
-slow fire).
+Burrow (Production: animals) · Rock Launcher Tower (Defense 150 — `DefenseTower` element **Earth**: every
+boulder splashes; special is a massive boulder, 2x damage full splash).
 
 **Upgrades**: Neutral Jing (+HP, Infantry) · Master Sculpting (+dmg,
 Infantry) · Reinforced Hide Plates (+HP, Animal/Vehicle) · **Seismic Sensing**
@@ -117,7 +119,8 @@ earthbenders see much further through the fog of war.
 
 **Buildings**: Fire Citadel (command + dropoff) · Coal Refinery (Economy 140,
 requires **Coal Seam**) · War Academy (Production: infantry) · War Factory
-(Production: tanks/balloons, 220) · Flame Turret (Defense 140, fast fire).
+(Production: tanks/balloons, 220) · Flame Turret (Defense 140 — `DefenseTower` element **Fire**: shots ignite
+targets (burn over time); special is a lightning strike for 3x damage).
 
 **Upgrades**: Sozin's Comet Doctrine (+dmg, everything, expensive) · Drill
 Plating (+HP, Vehicle) · Forced March (+speed, Infantry/Animal).

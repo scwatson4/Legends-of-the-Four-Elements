@@ -89,8 +89,9 @@ public class RTSCameraController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape)) followTransform = null;
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.A)) ToggleMapView();
-        if (Input.GetKeyDown(KeyCode.Alpha1)) Zoom(-zoomStep);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) Zoom(zoomStep);
+        // Zoom moved from 1/2 to -/= so number keys are free for control groups.
+        if (Input.GetKeyDown(KeyCode.Minus)) Zoom(-zoomStep);
+        if (Input.GetKeyDown(KeyCode.Equals)) Zoom(zoomStep);
     }
 
     void HandleCameraMovement()

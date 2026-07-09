@@ -139,8 +139,11 @@ role component:
 - Economy: `IncomeBuilding` (tick amount/interval; tick **Requires Nearby
   Node** + type for mines/docks/refineries)
 - Production: `UnitSpawner` (buttons call `QueueRosterUnit`)
-- Defense: `DefenseTower` (range/damage/interval + optional shot VFX +
-  `VisionSource` ~20 so towers watch the fog)
+- Defense: `DefenseTower` — set the **Element** per nation (Fire = burn +
+  lightning special, Air = knockback + tornado, Water = slow + wave,
+  Earth = splash boulders + massive boulder). Assign a Shot Effect VFX and
+  a bigger Special Shot Effect VFX, plus `VisionSource` ~20 so towers watch
+  the fog. Every 4th shot fires the special (Special Every N Shots).
 - Any building that should accept worker deliveries: `ResourceDropoff`
 - Layer: Attackable. 
 - [ ] **Command centers** for Water/Earth: duplicate AirNationTemple /

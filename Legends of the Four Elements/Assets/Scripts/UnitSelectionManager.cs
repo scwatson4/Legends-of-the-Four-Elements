@@ -21,6 +21,14 @@ public class UnitSelectionManager : MonoBehaviour
 
     private Camera cam;
 
+    // Control groups (Ctrl+1..9 assign, 1..9 select), attack-move (F),
+    // and double-click select-all-of-type.
+    private readonly Dictionary<int, List<GameObject>> controlGroups =
+        new Dictionary<int, List<GameObject>>();
+    private bool attackMoveArmed;
+    private float lastClickTime;
+    private GameObject lastClickedUnit;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -45,6 +53,31 @@ public class UnitSelectionManager : MonoBehaviour
 
         // While placing a building, the mouse belongs to the BuildingPlacer.
         if (BuildingPlacer.IsPlacing) return;
+
+        HandleControlGroups();
+
+        // F arms attack-move: the next left-click on ground sends the army
+        // there, engaging everything hostile it meets on the way.
+        if (Input.GetKeyDown(KeyCode.F) && selectedUnitsList.Count > 0)
+        {
+            attackMoveArmed = true;
+        }
+        if (attackMoveArmed && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1)))
+        {
+            attackMoveArmed = false;
+        }
+
+        if (attackMoveArmed && Input.GetMouseButtonDown(0))
+        {
+            RaycastHit amHit;
+            Ray amRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(amRay, out amHit, Mathf.Infinity, ground))
+            {
+                IssueAttackMove(amHit.point);
+            }
+            attackMoveArmed = false;
+            return; // consume the click - don't also change the selection
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -260,11 +293,104 @@ public class UnitSelectionManager : MonoBehaviour
 
     private void SelectByClicking(GameObject unit)
     {
+        // Double-click: grab every unit of the same type you own.
+        bool doubleClick = unit == lastClickedUnit &&
+                           Time.unscaledTime - lastClickTime < 0.35f;
+        lastClickedUnit = unit;
+        lastClickTime = Time.unscaledTime;
+
         DeselectAll();
+
+        if (doubleClick)
+        {
+            SelectAllOfSameType(unit);
+            return;
+        }
 
         selectedUnitsList.Add(unit);
 
         SelectUnit(unit, true);
+    }
+
+    private void SelectAllOfSameType(GameObject clicked)
+    {
+        Unit clickedUnit = clicked.GetComponentInParent<Unit>();
+        if (clickedUnit == null)
+        {
+            selectedUnitsList.Add(clicked);
+            SelectUnit(clicked, true);
+            return;
+        }
+
+        foreach (GameObject go in allUnitsList)
+        {
+            if (go == null || !CanSelect(go)) continue;
+            Unit unit = go.GetComponent<Unit>();
+            if (unit == null || unit.unitType != clickedUnit.unitType) continue;
+
+            selectedUnitsList.Add(go);
+            SelectUnit(go, true);
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Control groups & attack-move
+    // ------------------------------------------------------------------
+
+    private void HandleControlGroups()
+    {
+        bool assign = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+
+        for (int number = 1; number <= 9; number++)
+        {
+            if (!Input.GetKeyDown(KeyCode.Alpha0 + number)) continue;
+
+            if (assign)
+            {
+                if (selectedUnitsList.Count == 0) continue;
+                controlGroups[number] = new List<GameObject>(selectedUnitsList);
+                Debug.Log($"Control group {number}: {selectedUnitsList.Count} units assigned.");
+            }
+            else if (controlGroups.TryGetValue(number, out List<GameObject> group))
+            {
+                group.RemoveAll(u => u == null);
+                if (group.Count == 0) continue;
+
+                DeselectAll();
+                foreach (GameObject unit in group)
+                {
+                    selectedUnitsList.Add(unit);
+                    SelectUnit(unit, true);
+                }
+            }
+        }
+    }
+
+    private void IssueAttackMove(Vector3 destination)
+    {
+        groundMarker.transform.position = destination;
+        groundMarker.SetActive(false);
+        groundMarker.SetActive(true);
+
+        foreach (GameObject unit in selectedUnitsList)
+        {
+            if (unit == null) continue;
+
+            AttackController attack = unit.GetComponent<AttackController>();
+            if (attack != null) attack.targetToAttack = null;
+
+            if (NetworkUnit.TryRelayMove(unit, destination)) continue;
+
+            UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (agent != null && agent.enabled && agent.isOnNavMesh)
+            {
+                // Deliberately NOT setting isCommandedToMove: that flag
+                // suppresses target acquisition, and attack-move should
+                // engage everything hostile along the way.
+                agent.SetDestination(destination);
+            }
+        }
+        Debug.Log($"Attack-move: {selectedUnitsList.Count} units advancing.");
     }
 
     private void EnableUnitMovement(GameObject unit, bool shouldMove)

@@ -54,3 +54,5 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
   per system, same content the wiring checklist references.
 - [`docs/MULTIPLAYER_SETUP.md`](docs/MULTIPLAYER_SETUP.md) — NetworkManager
   setup, prefab registration, LAN/Relay play, and testing.
+- [`docs/CONTROLS.md`](docs/CONTROLS.md) — every mouse/keyboard control,
+  control groups, attack-move, Avatar hotkeys, and the tower element table.
