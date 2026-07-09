@@ -8,117 +8,75 @@ public class AttackController : MonoBehaviour
     public Material idleStateMaterial;
     public Material followStateMaterial;
     public Material attackStateMaterial;
+
+    [Tooltip("Legacy mirror of Unit.team. Hostility is decided by FactionManager now.")]
     public Team team;
     public int unitDamage = 10;
     public GameObject flamethrowerEffect;
     public float detectionRadius = 10f;
     public float attackDistance = 1f;
 
-    private UnitMovement unitMovement; // Added to check isCommandedToMove
+    private UnitMovement unitMovement;
 
     private void Start()
     {
-        team = GetComponent<Unit>().team;
-        unitMovement = GetComponent<UnitMovement>(); // Initialize UnitMovement
+        Unit unit = GetComponent<Unit>();
+        if (unit != null) team = unit.team;
+        unitMovement = GetComponent<UnitMovement>();
+    }
+
+    /// <summary>Faction-aware hostility check (works for all four nations,
+    /// neutral villagers, dark spirits, and multiplayer factions).</summary>
+    public bool IsHostileTo(GameObject other)
+    {
+        return FactionUtility.AreHostile(gameObject, other);
+    }
+
+    private bool IsValidTarget(Collider other)
+    {
+        // Units (benders, villagers, spirits)
+        Unit otherUnit = other.GetComponentInParent<Unit>();
+        if (otherUnit != null)
+        {
+            return IsHostileTo(otherUnit.gameObject);
+        }
+
+        // Structures
+        CommandCenter commandCenter = other.GetComponentInParent<CommandCenter>();
+        if (commandCenter != null)
+        {
+            return IsHostileTo(commandCenter.gameObject);
+        }
+
+        return false;
+    }
+
+    private void TryAcquireTarget(Collider other)
+    {
+        if (unitMovement != null && unitMovement.isCommandedToMove) return; // don't interrupt move orders
+        if (targetToAttack != null) return;
+
+        if (IsValidTarget(other))
+        {
+            targetToAttack = other.transform;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (unitMovement != null && unitMovement.isCommandedToMove) return; // Skip if moving
-
-        if (other.CompareTag("Unit"))
-        {
-            Unit otherUnit = other.GetComponent<Unit>();
-            if (otherUnit != null && otherUnit.team != team && targetToAttack == null)
-            {
-                targetToAttack = other.transform;
-                Debug.Log($"{gameObject.name} set target to Unit: {other.name}");
-            }
-        }
-        else if (other.CompareTag("CommandCenter"))
-        {
-            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
-            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
-            {
-                targetToAttack = other.transform;
-                Debug.Log($"{gameObject.name} set target to CommandCenter: {other.name}");
-            }
-        }
-        else if (other.CompareTag("EnemyCommandCenter"))
-        {
-            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
-            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
-            {
-                targetToAttack = other.transform;
-                Debug.Log($"{gameObject.name} set target to EnemyCommandCenter: {other.name}");
-            }
-        }
+        TryAcquireTarget(other);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (unitMovement != null && unitMovement.isCommandedToMove) return; // Skip if moving
-
-        if (other.CompareTag("Unit"))
-        {
-            Unit otherUnit = other.GetComponent<Unit>();
-            if (otherUnit != null && otherUnit.team != team && targetToAttack == null)
-            {
-                targetToAttack = other.transform;
-                Debug.Log($"{gameObject.name} set target to Unit (stay): {other.name}");
-            }
-        }
-        else if (other.CompareTag("CommandCenter"))
-        {
-            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
-            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
-            {
-                targetToAttack = other.transform;
-                Debug.Log($"{gameObject.name} set target to CommandCenter (stay): {other.name}");
-            }
-        }
-        else if (other.CompareTag("EnemyCommandCenter"))
-        {
-            CommandCenter commandCenter = other.GetComponent<CommandCenter>();
-            if (commandCenter != null && commandCenter.team != team && targetToAttack == null)
-            {
-                targetToAttack = other.transform;
-                Debug.Log($"{gameObject.name} set target to EnemyCommandCenter (stay): {other.name}");
-            }
-        }
+        TryAcquireTarget(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (targetToAttack != null && targetToAttack == other.transform)
         {
-            if (other.CompareTag("Unit"))
-            {
-                Unit otherUnit = other.GetComponent<Unit>();
-                if (otherUnit != null && otherUnit.team != team)
-                {
-                    targetToAttack = null;
-                    Debug.Log($"{gameObject.name} stopped attacking Unit: {other.name}");
-                }
-            }
-            else if (other.CompareTag("CommandCenter"))
-            {
-                CommandCenter commandCenter = other.GetComponent<CommandCenter>();
-                if (commandCenter != null && commandCenter.team != team)
-                {
-                    targetToAttack = null;
-                    Debug.Log($"{gameObject.name} stopped attacking CommandCenter: {other.name}");
-                }
-            }
-            else if (other.CompareTag("EnemyCommandCenter"))
-            {
-                CommandCenter commandCenter = other.GetComponent<CommandCenter>();
-                if (commandCenter != null && commandCenter.team != team)
-                {
-                    targetToAttack = null;
-                    Debug.Log($"{gameObject.name} stopped attacking EnemyCommandCenter: {other.name}");
-                }
-            }
+            targetToAttack = null;
         }
     }
 

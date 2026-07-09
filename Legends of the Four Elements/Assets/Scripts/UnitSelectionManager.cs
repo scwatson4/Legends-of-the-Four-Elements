@@ -12,6 +12,10 @@ public class UnitSelectionManager : MonoBehaviour
     public LayerMask clickable;
     public LayerMask ground;
     public LayerMask attackable;
+
+    [Tooltip("Only allow selecting units owned by the local player's faction.")]
+    public bool restrictSelectionToLocalPlayer = true;
+
     public bool attackCursorVisible;
     public GameObject groundMarker;
 
@@ -45,7 +49,7 @@ public class UnitSelectionManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             // If we are hitting a clickable object
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable) && CanSelect(hit.collider.gameObject))
             {
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
@@ -70,7 +74,20 @@ public class UnitSelectionManager : MonoBehaviour
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            // If we are hitting a clickable object
+            // Befriend/tame command: right-click on a tameable being.
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                Tameable tameable = hit.collider.GetComponentInParent<Tameable>();
+                if (tameable != null && tameable.IsTameableNow())
+                {
+                    foreach (GameObject unit in selectedUnitsList)
+                    {
+                        if (unit != null) tameable.OrderTame(unit);
+                    }
+                }
+            }
+
+            // Ground move order
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, ground))
             {
                 groundMarker.transform.position = hit.point;
@@ -84,7 +101,6 @@ public class UnitSelectionManager : MonoBehaviour
                     if (unit != null && unit.GetComponent<AttackController>() != null)
                     {
                         unit.GetComponent<AttackController>().targetToAttack = null;
-                        Debug.Log($"{unit.name} cleared attack target for ground movement");
                     }
                 }
             }
@@ -96,19 +112,29 @@ public class UnitSelectionManager : MonoBehaviour
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            // If we are hitting a clickable object
+            // If we are hitting an attackable object
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, attackable))
             {
-                Debug.Log("Enemy Hovered with mouse");
-
                 attackCursorVisible = true;
 
                 if (Input.GetMouseButton(1))
                 {
                     Transform target = hit.transform;
+
+                    // Don't order attacks on friendlies or peaceful neutrals.
+                    Tameable tameable = hit.collider.GetComponentInParent<Tameable>();
                     foreach (GameObject unit in selectedUnitsList)
                     {
-                        if (unit != null && unit.GetComponent<AttackController>() != null)
+                        if (unit == null || unit.GetComponent<AttackController>() == null) continue;
+                        if (!FactionUtility.AreHostile(unit, target.gameObject))
+                        {
+                            // Peaceful being: treat the click as a befriend order instead.
+                            if (tameable != null && tameable.IsTameableNow()) tameable.OrderTame(unit);
+                            continue;
+                        }
+
+                        // Networked client: relay the order to the server.
+                        if (!NetworkUnit.TryRelayAttack(unit, target.gameObject))
                         {
                             unit.GetComponent<AttackController>().targetToAttack = target;
                         }
@@ -124,12 +150,23 @@ public class UnitSelectionManager : MonoBehaviour
         CursorSelector();
     }
 
+    /// <summary>You can only select units that belong to your own faction.</summary>
+    private bool CanSelect(GameObject clicked)
+    {
+        if (!restrictSelectionToLocalPlayer) return true;
+
+        Unit unit = clicked.GetComponentInParent<Unit>();
+        if (unit == null) return true; // non-unit clickables (buildings etc.)
+
+        return FactionUtility.IsLocallyControlled(unit.gameObject);
+    }
+
     private void CursorSelector()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable) && CanSelect(hit.collider.gameObject))
         {
             CursorManager.Instance.SetMarkerType(CursorManager.CursorType.Selectable);
         }
@@ -190,7 +227,7 @@ public class UnitSelectionManager : MonoBehaviour
 
     internal void DragSelect(GameObject unit)
     {
-        if (selectedUnitsList.Contains(unit) == false)
+        if (selectedUnitsList.Contains(unit) == false && CanSelect(unit))
         {
             selectedUnitsList.Add(unit);
             SelectUnit(unit, true);

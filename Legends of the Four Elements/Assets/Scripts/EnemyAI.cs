@@ -3,16 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+/// <summary>
+/// Autonomous combat brain for AI-controlled units. Despite the legacy name
+/// (kept so existing prefabs stay wired), it now drives units of ANY AI
+/// faction - Fire waves, skirmish nations and dark spirits alike. It attacks
+/// the nearest hostile unit it finds, and optionally marches on the nearest
+/// hostile command center when idle.
+/// </summary>
 public class EnemyAI : MonoBehaviour
 {
     private NavMeshAgent agent;
     private AttackController attackController;
     private Animator animator;
     private Unit unit;
+
     public float searchInterval = 2f; // How often to search for targets
+
+    [Tooltip("When idle, march on the nearest hostile command center. " +
+             "Turn off for defenders and roaming spirits.")]
+    public bool chaseCommandCenters = true;
+
     private float searchTimer;
-    private Transform commandCenterTarget; // Primary target (command center)
-    private bool isTargetingCommandCenter = true;
+    private Transform commandCenterTarget;
+    private float commandCenterRefreshTimer;
 
     void Start()
     {
@@ -22,21 +35,33 @@ public class EnemyAI : MonoBehaviour
         unit = GetComponent<Unit>();
         searchTimer = searchInterval;
 
-        // Find the command center at start
-        GameObject commandCenter = GameObject.FindGameObjectWithTag("CommandCenter");
-        if (commandCenter != null)
+        RefreshCommandCenterTarget();
+    }
+
+    private void RefreshCommandCenterTarget()
+    {
+        commandCenterTarget = null;
+        if (!chaseCommandCenters) return;
+
+        float closestDistance = Mathf.Infinity;
+        foreach (CommandCenter cc in FindObjectsByType<CommandCenter>(FindObjectsSortMode.None))
         {
-            commandCenterTarget = commandCenter.transform;
-        }
-        else
-        {
-            Debug.LogWarning("No CommandCenter found in the scene!");
+            if (!FactionUtility.AreHostile(gameObject, cc.gameObject)) continue;
+
+            float distance = Vector3.Distance(transform.position, cc.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                commandCenterTarget = cc.transform;
+            }
         }
     }
 
     void Update()
     {
-        if (unit.team != Team.Enemy) return; // Only run for enemy units
+        // Only think for AI-controlled factions (works for legacy Team.Enemy too).
+        if (unit == null || !FactionManager.IsAIControlled(unit.FactionId)) return;
+        if (agent == null || !agent.enabled || !agent.isOnNavMesh) return;
 
         searchTimer -= Time.deltaTime;
         if (searchTimer <= 0)
@@ -45,12 +70,20 @@ public class EnemyAI : MonoBehaviour
             searchTimer = searchInterval;
         }
 
-        // Determine current target
-        Transform currentTarget = attackController.targetToAttack != null ? attackController.targetToAttack : commandCenterTarget;
+        // Re-resolve the command center goal now and then (bases get destroyed/built).
+        commandCenterRefreshTimer -= Time.deltaTime;
+        if (commandCenterRefreshTimer <= 0f || commandCenterTarget == null)
+        {
+            RefreshCommandCenterTarget();
+            commandCenterRefreshTimer = 5f;
+        }
+
+        Transform currentTarget = attackController != null && attackController.targetToAttack != null
+            ? attackController.targetToAttack
+            : commandCenterTarget;
 
         if (currentTarget != null)
         {
-            // Check if target position is on NavMesh
             NavMeshHit hit;
             if (NavMesh.SamplePosition(currentTarget.position, out hit, 5f, NavMesh.AllAreas))
             {
@@ -58,34 +91,35 @@ public class EnemyAI : MonoBehaviour
                 if (distanceToTarget <= attackController.attackDistance)
                 {
                     agent.SetDestination(transform.position); // Stop moving
-                    animator.SetBool("isAttacking", true);
-                    isTargetingCommandCenter = (currentTarget == commandCenterTarget);
+                    SetAnim("isAttacking", true);
                 }
                 else
                 {
                     agent.SetDestination(hit.position);
-                    animator.SetBool("isFollowing", true);
-                    animator.SetBool("isAttacking", false);
-                    isTargetingCommandCenter = (currentTarget == commandCenterTarget);
+                    SetAnim("isFollowing", true);
+                    SetAnim("isAttacking", false);
                 }
-            }
-            else
-            {
-                Debug.LogWarning("Target position is off NavMesh: " + currentTarget.position);
             }
         }
         else
         {
-            animator.SetBool("isFollowing", false);
-            animator.SetBool("isAttacking", false);
-            isTargetingCommandCenter = true; // Revert to command center if no target
+            SetAnim("isFollowing", false);
+            SetAnim("isAttacking", false);
         }
+    }
+
+    private void SetAnim(string name, bool value)
+    {
+        if (animator != null) animator.SetBool(name, value);
     }
 
     void FindNearestEnemyUnit()
     {
-        // Only search for enemy units if not already attacking one
-        if (attackController.targetToAttack != null && attackController.targetToAttack.GetComponent<Unit>() != null)
+        if (attackController == null) return;
+
+        // Keep the current unit target if it is still alive.
+        if (attackController.targetToAttack != null &&
+            attackController.targetToAttack.GetComponent<Unit>() != null)
         {
             return;
         }
@@ -96,34 +130,24 @@ public class EnemyAI : MonoBehaviour
 
         foreach (Collider hit in hits)
         {
-            Unit targetUnit = hit.GetComponent<Unit>();
-            if (targetUnit != null && targetUnit.team != unit.team)
+            Unit targetUnit = hit.GetComponentInParent<Unit>();
+            if (targetUnit == null || targetUnit.gameObject == gameObject) continue;
+
+            if (!FactionUtility.AreHostile(gameObject, targetUnit.gameObject)) continue;
+
+            float distance = Vector3.Distance(transform.position, targetUnit.transform.position);
+            if (distance < closestDistance)
             {
-                float distance = Vector3.Distance(transform.position, hit.transform.position);
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestEnemyUnit = hit.transform;
-                }
+                closestDistance = distance;
+                closestEnemyUnit = targetUnit.transform;
             }
         }
 
-        // If an enemy unit is found, prioritize it over the command center
-        if (closestEnemyUnit != null)
-        {
-            attackController.targetToAttack = closestEnemyUnit;
-        }
-        else
-        {
-            // Revert to command center if no enemy units are nearby
-            attackController.targetToAttack = null;
-        }
+        attackController.targetToAttack = closestEnemyUnit;
     }
 
     public void OnTargetDestroyed()
     {
-        // Called when the current target is destroyed
-        attackController.targetToAttack = null;
-        isTargetingCommandCenter = true; // Resume targeting command center
+        if (attackController != null) attackController.targetToAttack = null;
     }
 }

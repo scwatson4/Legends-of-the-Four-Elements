@@ -12,11 +12,14 @@ public class SoundManager : MonoBehaviour
 
     public AudioClip firebenderAttackClip;
     public AudioClip airbenderAttackClip;
+    public AudioClip waterbenderAttackClip;
+    public AudioClip earthbenderAttackClip;
+    public AudioClip spiritAttackClip;
     public AudioClip unitDeathClip;
     public AudioClip structureDestructionClip;
 
     private void Awake()
-    {   
+    {
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -53,16 +56,23 @@ public class SoundManager : MonoBehaviour
             case Unit.UnitType.Airbender:
                 clip = airbenderAttackClip;
                 break;
+            case Unit.UnitType.Waterbender:
+                clip = waterbenderAttackClip;
+                break;
+            case Unit.UnitType.Earthbender:
+                clip = earthbenderAttackClip;
+                break;
+            case Unit.UnitType.Spirit:
+                clip = spiritAttackClip;
+                break;
             default:
-                Debug.LogWarning($"No attack sound defined for unit type: {unitType}");
-                return;
+                return; // villagers and unknown types make no attack sound
         }
 
         if (clip != null)
         {
             unitAttackChannel.clip = clip;
             unitAttackChannel.Play();
-            Debug.Log($"Playing attack sound for {unitType}");
         }
         else
         {

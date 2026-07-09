@@ -21,13 +21,18 @@ public class UnitAttackState : StateMachineBehaviour
         enemyAI = animator.GetComponent<EnemyAI>();
         unit = animator.GetComponent<Unit>();
         attackController.SetAttackStateMaterial();
-        attackController.flamethrowerEffect.SetActive(true);
-        Debug.Log($"{animator.gameObject.name} entered attack state. Target: {attackController.targetToAttack?.name}");
+        if (attackController.flamethrowerEffect != null)
+        {
+            attackController.flamethrowerEffect.SetActive(true);
+        }
     }
 
     public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (attackController.targetToAttack != null && !animator.transform.GetComponent<UnitMovement>().isCommandedToMove)
+        UnitMovement movement = animator.transform.GetComponent<UnitMovement>();
+        bool commandedToMove = movement != null && movement.isCommandedToMove;
+
+        if (attackController.targetToAttack != null && !commandedToMove)
         {
             LookAtTarget();
 
@@ -41,16 +46,16 @@ public class UnitAttackState : StateMachineBehaviour
                 attackTimer -= Time.deltaTime;
             }
 
+            if (attackController.targetToAttack == null) return;
+
             float distanceFromTarget = Vector3.Distance(attackController.targetToAttack.position, animator.transform.position);
-            if (distanceFromTarget > stopAttackingDistance || attackController.targetToAttack == null)
+            if (distanceFromTarget > stopAttackingDistance)
             {
-                Debug.Log($"{animator.gameObject.name} exiting attack state. Distance: {distanceFromTarget}, Target: {attackController.targetToAttack?.name}");
                 animator.SetBool("isAttacking", false);
             }
         }
         else
         {
-            Debug.Log($"{animator.gameObject.name} exiting attack state. Target null or commanded to move.");
             animator.SetBool("isAttacking", false);
         }
     }
@@ -60,12 +65,15 @@ public class UnitAttackState : StateMachineBehaviour
         if (attackController.targetToAttack == null) return;
 
         var damageToInflict = attackController.unitDamage;
-        SoundManager.Instance.PlayAttackSound(unit.unitType);
+        if (SoundManager.Instance != null && unit != null)
+        {
+            SoundManager.Instance.PlayAttackSound(unit.unitType);
+        }
 
         Unit targetUnit = attackController.targetToAttack.GetComponent<Unit>();
         CommandCenter targetCommandCenter = attackController.targetToAttack.GetComponent<CommandCenter>();
 
-        if (targetUnit != null && targetUnit.team != attackController.team)
+        if (targetUnit != null && attackController.IsHostileTo(targetUnit.gameObject))
         {
             targetUnit.TakeDamage(damageToInflict);
             if (targetUnit == null || !targetUnit.gameObject.activeSelf)
@@ -76,10 +84,9 @@ public class UnitAttackState : StateMachineBehaviour
                 }
             }
         }
-        else if (targetCommandCenter != null && targetCommandCenter.team != attackController.team)
+        else if (targetCommandCenter != null && attackController.IsHostileTo(targetCommandCenter.gameObject))
         {
             targetCommandCenter.TakeDamage(damageToInflict);
-            Debug.Log($"{attackController.gameObject.name} attacking CommandCenter: {targetCommandCenter.name}, Damage: {damageToInflict}");
             if (targetCommandCenter == null || !targetCommandCenter.gameObject.activeSelf)
             {
                 if (enemyAI != null)
@@ -100,8 +107,13 @@ public class UnitAttackState : StateMachineBehaviour
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        attackController.flamethrowerEffect.SetActive(false);
-        SoundManager.Instance.StopAttackSound();
-        Debug.Log($"{animator.gameObject.name} exited attack state.");
+        if (attackController.flamethrowerEffect != null)
+        {
+            attackController.flamethrowerEffect.SetActive(false);
+        }
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.StopAttackSound();
+        }
     }
 }

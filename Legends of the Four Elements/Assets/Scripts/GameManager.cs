@@ -67,6 +67,18 @@ public class GameManager : MonoBehaviour
         Debug.Log("Level won");
     }
 
+    /// <summary>Generic defeat entry point used by the multi-faction MatchManager.</summary>
+    public void ShowDefeat()
+    {
+        OnPlayerCommandCenterDestroyed();
+    }
+
+    /// <summary>Generic victory entry point used by the multi-faction MatchManager.</summary>
+    public void ShowVictory()
+    {
+        OnEnemyCommandCenterDestroyed();
+    }
+
     public void RestartLevel()
     {
         Time.timeScale = 1f;

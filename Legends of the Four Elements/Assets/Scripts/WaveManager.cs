@@ -32,6 +32,14 @@ public class WaveManager : MonoBehaviour
 
     private void Start()
     {
+        // Waves are the Survival experience; skirmish matches use AICommanders instead.
+        if (GameSetup.Mode != GameMode.Survival)
+        {
+            Debug.Log("WaveManager disabled: game mode is " + GameSetup.Mode);
+            enabled = false;
+            return;
+        }
+
         enemyCommandCenter = FindFirstObjectByType<EnemyCommandCenter>();
         if (enemyCommandCenter == null)
         {

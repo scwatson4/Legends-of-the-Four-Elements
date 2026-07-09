@@ -64,6 +64,14 @@ public class PlayerResources : MonoBehaviour
         UpdateCreditsDisplay();
     }
 
+    /// <summary>Mirror an authoritative value (multiplayer server) into the HUD.</summary>
+    public void SetCredits(int amount)
+    {
+        if (Credits == amount) return;
+        Credits = amount;
+        UpdateCreditsDisplay();
+    }
+
     private void UpdateCreditsDisplay()
     {
         if (animateRoutine != null) StopCoroutine(animateRoutine);

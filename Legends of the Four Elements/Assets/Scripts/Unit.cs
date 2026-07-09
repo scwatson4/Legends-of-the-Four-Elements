@@ -6,28 +6,45 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
-
+    // Serialized in prefabs - append only, never reorder.
     public enum UnitType
     {
-        Airbender,
-        Firebender
+        Airbender = 0,
+        Firebender = 1,
+        Waterbender = 2,
+        Earthbender = 3,
+        Villager = 4,
+        Spirit = 5
     }
 
     private float unitHealth;
     public float maxUnitHealth = 100f;
+
+    [Tooltip("Legacy two-team field. Add a FactionMember component for full four-nation/multiplayer ownership.")]
     public Team team = Team.Player;
     public UnitType unitType;
 
     public HealthTracker healthTracker;
 
+    /// <summary>Fired with (current, max) whenever health changes. Used by the network sync layer.</summary>
+    public event Action<float, float> HealthChanged;
+
+    public float CurrentHealth => unitHealth;
+    public float HealthFraction => maxUnitHealth > 0f ? Mathf.Clamp01(unitHealth / maxUnitHealth) : 0f;
+    public int FactionId => FactionUtility.GetFactionId(gameObject);
+
     Animator animator;
     NavMeshAgent navMeshAgent;
     AttackController attackController;
     UnitMovement unitMovement;
+    bool isDying;
 
     void Start()
     {
-        UnitSelectionManager.Instance.allUnitsList.Add(gameObject);
+        if (UnitSelectionManager.Instance != null)
+        {
+            UnitSelectionManager.Instance.allUnitsList.Add(gameObject);
+        }
 
         unitHealth = maxUnitHealth;
         UpdateHealthUI();
@@ -36,11 +53,6 @@ public class Unit : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         attackController = GetComponent<AttackController>();
         unitMovement = GetComponent<UnitMovement>();
-
-        if (unitMovement == null)
-        {
-            Debug.LogError($"{gameObject.name} is missing UnitMovement component!");
-        }
 
         NavMeshHit hit;
         if (!NavMesh.SamplePosition(transform.position, out hit, 10f, NavMesh.AllAreas))
@@ -63,16 +75,24 @@ public class Unit : MonoBehaviour
 
     private void UpdateHealthUI()
     {
-        healthTracker.UpdateSliderValue(unitHealth, maxUnitHealth);
-
-        if (unitHealth <= 0)
+        if (healthTracker != null)
         {
+            healthTracker.UpdateSliderValue(unitHealth, maxUnitHealth);
+        }
+
+        if (unitHealth <= 0 && !isDying)
+        {
+            isDying = true;
+
             if (animator != null)
             {
                 animator.SetTrigger("Die");
             }
 
-            SoundManager.Instance.PlayUnitDeathSound();
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayUnitDeathSound();
+            }
 
             if (navMeshAgent != null)
             {
@@ -85,12 +105,30 @@ public class Unit : MonoBehaviour
 
     internal void TakeDamage(int damageToInflict)
     {
-        unitHealth -= damageToInflict;
+        // In multiplayer only the server applies damage; clients receive the
+        // result through NetworkUnit's synced health.
+        if (NetworkGuard.BlockLocalSimulation) return;
+
+        ApplyHealth(unitHealth - damageToInflict);
+    }
+
+    /// <summary>Used by the network layer to mirror the server's health on clients.</summary>
+    internal void SetHealthFromNetwork(float value)
+    {
+        ApplyHealth(value);
+    }
+
+    private void ApplyHealth(float value)
+    {
+        unitHealth = value;
         UpdateHealthUI();
+        HealthChanged?.Invoke(unitHealth, maxUnitHealth);
     }
 
     private void Update()
     {
+        if (animator == null) return;
+
         if (navMeshAgent != null && navMeshAgent.enabled && navMeshAgent.isOnNavMesh)
         {
             // Handle movement animation
@@ -103,37 +141,33 @@ public class Unit : MonoBehaviour
                 animator.SetBool("isMoving", false);
             }
 
-            // Handle attacking for player units
-            if (team == Team.Player && attackController != null && attackController.targetToAttack != null)
+            // Attack animation for directly-commanded units. AI-controlled
+            // units are animated by their EnemyAI brain instead.
+            bool aiControlled = FactionManager.IsAIControlled(FactionId);
+            if (!aiControlled)
             {
-                float distanceToTarget = Vector3.Distance(transform.position, attackController.targetToAttack.position);
-                if (distanceToTarget <= attackController.attackDistance && !(unitMovement != null && unitMovement.isCommandedToMove))
+                if (attackController != null && attackController.targetToAttack != null)
                 {
-                    animator.SetBool("isAttacking", true);
-                    //Debug.Log($"{gameObject.name} setting isAttacking = true for target {attackController.targetToAttack.name}");
+                    float distanceToTarget = Vector3.Distance(transform.position, attackController.targetToAttack.position);
+                    if (distanceToTarget <= attackController.attackDistance && !(unitMovement != null && unitMovement.isCommandedToMove))
+                    {
+                        animator.SetBool("isAttacking", true);
+                    }
+                    else
+                    {
+                        animator.SetBool("isAttacking", false);
+                    }
                 }
                 else
                 {
                     animator.SetBool("isAttacking", false);
-                    //Debug.Log($"{gameObject.name} setting isAttacking = false (distance: {distanceToTarget}, commanded: {unitMovement?.isCommandedToMove})");
-                }
-            }
-            else
-            {
-                animator.SetBool("isAttacking", false);
-                if (unitMovement != null && unitMovement.isCommandedToMove)
-                {
-                    //Debug.Log($"{gameObject.name} stopping attack due to movement command");
                 }
             }
         }
         else
         {
-            if (animator != null)
-            {
-                animator.SetBool("isMoving", false);
-                animator.SetBool("isAttacking", false);
-            }
+            animator.SetBool("isMoving", false);
+            animator.SetBool("isAttacking", false);
         }
     }
 }

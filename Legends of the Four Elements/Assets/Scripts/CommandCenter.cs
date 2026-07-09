@@ -4,40 +4,71 @@ using UnityEngine;
 
 public class CommandCenter : MonoBehaviour
 {
+    [Tooltip("Legacy two-team field. Add a FactionMember component for four-nation/multiplayer ownership.")]
     public Team team;
     private float structureHealth;
     public float maxStructureHealth = 1000f;
     public GameObject CommandCenterModel;
     public HealthTracker healthTracker;
 
+    public int FactionId => FactionUtility.GetFactionId(gameObject);
+
+    /// <summary>Fired with (current, max) whenever structure health changes. Used by the network sync layer.</summary>
+    public event System.Action<float, float> HealthChanged;
+
+    private bool isDestroyed;
+
     void Start()
     {
         structureHealth = maxStructureHealth;
         UpdateHealthUI();
+
+        if (MatchManager.Instance != null)
+        {
+            MatchManager.Instance.RegisterCommandCenter(this);
+        }
     }
 
     private void UpdateHealthUI()
     {
-        healthTracker.UpdateSliderValue(structureHealth, maxStructureHealth);
-
-        if (structureHealth <= 0)
+        if (healthTracker != null)
         {
-            SoundManager.Instance.PlayStructureDestructionSound();
+            healthTracker.UpdateSliderValue(structureHealth, maxStructureHealth);
+        }
 
-            if (team == Team.Player)
+        if (structureHealth <= 0 && !isDestroyed)
+        {
+            isDestroyed = true;
+
+            if (SoundManager.Instance != null)
             {
-                if (GameManager.Instance != null)
-                    StartCoroutine(TriggerGameOver());
-                else
-                    Debug.LogError("GameManager.Instance is null! Cannot trigger Game Over.");
+                SoundManager.Instance.PlayStructureDestructionSound();
             }
-            else if (team == Team.Enemy)
+
+            if (MatchManager.Instance != null)
             {
-                if (GameManager.Instance != null)
-                    StartCoroutine(TriggerWin());
-                else
-                    Debug.LogError("GameManager.Instance is null! Cannot trigger Win.");
+                // Multi-faction flow: MatchManager decides victory/defeat.
+                MatchManager.Instance.OnCommandCenterDestroyed(this);
             }
+            else
+            {
+                // Legacy two-team flow (original Level1 without a MatchManager).
+                if (team == Team.Player)
+                {
+                    if (GameManager.Instance != null)
+                        StartCoroutine(TriggerGameOver());
+                    else
+                        Debug.LogError("GameManager.Instance is null! Cannot trigger Game Over.");
+                }
+                else if (team == Team.Enemy)
+                {
+                    if (GameManager.Instance != null)
+                        StartCoroutine(TriggerWin());
+                    else
+                        Debug.LogError("GameManager.Instance is null! Cannot trigger Win.");
+                }
+            }
+
             Destroy(CommandCenterModel);
             Destroy(gameObject, 1f);
         }
@@ -45,7 +76,17 @@ public class CommandCenter : MonoBehaviour
 
     public void TakeDamage(int damageToInflict)
     {
+        if (NetworkGuard.BlockLocalSimulation) return;
+
         structureHealth -= damageToInflict;
+        UpdateHealthUI();
+        HealthChanged?.Invoke(structureHealth, maxStructureHealth);
+    }
+
+    /// <summary>Used by the network layer to mirror the server's health on clients.</summary>
+    internal void SetHealthFromNetwork(float value)
+    {
+        structureHealth = value;
         UpdateHealthUI();
     }
 

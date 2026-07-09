@@ -18,6 +18,9 @@ public class UnitMovement : MonoBehaviour
         attackController = GetComponent<AttackController>();
     }
 
+    private bool AgentReady =>
+        agent != null && agent.enabled && agent.isOnNavMesh;
+
     private void Update()
     {
         // Handle right-click movement command
@@ -33,11 +36,19 @@ public class UnitMovement : MonoBehaviour
                     attackController.targetToAttack = null; // Stop attacking
                 }
                 isCommandedToMove = true;
-                agent.SetDestination(hit.point);
-                directionIndicator.DrawLine(hit);
-                Debug.Log($"{gameObject.name} commanded to move to {hit.point}");
+
+                // In multiplayer the server owns the simulation: relay the
+                // order instead of moving the local (visual-only) agent.
+                if (!NetworkUnit.TryRelayMove(gameObject, hit.point) && AgentReady)
+                {
+                    agent.SetDestination(hit.point);
+                }
+
+                if (directionIndicator != null) directionIndicator.DrawLine(hit);
             }
         }
+
+        if (!AgentReady) return;
 
         // Handle attack target movement
         if (attackController != null && attackController.targetToAttack != null && !isCommandedToMove)
@@ -46,7 +57,6 @@ public class UnitMovement : MonoBehaviour
             if (distanceToTarget <= attackController.attackDistance)
             {
                 agent.SetDestination(transform.position); // Stop moving
-                Debug.Log($"{gameObject.name} within attack distance of {attackController.targetToAttack.name}");
             }
             else
             {
@@ -54,7 +64,6 @@ public class UnitMovement : MonoBehaviour
                 if (NavMesh.SamplePosition(attackController.targetToAttack.position, out navHit, 5f, NavMesh.AllAreas))
                 {
                     agent.SetDestination(navHit.position);
-                    Debug.Log($"{gameObject.name} moving to attack target {attackController.targetToAttack.name}");
                 }
             }
         }
@@ -63,7 +72,6 @@ public class UnitMovement : MonoBehaviour
         if (isCommandedToMove && (agent.hasPath == false || agent.remainingDistance <= agent.stoppingDistance))
         {
             isCommandedToMove = false;
-            Debug.Log($"{gameObject.name} reached destination, isCommandedToMove = false");
         }
     }
 }
