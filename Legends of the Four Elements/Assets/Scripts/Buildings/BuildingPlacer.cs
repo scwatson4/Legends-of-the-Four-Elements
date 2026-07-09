@@ -167,6 +167,7 @@ public class BuildingPlacer : MonoBehaviour
 
         GameObject building = Instantiate(entry.prefab, position, rotation);
         FactionUtility.SetFaction(building, FactionManager.LocalPlayerFactionId);
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayBuildingPlaced();
     }
 
     public static NationData.BuildingEntry MakeCommandCenterEntry(NationData data)

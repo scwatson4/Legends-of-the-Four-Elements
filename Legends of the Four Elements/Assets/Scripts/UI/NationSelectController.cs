@@ -54,6 +54,12 @@ public class NationSelectController : MonoBehaviour
         aiOpponentCount = Mathf.Clamp(Mathf.RoundToInt(count), 1, 3);
     }
 
+    /// <summary>Wire difficulty buttons/dropdown: 0=Easy, 1=Normal, 2=Hard.</summary>
+    public void SetDifficulty(int difficultyIndex)
+    {
+        GameSetup.Difficulty = (Difficulty)Mathf.Clamp(difficultyIndex, 0, 2);
+    }
+
     /// <summary>Wire map-list buttons to this (index into mapSceneNames).</summary>
     public void SelectMap(int mapIndex)
     {

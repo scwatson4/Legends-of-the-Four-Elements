@@ -70,7 +70,8 @@ public class WaveManager : MonoBehaviour
     private void StartWave()
     {
         currentWave++;
-        int enemyCount = Mathf.RoundToInt(baseEnemyCount * Mathf.Pow(enemyCountMultiplier, currentWave - 1));
+        int enemyCount = Mathf.RoundToInt(baseEnemyCount * Mathf.Pow(enemyCountMultiplier, currentWave - 1)
+                                          * GameSetup.EnemyStrengthMultiplier);
         Debug.Log($"Starting Wave {currentWave} with {enemyCount} enemies.");
 
         enemyCommandCenter.SpawnWave(enemyCount);

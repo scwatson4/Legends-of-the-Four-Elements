@@ -224,7 +224,9 @@ public class CampaignManager : MonoBehaviour
         while (!levelFinished && (GameManager.Instance == null || !GameManager.Instance.GameIsOver))
         {
             waveNumber++;
-            int waveSize = Mathf.Min(30, CurrentLevel.waveBaseSize + (waveNumber - 1) * CurrentLevel.waveGrowth);
+            int rawSize = CurrentLevel.waveBaseSize + (waveNumber - 1) * CurrentLevel.waveGrowth;
+            int waveSize = Mathf.Min(30, Mathf.Max(1,
+                Mathf.RoundToInt(rawSize * GameSetup.EnemyStrengthMultiplier)));
             SpawnWave(waveNumber, waveSize);
 
             yield return new WaitForSeconds(CurrentLevel.waveInterval);

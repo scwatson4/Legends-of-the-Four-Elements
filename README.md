@@ -56,3 +56,5 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
   setup, prefab registration, LAN/Relay play, and testing.
 - [`docs/CONTROLS.md`](docs/CONTROLS.md) — every mouse/keyboard control,
   control groups, attack-move, Avatar hotkeys, and the tower element table.
+- [`docs/VR_AND_VOICE.md`](docs/VR_AND_VOICE.md) — hero/embodiment mode,
+  OpenAI voice command setup, and the Meta Quest 3 integration plan.

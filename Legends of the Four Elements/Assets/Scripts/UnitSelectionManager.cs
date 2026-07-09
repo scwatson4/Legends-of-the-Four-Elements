@@ -28,6 +28,7 @@ public class UnitSelectionManager : MonoBehaviour
     private bool attackMoveArmed;
     private float lastClickTime;
     private GameObject lastClickedUnit;
+    private UnitSpawner selectedSpawner;
 
     private void Awake()
     {
@@ -53,6 +54,9 @@ public class UnitSelectionManager : MonoBehaviour
 
         // While placing a building, the mouse belongs to the BuildingPlacer.
         if (BuildingPlacer.IsPlacing) return;
+
+        // While embodying a unit, mouse/keys drive that unit instead.
+        if (EmbodimentController.IsActive) return;
 
         HandleControlGroups();
 
@@ -87,6 +91,7 @@ public class UnitSelectionManager : MonoBehaviour
             // If we are hitting a clickable object
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable) && CanSelect(hit.collider.gameObject))
             {
+                selectedSpawner = null;
                 if (Input.GetKey(KeyCode.LeftShift))
                 {
                     SelectMultiple(hit.collider.gameObject);
@@ -98,10 +103,41 @@ public class UnitSelectionManager : MonoBehaviour
             }
             else // If we are NOT hitting a clickable object
             {
+                // Clicking one of your production buildings selects it, so a
+                // following right-click on ground sets its rally point.
+                UnitSpawner spawner = null;
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                {
+                    UnitSpawner hitSpawner = hit.collider.GetComponentInParent<UnitSpawner>();
+                    if (hitSpawner != null && FactionUtility.IsLocallyControlled(hitSpawner.gameObject))
+                    {
+                        spawner = hitSpawner;
+                    }
+                }
+                selectedSpawner = spawner;
+                if (spawner != null)
+                {
+                    Debug.Log($"{spawner.gameObject.name} selected - right-click ground to set its rally point.");
+                }
+
                 if (!Input.GetKey(KeyCode.LeftShift))
                 {
                     DeselectAll();
                 }
+            }
+        }
+
+        // Rally point: right-click ground with a production building selected.
+        if (selectedSpawner != null && selectedUnitsList.Count == 0 && Input.GetMouseButtonDown(1))
+        {
+            RaycastHit rallyHit;
+            Ray rallyRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(rallyRay, out rallyHit, Mathf.Infinity, ground))
+            {
+                selectedSpawner.SetRallyPoint(rallyHit.point);
+                groundMarker.transform.position = rallyHit.point;
+                groundMarker.SetActive(false);
+                groundMarker.SetActive(true);
             }
         }
 
@@ -133,6 +169,19 @@ public class UnitSelectionManager : MonoBehaviour
                         if (collector != null) collector.SetTargetNode(node);
                     }
                 }
+
+                // Board order: right-click a friendly transport (sky bison,
+                // war balloon) with infantry selected.
+                Transport transport = hit.collider.GetComponentInParent<Transport>();
+                if (transport != null &&
+                    FactionUtility.IsLocallyControlled(transport.gameObject) &&
+                    !selectedUnitsList.Contains(transport.gameObject))
+                {
+                    foreach (GameObject unit in selectedUnitsList)
+                    {
+                        transport.OrderBoard(unit);
+                    }
+                }
             }
 
             // Ground move order
@@ -142,6 +191,8 @@ public class UnitSelectionManager : MonoBehaviour
 
                 groundMarker.SetActive(false);
                 groundMarker.SetActive(true);
+
+                if (SoundManager.Instance != null) SoundManager.Instance.PlayMoveBark();
 
                 // Clear attack targets for selected units
                 foreach (GameObject unit in selectedUnitsList)
@@ -168,6 +219,11 @@ public class UnitSelectionManager : MonoBehaviour
                 if (Input.GetMouseButton(1))
                 {
                     Transform target = hit.transform;
+
+                    if (Input.GetMouseButtonDown(1) && SoundManager.Instance != null)
+                    {
+                        SoundManager.Instance.PlayAttackBark();
+                    }
 
                     // Don't order attacks on friendlies or peaceful neutrals.
                     Tameable tameable = hit.collider.GetComponentInParent<Tameable>();
@@ -310,6 +366,7 @@ public class UnitSelectionManager : MonoBehaviour
         selectedUnitsList.Add(unit);
 
         SelectUnit(unit, true);
+        if (SoundManager.Instance != null) SoundManager.Instance.PlaySelectBark();
     }
 
     private void SelectAllOfSameType(GameObject clicked)

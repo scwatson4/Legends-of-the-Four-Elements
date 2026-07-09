@@ -28,6 +28,11 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | **T** | Avatar: cycle bent element (Air → Water → Earth → Fire) |
 | **G** | Avatar: Avatar State (10s power surge, 60s cooldown) |
 | **F1–F4** | (campaign) summon redeemed Avatars: Air / Water / Earth / Fire |
+| **H** | possess the selected unit (hero/VR mode: WASD run, mouse look, click/Space attack, H/Esc exit) |
+| **U** | unload a selected transport (sky bison / war balloon garrison) |
+| **V** (hold) | voice command via OpenAI: "send backup here", "build a bison stable", "get me 5 earthbenders" |
+| Click a barracks, then right-click ground | set that building's **rally point** |
+| Right-click a friendly transport | selected infantry climb aboard |
 | **W A S D / arrows** | pan camera |
 | **− / =** | zoom out / in *(moved off 1/2 to free the number keys for control groups)* |
 | **Shift + A** | toggle map view |

@@ -25,10 +25,35 @@ public class UnitSpawner : MonoBehaviour
              "Air, Water, Earth and Fire alike.")]
     public bool useSelectedNationRoster = true;
 
+    [Header("Rally Point")]
+    [Tooltip("Optional marker shown at the rally point (a small flag prefab instance).")]
+    public GameObject rallyMarker;
+
     private Queue<UnitToBuild> buildQueue = new Queue<UnitToBuild>();
     private bool isBuilding = false;
     private int builtUnitsThisSession = 0;
     private int queuedAvatars = 0;
+    private Vector3 rallyPoint;
+    private bool hasRallyPoint;
+
+    /// <summary>Click this building, then right-click ground to set where new units gather.</summary>
+    public void SetRallyPoint(Vector3 point)
+    {
+        rallyPoint = point;
+        hasRallyPoint = true;
+        if (rallyMarker != null)
+        {
+            rallyMarker.SetActive(true);
+            rallyMarker.transform.position = point;
+        }
+        Debug.Log($"{gameObject.name}: rally point set.");
+    }
+
+    public void ClearRallyPoint()
+    {
+        hasRallyPoint = false;
+        if (rallyMarker != null) rallyMarker.SetActive(false);
+    }
 
     /// <summary>The faction that owns units built here (from the FactionMember
     /// on this building, falling back to the local player).</summary>
@@ -119,6 +144,16 @@ public class UnitSpawner : MonoBehaviour
             GameObject spawned = Instantiate(next.prefab, spawnPos, Quaternion.identity);
             FactionUtility.SetFaction(spawned, OwnerFactionId);
             if (next.isAvatar) queuedAvatars = Mathf.Max(0, queuedAvatars - 1);
+
+            // Fresh troops walk to the rally point.
+            if (hasRallyPoint)
+            {
+                UnityEngine.AI.NavMeshAgent agent = spawned.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                if (agent != null && agent.enabled && agent.isOnNavMesh)
+                {
+                    agent.SetDestination(rallyPoint);
+                }
+            }
 
             builtUnitsThisSession++;
         }

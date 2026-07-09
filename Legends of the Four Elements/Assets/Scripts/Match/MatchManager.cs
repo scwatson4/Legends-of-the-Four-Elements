@@ -221,7 +221,12 @@ public class MatchManager : MonoBehaviour
             foreach (Faction faction in FactionManager.All)
             {
                 if (faction.isDefeated || faction.id == FactionManager.HostileSpiritsFaction) continue;
-                AwardCredits(faction.id, baseIncomeAmount);
+
+                // Difficulty scales the AI's economy, never the player's.
+                int amount = faction.isAI
+                    ? Mathf.RoundToInt(baseIncomeAmount * GameSetup.EnemyStrengthMultiplier)
+                    : baseIncomeAmount;
+                AwardCredits(faction.id, amount);
             }
         }
     }

@@ -250,6 +250,23 @@ bosses, progression and saves all bootstrap themselves. The only wiring is
 the campaign menu panel and one final-boss prefab in Resources. Full
 instructions + test checklist: **[`CAMPAIGN.md`](CAMPAIGN.md)**.
 
+## Phase 11 — Polish systems (all code-complete)
+
+- **Difficulty**: wire Easy/Normal/Hard buttons to
+  `NationSelectController.SetDifficulty(0/1/2)` (and the same method on
+  `CampaignMenuController`). Scales AI income and wave sizes only.
+- **Rally points**: nothing to wire — click a production building, then
+  right-click ground. Optionally assign a flag prefab instance to the
+  spawner's **Rally Marker** slot.
+- **Transports**: add the `Transport` component to Sky Bison / War Balloon
+  prefabs (capacity 4). Right-click boards selected infantry; U unloads.
+- **Audio**: fill the new SoundManager slots — select/move/attack bark
+  arrays (record 2-3 short lines each), building-placed clip, victory and
+  defeat stingers. Water/earth/spirit attack clips from Part 7 still apply.
+- **Hero mode**: nothing to wire — select one unit, press H. For VR and
+  voice command (V) setup, see **[`VR_AND_VOICE.md`](VR_AND_VOICE.md)** —
+  voice needs a `VoiceCommander` in the scene + an API key file.
+
 ## Phase 9 — Full test matrix
 
 - [ ] Level1 plays like before (survival waves, win + lose)

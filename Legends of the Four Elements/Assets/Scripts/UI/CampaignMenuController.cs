@@ -54,6 +54,12 @@ public class CampaignMenuController : MonoBehaviour
         RefreshLabels();
     }
 
+    /// <summary>Wire difficulty buttons/dropdown: 0=Easy, 1=Normal, 2=Hard.</summary>
+    public void SetDifficulty(int difficultyIndex)
+    {
+        GameSetup.Difficulty = (Difficulty)Mathf.Clamp(difficultyIndex, 0, 2);
+    }
+
     /// <summary>Wire the Play/Start button to this.</summary>
     public void PlaySelectedLevel()
     {

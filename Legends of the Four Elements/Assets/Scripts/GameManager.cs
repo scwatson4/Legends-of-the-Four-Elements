@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
         sidePanel.SetActive(false);
         Time.timeScale = 0f;
         Debug.Log($"Game Over: Player lost in {currentLevel}");
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayDefeatSting();
         DefeatEvent?.Invoke();
     }
 
@@ -70,6 +71,7 @@ public class GameManager : MonoBehaviour
         sidePanel.SetActive(false);
         Time.timeScale = 0f;
         Debug.Log("Level won");
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayVictorySting();
         VictoryEvent?.Invoke();
     }
 

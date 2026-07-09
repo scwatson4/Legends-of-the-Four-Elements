@@ -13,6 +13,13 @@ public enum GameMode
     Campaign = 2
 }
 
+public enum Difficulty
+{
+    Easy = 0,
+    Normal = 1,
+    Hard = 2
+}
+
 /// <summary>
 /// Match configuration chosen in the main menu, carried across scene loads.
 /// Defaults reproduce the original game (Air player vs Fire waves) so the
@@ -48,6 +55,13 @@ public static class GameSetup
     /// <summary>Seed used by MapGenerator scenes. 0 = generator default.</summary>
     public static int MapSeed = 0;
 
+    public static Difficulty Difficulty = Difficulty.Normal;
+
+    /// <summary>Scales AI income and enemy wave sizes.</summary>
+    public static float EnemyStrengthMultiplier =>
+        Difficulty == Difficulty.Easy ? 0.7f :
+        Difficulty == Difficulty.Hard ? 1.4f : 1f;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
     {
@@ -57,6 +71,7 @@ public static class GameSetup
         MultiplayerCoop = false;
         MapSceneName = "";
         MapSeed = 0;
+        Difficulty = Difficulty.Normal;
     }
 
     public static void ConfigureSurvival(Nation playerNation)
