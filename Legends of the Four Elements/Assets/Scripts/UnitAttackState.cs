@@ -68,6 +68,15 @@ public class UnitAttackState : StateMachineBehaviour
         float biomeMultiplier = BiomeZone.GetAttackMultiplier(attackController.gameObject);
         int damageToInflict = Mathf.Max(1, Mathf.RoundToInt(attackController.unitDamage * biomeMultiplier));
 
+        // Attack styles: each swing is a random technique from the unit's set
+        // (Fire Jab vs Lightning Jolt...), varying damage and rider effects.
+        AttackStyleSet styleSet = attackController.GetComponent<AttackStyleSet>();
+        AttackStyleSet.Style style = styleSet != null ? styleSet.PickRandom() : null;
+        if (style != null)
+        {
+            damageToInflict = Mathf.Max(1, Mathf.RoundToInt(damageToInflict * style.damageMultiplier));
+        }
+
         if (SoundManager.Instance != null && unit != null)
         {
             SoundManager.Instance.PlayAttackSound(unit.unitType);
@@ -80,6 +89,12 @@ public class UnitAttackState : StateMachineBehaviour
         if (targetUnit != null && attackController.IsHostileTo(targetUnit.gameObject))
         {
             targetUnit.TakeDamage(damageToInflict);
+
+            // Rider effects from the chosen technique (burn / slow / knockback).
+            if (style != null && styleSet != null && targetUnit.CurrentHealth > 0)
+            {
+                styleSet.ApplyEffect(style, targetUnit);
+            }
 
             // Kill bounty: slaying spirits (or bounty-carrying units) pays silver.
             if (targetUnit.CurrentHealth <= 0 && targetUnit.killBounty > 0)

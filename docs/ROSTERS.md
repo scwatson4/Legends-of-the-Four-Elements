@@ -138,8 +138,13 @@ Plating (+HP, Vehicle) · Forced March (+speed, Infantry/Animal).
   Air→Water→Earth→Fire. Assign one attack VFX per element on the component;
   the active element also decides which biome zones empower it (bend Water on
   a glacier!).
-- **Avatar State** (**G**): 10s of 2× damage / 1.5× speed, 60s cooldown.
-  Assign a glow aura VFX.
+- **Avatar State** (energy-powered, three tiers): **G** = 5s quick surge
+  (30 energy, ~1.75× damage), **Shift+G** = 10s long surge (55 energy,
+  ~2.25×), **Ctrl+G** = 20s ULTIMATE (100 energy, ~3×). While active the
+  Avatar wields all four elements simultaneously (every element VFX lit)
+  and takes reduced damage. Energy regenerates over time, faster in combat.
+  Left unsupervised, the Avatar fights autonomously — cycling elements
+  between attacks and bracing into defensive stances. Assign a glow aura VFX.
 - **Energy bending**: the ONLY unit that can tame wild spirits
   (`Tameable.requiresEnergyBender` is on by default). Right-click a friendly
   spirit to befriend it; dark spirits must first be beaten below half health.

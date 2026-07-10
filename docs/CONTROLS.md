@@ -26,7 +26,16 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | **R** | rotate the building ghost while placing |
 | **Esc / right-click** | cancel placement, cancel attack-move, skip dialogue |
 | **T** | Avatar: cycle bent element (Air → Water → Earth → Fire) |
-| **G** | Avatar: Avatar State (10s power surge, 60s cooldown) |
+| **G** | Avatar State — **quick surge**: 5s, costs 30 energy (~1.75× damage) |
+| **Shift + G** | Avatar State — **long surge**: 10s, costs 55 energy (~2.25× damage) |
+| **Ctrl + G** | Avatar State — **ULTIMATE**: 20s, costs 100 energy (~3× damage) |
+
+During any Avatar State the Avatar wields **all four elements at once** (every
+element VFX active, incoming damage reduced). Energy recharges over time,
+faster in combat. Left alone, the Avatar fights autonomously — alternating
+elements between attacks and bracing into a defensive stance. Every bender
+also cycles randomly through 3–4 attack techniques (e.g. Fire Jab / Flame
+Burst / Fire Whip / Lightning Jolt), some with burn/slow/knockback riders.
 | **F1–F4** | (campaign) summon redeemed Avatars: Air / Water / Earth / Fire |
 | **H** | possess the selected unit (hero/VR mode: WASD run, mouse look, click/Space attack, H/Esc exit) |
 | **U** | unload a selected transport (sky bison / war balloon garrison) |

@@ -67,6 +67,13 @@ public class Unit : MonoBehaviour
         attackController = GetComponent<AttackController>();
         unitMovement = GetComponent<UnitMovement>();
 
+        // Every combat unit alternates between 3-4 attack techniques; a
+        // themed default set is generated if none was authored on the prefab.
+        if (attackController != null && GetComponent<AttackStyleSet>() == null)
+        {
+            gameObject.AddComponent<AttackStyleSet>();
+        }
+
         NavMeshHit hit;
         if (!NavMesh.SamplePosition(transform.position, out hit, 10f, NavMesh.AllAreas))
         {

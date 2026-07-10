@@ -95,6 +95,40 @@ Honest recommendation: wire Path 1 first — it exercises embodiment, voice,
 and VR comfort with almost no risk. Attempt Path 2 once the flat game is
 content-complete.
 
+## Quest 3 performance — should you worry?
+
+Short answer: **not for Path 1, yes-but-manageably for Path 2.**
+
+- **Path 1 (Link/Air Link)**: your laptop's GPU renders everything; the
+  Quest is just a display. An RTS scene that runs on the laptop runs over
+  Link. No overheating concern beyond a normal VR session.
+- **Path 2 (standalone Android build)**: the Quest 3 is a mobile chipset
+  pushing two high-res eyes at 72–120 Hz. A full RTS battle is exactly the
+  kind of scene that drops frames and heats the headset. It's doable —
+  big battles exist in Quest games — but budget consciously:
+
+  **Frame-rate budget rules of thumb (standalone Quest 3):**
+  - ~50–80 active NavMesh agents max; cap wave sizes / unit counts in a
+    "Quest profile" (add a `qualityCap` to MatchManager/CampaignManager).
+  - No realtime shadows; bake lighting; one directional light.
+  - URP mobile settings: disable post-processing or keep it to color
+    grading; MSAA 4x instead of post AA; render scale ~1.0.
+  - LODs on every unit model, aggressive far-distance culling; the fog of
+    war actually HELPS (hidden enemies' renderers are already disabled).
+  - Particle discipline: elemental VFX are the biggest risk — cap particle
+    counts, no soft particles, no per-particle lights.
+  - Enable **Fixed Foveated Rendering** (Meta XR settings) — free ~15%.
+  - Script hotspots already have knobs: raise `FogOfWar.updateInterval`
+    (0.2 → 0.4s), `MinimapController.refreshInterval` (0.4 → 1s), lower
+    `FogOfWar.gridResolution` (128 → 64), and keep `EnemyAI.searchInterval`
+    at 2s+. These scans (`FindObjectsByType`/`OverlapSphere`) are fine on
+    desktop but are the first thing to throttle on mobile.
+  - Thermals: 72 Hz refresh mode, and expect ~30–45 min comfortable
+    sessions in heavy scenes.
+
+  Practical plan: finish and tune the flat game first, then profile ONE
+  battle scene on-device with the Unity Profiler before optimizing anything.
+
 ## Comfort & design notes
 - Smooth locomotion in a unit's body can cause motion sickness; add a
   vignette during movement and offer snap-turn (both are standard XR
