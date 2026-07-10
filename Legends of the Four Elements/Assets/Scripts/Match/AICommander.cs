@@ -99,6 +99,7 @@ public class AICommander : MonoBehaviour
 
         NationData.UnitEntry entry = FindRosterEntry(UnitCategory.Worker);
         if (entry == null) return;
+        if (!HasPopulationRoom(entry.prefab)) return;
         if (!Economy.TrySpend(factionId, entry.cost)) return;
 
         GameObject worker = SpawnAround(entry.prefab);
@@ -127,6 +128,7 @@ public class AICommander : MonoBehaviour
         if (entry == null) return;
 
         // Don't bankrupt the army fund - wait until comfortably affordable.
+        if (!HasPopulationRoom(entry.prefab)) return;
         if (Economy.GetBalance(factionId) < entry.cost * avatarSavingsFactor) return;
         if (!Economy.TrySpend(factionId, entry.cost)) return;
 
@@ -153,6 +155,7 @@ public class AICommander : MonoBehaviour
         }
         if (entry == null) return;
 
+        if (!HasPopulationRoom(entry.prefab)) return;
         if (!Economy.TrySpend(factionId, entry.cost)) return;
 
         GameObject unit = SpawnAround(entry.prefab);
@@ -178,6 +181,12 @@ public class AICommander : MonoBehaviour
     }
 
     // ------------------------------------------------------------------
+
+    /// <summary>AI obeys the same population rules the player does.</summary>
+    private bool HasPopulationRoom(GameObject prefab)
+    {
+        return PopulationManager.HasRoomFor(factionId, prefab);
+    }
 
     private NationData.UnitEntry FindRosterEntry(UnitCategory category)
     {

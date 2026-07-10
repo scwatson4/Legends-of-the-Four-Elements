@@ -361,6 +361,13 @@ public class VoiceCommander : MonoBehaviour
             return;
         }
 
+        // Earthbent structures need earthbenders alive in the army.
+        if (!RequiresBenderPresence.SatisfiedFor(entry.prefab, FactionManager.LocalPlayerFactionId))
+        {
+            SetStatus($"The {entry.buildingName} needs benders in your army to raise it.");
+            return;
+        }
+
         // Find a clear, walkable spot near the target location.
         Vector3 center = GetTargetLocation();
         for (int attempt = 0; attempt < 12; attempt++)

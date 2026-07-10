@@ -151,6 +151,12 @@ public class BuildingPlacer : MonoBehaviour
             }
         }
 
+        // Bender-raised structures (earth walls/gates) need their benders alive.
+        if (!RequiresBenderPresence.SatisfiedFor(pendingEntry.prefab, FactionManager.LocalPlayerFactionId))
+        {
+            return false;
+        }
+
         return true;
     }
 

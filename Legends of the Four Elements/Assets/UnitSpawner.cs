@@ -92,6 +92,14 @@ public class UnitSpawner : MonoBehaviour
             return;
         }
 
+        // Population cap: build more housing to field a bigger army.
+        if (!PopulationManager.HasRoomFor(OwnerFactionId, entry.prefab))
+        {
+            Debug.Log($"Population cap reached ({PopulationManager.GetPopulation(OwnerFactionId)}/" +
+                      $"{PopulationManager.GetCap(OwnerFactionId)}) - build housing to grow your army.");
+            return;
+        }
+
         QueueUnit(new UnitToBuild
         {
             prefab = entry.prefab,
@@ -139,6 +147,16 @@ public class UnitSpawner : MonoBehaviour
             Debug.Log($"Building {next.prefab.name}...");
 
             yield return new WaitForSeconds(next.buildTime);
+
+            // The cap may have filled (or housing fallen) while this was in
+            // the queue - refund instead of overshooting.
+            if (!PopulationManager.HasRoomFor(OwnerFactionId, next.prefab))
+            {
+                Economy.Award(OwnerFactionId, next.cost);
+                if (next.isAvatar) queuedAvatars = Mathf.Max(0, queuedAvatars - 1);
+                Debug.Log($"{next.prefab.name} cancelled - population cap reached. Silver refunded.");
+                continue;
+            }
 
             Vector3 spawnPos = GetArcSpawnPosition(builtUnitsThisSession);
             GameObject spawned = Instantiate(next.prefab, spawnPos, Quaternion.identity);

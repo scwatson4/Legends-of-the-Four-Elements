@@ -77,9 +77,12 @@ public static class UpgradeManager
         if (data == null || data.upgrades == null || data.upgrades.Length == 0) return;
 
         float damageMult = 1f, healthMult = 1f, speedMult = 1f, sightMult = 1f;
+        int grantedHealPerSecond = 0;
+        float grantedHealRadius = 7f;
+
         foreach (UpgradeData upgrade in data.upgrades)
         {
-            if (upgrade == null || !upgrade.AppliesTo(unit.category)) continue;
+            if (upgrade == null || !upgrade.AppliesToUnit(unit)) continue;
             int level = GetLevel(factionId, upgrade);
             if (level <= 0) continue;
 
@@ -87,6 +90,22 @@ public static class UpgradeManager
             healthMult += level * upgrade.healthBonus;
             speedMult += level * upgrade.speedBonus;
             sightMult += level * upgrade.sightBonus;
+
+            // Granted abilities (e.g. Healing Waters: waterbenders heal allies).
+            if (upgrade.grantsHealing)
+            {
+                grantedHealPerSecond += level * upgrade.healPerSecondPerLevel;
+                grantedHealRadius = Mathf.Max(grantedHealRadius, upgrade.healRadius);
+            }
+        }
+
+        if (grantedHealPerSecond > 0)
+        {
+            Healer healer = unit.GetComponent<Healer>();
+            if (healer == null) healer = unit.gameObject.AddComponent<Healer>();
+            healer.healAmount = grantedHealPerSecond;
+            healer.healInterval = 1f;
+            healer.healRadius = grantedHealRadius;
         }
 
         if (Mathf.Approximately(damageMult, 1f) &&

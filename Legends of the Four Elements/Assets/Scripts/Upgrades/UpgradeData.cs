@@ -28,8 +28,18 @@ public class UpgradeData : ScriptableObject
     [Tooltip("Extends fog-of-war sight range, e.g. an earthbender 'seismic sensing' track.")]
     public float sightBonus = 0f;
 
+    [Header("Granted Ability")]
+    [Tooltip("This upgrade teaches the units to HEAL nearby allies " +
+             "(e.g. Water's 'Healing Waters' for waterbenders). Healing power scales per level.")]
+    public bool grantsHealing = false;
+    public int healPerSecondPerLevel = 2;
+    public float healRadius = 7f;
+
     [Header("Applies to")]
     public UnitCategory[] categories = { UnitCategory.Infantry };
+    [Tooltip("Optional extra filter: only these unit types benefit " +
+             "(e.g. Waterbender only). Empty = every unit in the categories.")]
+    public Unit.UnitType[] restrictToUnitTypes;
 
     public int CostForLevel(int level) => baseCost * Mathf.Max(1, level);
 
@@ -39,6 +49,19 @@ public class UpgradeData : ScriptableObject
         foreach (UnitCategory c in categories)
         {
             if (c == category) return true;
+        }
+        return false;
+    }
+
+    public bool AppliesToUnit(Unit unit)
+    {
+        if (unit == null) return false;
+        if (!AppliesTo(unit.category)) return false;
+
+        if (restrictToUnitTypes == null || restrictToUnitTypes.Length == 0) return true;
+        foreach (Unit.UnitType type in restrictToUnitTypes)
+        {
+            if (type == unit.unitType) return true;
         }
         return false;
     }

@@ -22,6 +22,15 @@ The AI earns through the exact same systems (its commander trains workers,
 holds villages, and its treasury lives in `Faction.credits`). In the HUD,
 relabel the credits counter "**Silver**" — the show's coinage.
 
+## Population (implemented)
+
+Every unit occupies population (`Unit.populationCost` — suggested: infantry/
+worker **1**, animal **2**, vehicle **3**, Avatar **5**). Base cap is 25;
+each `PopulationHousing` building adds more while it stands (put +20 on the
+command center, +10 on dedicated housing). Training blocks at the cap for
+players AND AI, so raiding enemy housing genuinely shrinks their army.
+Wire a TMP label to `PopulationHUD` next to the Silver counter ("23 / 45").
+
 ---
 
 ## Air Nomads — mobility & evasion
@@ -46,6 +55,7 @@ relabel the credits counter "**Silver**" — the show's coinage.
 | Meditation Pavilion | Economy | 120 | `IncomeBuilding` 8/6s, stronger near a **Spirit Grove** node |
 | Bison Stable | Production | 180 | trains Lemur / Sky Bison |
 | Wind Cannon Pagoda | Defense | 140 | `DefenseTower` element **Air**: shots knock enemies back; special is a tornado that damages and scatters the pack |
+| Nomad Dormitories | Special | 100 | `PopulationHousing` +10 — more beds, more monks |
 | Spirit Shrine | Special | 250 | unlock flavor: place near Spirit Wilds; passive income + heals nearby units (add `Healer` with big radius) |
 
 **Upgrades** (`UpgradeData` assets)
@@ -76,8 +86,12 @@ Healers; give the hut itself a small `Healer` aura) · Ice Spike Tower
 wave that hits and slows everything near the target) · Shipyard (Production:
 Ice Cutters, 200).
 
+Add a **Tribal Lodge** (Special 100, `PopulationHousing` +10).
+
 **Upgrades**: Moonlight Discipline (+dmg, Infantry) · Glacial Hide (+HP,
-Animal/Vehicle) · Healing Waters (+HP, Infantry).
+Animal/Vehicle) · **Healing Waters** (3 levels, 200 base): tick
+`grantsHealing`, restrict to `Waterbender` — every waterbender becomes a
+field medic, healing nearby allies 2 HP/s per level (Katara-style).
 
 ## Earth Kingdom — toughness & siege
 
@@ -96,7 +110,13 @@ Animal/Vehicle) · Healing Waters (+HP, Infantry).
 **Buildings**: Earthen Citadel (command + dropoff) · Crystal Mine (Economy
 140, requires **Crystal Deposit**) · Barracks (Production) · Badgermole
 Burrow (Production: animals) · Rock Launcher Tower (Defense 150 — `DefenseTower` element **Earth**: every
-boulder splashes; special is a massive boulder, 2x damage full splash).
+boulder splashes; special is a massive boulder, 2x damage full splash) ·
+**Stone Wall** (Defense 60 — Structure + NavMeshObstacle (carve ON) +
+`RequiresBenderPresence`: can only be raised while you have living
+earthbenders; chain segments with R-rotation) · **Earth Gate** (Defense 120 —
+wall recipe + `Gate`: slides into the ground for friendlies, seals against
+enemies, and won't operate at all if your last earthbender falls) ·
+**Stone Tenements** (Special 100, `PopulationHousing` +10).
 
 **Upgrades**: Neutral Jing (+HP, Infantry) · Master Sculpting (+dmg,
 Infantry) · Reinforced Hide Plates (+HP, Animal/Vehicle) · **Seismic Sensing**
@@ -121,6 +141,8 @@ earthbenders see much further through the fog of war.
 requires **Coal Seam**) · War Academy (Production: infantry) · War Factory
 (Production: tanks/balloons, 220) · Flame Turret (Defense 140 — `DefenseTower` element **Fire**: shots ignite
 targets (burn over time); special is a lightning strike for 3x damage).
+
+Add **Garrison Quarters** (Special 100, `PopulationHousing` +10).
 
 **Upgrades**: Sozin's Comet Doctrine (+dmg, everything, expensive) · Drill
 Plating (+HP, Vehicle) · Forced March (+speed, Infantry/Animal).

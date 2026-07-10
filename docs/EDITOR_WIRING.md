@@ -266,6 +266,17 @@ instructions + test checklist: **[`CAMPAIGN.md`](CAMPAIGN.md)**.
 - **Hero mode**: nothing to wire — select one unit, press H. For VR and
   voice command (V) setup, see **[`VR_AND_VOICE.md`](VR_AND_VOICE.md)** —
   voice needs a `VoiceCommander` in the scene + an API key file.
+- **Population**: set `Unit.populationCost` on every unit prefab (1/2/3/5
+  per ROSTERS.md), add `PopulationHousing` to command centers (+20) and
+  each nation's housing building (+10), and wire a TMP label to a
+  `PopulationHUD` on the HUD canvas.
+- **Healing Waters**: on the Water upgrade asset tick `grantsHealing`,
+  set healPerSecondPerLevel 2, and restrict to unit type `Waterbender`.
+- **Earth walls & gates**: Stone Wall prefab = wall mesh + collider +
+  `Structure` + NavMeshObstacle (Carve ON) + `RequiresBenderPresence`
+  (Earthbender). Earth Gate = same + `Gate` (assign the door piece to
+  Gate Model so it sinks open). Add both to the Earth NationData buildings
+  list — the ghost turns red if you have no living earthbenders.
 
 ## Phase 9 — Full test matrix
 

@@ -135,6 +135,9 @@ public class RTSNetworkPlayer : NetworkBehaviour
         // One Avatar per player, in multiplayer too.
         if (entry.category == UnitCategory.Avatar && AvatarUnit.FactionHasAvatar(FactionId.Value)) return;
 
+        // Population cap applies on the server as well.
+        if (!PopulationManager.HasRoomFor(FactionId.Value, entry.prefab)) return;
+
         if (Credits.Value < entry.cost) return;
 
         Vector3 spawnPosition;

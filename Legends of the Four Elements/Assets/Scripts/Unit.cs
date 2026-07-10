@@ -36,6 +36,9 @@ public class Unit : MonoBehaviour
     [Tooltip("Silver awarded to the killer's faction (spirit energy, war spoils). 0 = none.")]
     public int killBounty = 0;
 
+    [Tooltip("Population this unit occupies. Suggested: infantry/worker 1, animal 2, vehicle 3, Avatar 5.")]
+    public int populationCost = 1;
+
     public HealthTracker healthTracker;
 
     /// <summary>Fired with (current, max) whenever health changes. Used by the network sync layer.</summary>
