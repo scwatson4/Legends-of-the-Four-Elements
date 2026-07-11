@@ -25,6 +25,42 @@ MCP server also work — the prompts are tool-agnostic.
    - Work ONE phase per conversation; verify in the editor before moving on.
    - If the AI says it did something, spot-check one example yourself.
 
+## The Greybox Protocol (read before P3/P4)
+
+The whole game gets built with **placeholder visuals** — Unity primitives
+and meshes from packs already in the project — and you swap in real art
+later. One structural rule makes that swap painless, and the phase prompts
+below instruct the AI to follow it:
+
+**Every prefab is a plain root + a child named `Model`.**
+- The ROOT holds everything that matters: all components (Unit,
+  AttackController, NavMeshAgent, Animator, colliders...), the HealthBar
+  and Indicator children, and VFX anchor children. Nothing visual.
+- The `Model` child holds ONLY the placeholder mesh (a tinted capsule,
+  a cube tower, a cylinder wall...).
+- **Swapping art later = delete the Model child, drop in the real model as
+  the new `Model` child, done.** No component rewiring, no NationData
+  re-linking, no scene edits — every reference points at the root, which
+  never changes.
+
+Two extra rules:
+1. **Units must be duplicated from AirbenderUnit/FirebenderUnit**, never
+   built from scratch — combat runs through the Animator state machine
+   (UnitAttackState/UnitFollowState live on its states), so the root's
+   Animator + controller must survive. A capsule won't visibly animate;
+   that's fine, the logic still runs. When you later drop in a real
+   humanoid model, keep the root Animator/controller and set the new
+   model's Avatar on it (Unity retargets the animations).
+2. **Tint by nation**: the AI creates four flat materials
+   (Air = saffron, Water = blue, Earth = green, Fire = red) plus gray for
+   neutrals/buildings, so greybox playtests are readable at a glance.
+
+Where real assets already exist, use them instead of primitives: the bison
+models, AirNationTemple / FireNationCitadel, the PolygonCharacters-Labourer
+for villagers/workers, and any pack VFX for element effects. Placeholder
+VFX can even be a colored point light or default particle system — the
+`flamethrowerEffect` slot just needs SOMETHING to toggle.
+
 ## The kickoff prompt (paste first, every session)
 
 > You have Unity MCP tools connected to my open Unity project
@@ -51,7 +87,10 @@ MCP server also work — the prompts are tool-agnostic.
 > Leave prefab slots empty for now.
 
 ### P3 — Unit prefab variants
-> Do Phase 3.1–3.4: duplicate AirbenderUnit.prefab into WaterbenderUnit and
+> Follow the Greybox Protocol: every prefab = component root + a child
+> named "Model" holding only the placeholder mesh, tinted with the nation
+> materials (create those first). Duplicate from AirbenderUnit so the
+> Animator survives. Then do Phase 3.1–3.4: duplicate AirbenderUnit.prefab into WaterbenderUnit and
 > EarthbenderUnit (set Unit.unitType and Unit.category), create the four
 > worker prefabs (remove AttackController/EnemyAI, add ResourceCollector,
 > category Worker), and the four Avatar prefabs (add AvatarUnit, HP 400,
@@ -63,7 +102,9 @@ MCP server also work — the prompts are tool-agnostic.
 > ROSTERS.md order (slot 0 = basic bender, Avatar last).
 
 ### P4 — Nodes, neutrals, buildings
-> Do Phase 3.5–3.9: spirit prefabs (Friendly + Dark with Spirit, Tameable,
+> Follow the Greybox Protocol (root + Model child, primitives with nation
+> or gray tints; reuse existing pack meshes where they fit - bison,
+> temples, labourer characters). Do Phase 3.5–3.9: spirit prefabs (Friendly + Dark with Spirit, Tameable,
 > killBounty 15/40), a Villager and Village prefab, a SpiritPortal prefab,
 > the four ResourceNode prefabs (one per type), and each nation's buildings
 > from ROSTERS.md (Structure + IncomeBuilding/UnitSpawner/DefenseTower with
@@ -129,6 +170,29 @@ MCP server also work — the prompts are tool-agnostic.
 > that the docs say should be assigned.
 
 > Compare NationData assets against ROSTERS.md and report mismatches.
+
+## The art-swap pass (after everything plays)
+
+When you've picked real models/VFX, the swap per prefab is mechanical —
+and you can even delegate the boring half of it back to the AI:
+
+1. Open the prefab. Delete the `Model` child.
+2. Drag the real model in as the new `Model` child; scale to match the old
+   footprint (colliders on the root show the intended size).
+3. Units only: on the root Animator, assign the new model's Avatar
+   (humanoid rig) so the existing bender animations retarget. If the model
+   ships with its own animations you prefer, they must expose the same
+   parameters: `isMoving`, `isFollowing`, `isAttacking` bools + `Die`
+   trigger — or just keep the shared controller.
+4. VFX: drop the real effect prefab onto the same anchor child and
+   reassign the slot (flamethrowerEffect / element effects / aura /
+   tower shot effects).
+5. Play one match; the unit should behave identically, just prettier.
+
+AI-assistable version: "Replace the Model child of WaterbenderUnit with
+[asset path], scaled to the old bounds, and set its Avatar on the root
+Animator" works well through Unity MCP once you've imported the asset and
+chosen it yourself.
 
 ## What NOT to delegate to the AI
 
