@@ -126,6 +126,10 @@ public class Tameable : MonoBehaviour
         Spirit spirit = GetComponent<Spirit>();
         if (spirit != null) spirit.OnTamed(newFactionId);
 
+        // Greybox tint follows its new allegiance.
+        NationColorizer colorizer = GetComponentInChildren<NationColorizer>();
+        if (colorizer != null) colorizer.Refresh();
+
         onTamed?.Invoke();
         Debug.Log($"{gameObject.name} was befriended by faction {newFactionId}!");
     }

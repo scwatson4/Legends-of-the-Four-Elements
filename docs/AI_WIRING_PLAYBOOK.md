@@ -51,9 +51,15 @@ Two extra rules:
    that's fine, the logic still runs. When you later drop in a real
    humanoid model, keep the root Animator/controller and set the new
    model's Avatar on it (Unity retargets the animations).
-2. **Tint by nation**: the AI creates four flat materials
-   (Air = saffron, Water = blue, Earth = green, Fire = red) plus gray for
-   neutrals/buildings, so greybox playtests are readable at a glance.
+2. **Tint by kingdom — the baseline look**: every placeholder unit reads
+   as its nation at a glance: **Fire = red, Water = blue, Earth = green,
+   Air = yellow** (the exact `NationInfo.ThemeColor` palette the UI uses).
+   The zero-effort way: add the **`NationColorizer`** component to each
+   prefab's Model child — it tints at runtime to the OWNER's kingdom
+   color, so one prefab reads correctly for every faction, tamed spirits
+   recolor when they join you, and no material assets are needed at all.
+   (Static per-nation materials work too; NationColorizer is just less
+   work and smarter.) Neutrals render gray, dark spirits purple.
 
 Where real assets already exist, use them instead of primitives: the bison
 models, AirNationTemple / FireNationCitadel, the PolygonCharacters-Labourer
@@ -88,9 +94,10 @@ VFX can even be a colored point light or default particle system — the
 
 ### P3 — Unit prefab variants
 > Follow the Greybox Protocol: every prefab = component root + a child
-> named "Model" holding only the placeholder mesh, tinted with the nation
-> materials (create those first). Duplicate from AirbenderUnit so the
-> Animator survives. Then do Phase 3.1–3.4: duplicate AirbenderUnit.prefab into WaterbenderUnit and
+> named "Model" holding only the placeholder mesh, with a NationColorizer
+> component on the Model child so each unit renders its kingdom's color at
+> runtime (Fire red, Water blue, Earth green, Air yellow). Duplicate from
+> AirbenderUnit so the Animator survives. Then do Phase 3.1–3.4: duplicate AirbenderUnit.prefab into WaterbenderUnit and
 > EarthbenderUnit (set Unit.unitType and Unit.category), create the four
 > worker prefabs (remove AttackController/EnemyAI, add ResourceCollector,
 > category Worker), and the four Avatar prefabs (add AvatarUnit, HP 400,
