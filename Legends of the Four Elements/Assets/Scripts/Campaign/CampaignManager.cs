@@ -55,6 +55,8 @@ public class CampaignManager : MonoBehaviour
         levelFinished = false;
         setupDone = false;
         surviving = false;
+        escortActive = false;
+        escortUnit = null;
         summonedThisLevel.Clear();
         progress = CampaignProgress.Load();
 
@@ -130,8 +132,86 @@ public class CampaignManager : MonoBehaviour
             surviving = true;
         }
 
+        if (CurrentLevel.objective == CampaignObjective.Escort)
+        {
+            SetupEscortMission();
+        }
+
+        if (CurrentLevel.isTutorial && GetComponent<TutorialManager>() == null)
+        {
+            gameObject.AddComponent<TutorialManager>();
+        }
+
         StartCoroutine(WaveLoop());
         StartCoroutine(DefeatWatchdog());
+    }
+
+    // ------------------------------------------------------------------
+    // Escort objective: deliver the caravan alive to the golden beacon
+    // ------------------------------------------------------------------
+
+    private GameObject escortUnit;
+    private Vector3 escortDestination;
+    private bool escortActive;
+    private const float EscortArrivalRadius = 10f;
+
+    private void SetupEscortMission()
+    {
+        Vector3 startPos = FindPlayerStartPosition();
+
+        // The caravan: the nation's animal (a laden sky bison / ostrich horse
+        // convoy), falling back to a worker cart.
+        GameObject prefab = FindRosterPrefab(GameSetup.PlayerNation, UnitCategory.Animal);
+        if (prefab == null) prefab = FindWorkerPrefab(GameSetup.PlayerNation);
+        if (prefab == null)
+        {
+            Debug.LogError("[Campaign] Escort mission needs an animal or worker prefab in the roster.");
+            return;
+        }
+
+        escortUnit = Instantiate(prefab, startPos + new Vector3(0f, 0f, -4f), Quaternion.identity);
+        escortUnit.name = "Relief Caravan";
+        FactionUtility.SetFaction(escortUnit, FactionManager.LocalPlayerFactionId);
+        escortActive = true;
+
+        // Destination: the far side of the map, marked by a golden beacon.
+        escortDestination = FindBossSpawnPosition();
+        CreateBeacon(escortDestination);
+
+        Debug.Log("[Campaign] ESCORT: bring the Relief Caravan to the golden beacon alive!");
+    }
+
+    private static void CreateBeacon(Vector3 position)
+    {
+        GameObject beacon = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        beacon.name = "EscortBeacon";
+        Object.Destroy(beacon.GetComponent<Collider>());
+        beacon.transform.position = position + Vector3.up * 0.1f;
+        beacon.transform.localScale = new Vector3(EscortArrivalRadius, 0.15f, EscortArrivalRadius);
+
+        Renderer renderer = beacon.GetComponent<Renderer>();
+        MaterialPropertyBlock block = new MaterialPropertyBlock();
+        Color gold = new Color(1f, 0.85f, 0.2f);
+        block.SetColor("_BaseColor", gold);
+        block.SetColor("_Color", gold);
+        renderer.SetPropertyBlock(block);
+
+        MinimapPOI poi = MinimapPOI.Ensure(beacon, MinimapPOI.POIType.Custom);
+        poi.colorOverride = gold;
+        poi.discovered = true; // the destination is always on the map
+    }
+
+    private static GameObject FindRosterPrefab(Nation nation, UnitCategory category)
+    {
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null ? db.Get(nation) : null;
+        if (data == null || data.units == null) return null;
+
+        foreach (NationData.UnitEntry entry in data.units)
+        {
+            if (entry != null && entry.category == category && entry.prefab != null) return entry.prefab;
+        }
+        return null;
     }
 
     // ------------------------------------------------------------------
@@ -364,6 +444,22 @@ public class CampaignManager : MonoBehaviour
                 surviving = false;
                 Debug.Log("[Campaign] Survived! The assault breaks.");
                 if (GameManager.Instance != null) GameManager.Instance.ShowVictory();
+            }
+        }
+
+        // Escort objective: the caravan must live and arrive.
+        if (escortActive && setupDone &&
+            GameManager.Instance != null && !GameManager.Instance.GameIsOver)
+        {
+            if (escortUnit == null)
+            {
+                Debug.Log("[Campaign] The caravan was destroyed - the mission is lost.");
+                GameManager.Instance.ShowDefeat();
+            }
+            else if (Vector3.Distance(escortUnit.transform.position, escortDestination) <= EscortArrivalRadius)
+            {
+                Debug.Log("[Campaign] The caravan arrives safely - the road is open!");
+                GameManager.Instance.ShowVictory();
             }
         }
 

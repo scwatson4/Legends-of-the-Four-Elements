@@ -42,6 +42,9 @@ Burst / Fire Whip / Lightning Jolt), some with burn/slow/knockback riders.
 | **V** (hold) | voice command via OpenAI: "send backup here", "build a bison stable", "get me 5 earthbenders" |
 | Click a barracks, then right-click ground | set that building's **rally point** |
 | Right-click a friendly transport | selected infantry climb aboard |
+| Right-click a damaged friendly building | selected workers repair it (costs silver) |
+| **X** (hovering a friendly building) | **sell** it for half its cost |
+| **P** | arm your charged **superweapon**, then left-click the target area |
 | **W A S D / arrows** | pan camera |
 | **− / =** | zoom out / in *(moved off 1/2 to free the number keys for control groups)* |
 | **Shift + A** | toggle map view |

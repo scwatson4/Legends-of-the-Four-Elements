@@ -174,6 +174,23 @@ Plating (+HP, Vehicle) · Forced March (+speed, Infantry/Animal).
   VFX children + aura. Give each nation a themed model (element of origin is
   cosmetic).
 
+## Superweapons (`Superweapon` component) — implemented
+
+Put one on each nation's Special building. Charges from zero over 4 minutes;
+press **P** when charged, then click the target (AI fires its own at your
+base automatically):
+
+| Nation | Building | Power |
+|---|---|---|
+| Fire | War Sanctum (or Fire Citadel) | **Comet Barrage** — 3 waves of falling fire: heavy damage + burn, hurts buildings too |
+| Water | Moon Shrine | **Flash Freeze** — every enemy in the area frozen near-solid for 8s |
+| Air | Spirit Shrine | **Great Storm** — damages and hurls every enemy away from the epicenter |
+| Earth | Deep Sanctum | **Stone Rampart** — earthbends a ring of stone walls out of the ground (assign the wall prefab) |
+
+Also implemented: **sell** any building for half its cost (hover + X) and
+**worker repairs** (right-click a damaged friendly building with workers
+selected; ~0.5 silver per HP).
+
 ## Elemental climates (`BiomeZone`) — implemented modifiers
 
 | Climate | Empowers | Weakens |

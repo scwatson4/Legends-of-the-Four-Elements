@@ -14,6 +14,9 @@ public class Structure : MonoBehaviour
     [Tooltip("Silver awarded to whoever destroys this building.")]
     public int killBounty = 0;
 
+    [Tooltip("What this cost to build (set automatically by BuildingPlacer). Selling refunds half.")]
+    public int buildCost = 150;
+
     /// <summary>Fired with (current, max) whenever health changes. Used by the network sync layer.</summary>
     public event System.Action<float, float> HealthChanged;
 
@@ -42,6 +45,31 @@ public class Structure : MonoBehaviour
     {
         health = value;
         UpdateHealthUI();
+    }
+
+    /// <summary>Workers repair damaged buildings (costs silver at the call site).</summary>
+    public void Repair(float amount)
+    {
+        if (isDestroyed || health >= maxHealth) return;
+        health = Mathf.Min(maxHealth, health + amount);
+        UpdateHealthUI();
+        HealthChanged?.Invoke(health, maxHealth);
+    }
+
+    public bool IsDamaged => !isDestroyed && health < maxHealth;
+
+    /// <summary>C&amp;C-style sell: refund half the build cost and demolish.</summary>
+    public void Sell()
+    {
+        if (isDestroyed) return;
+        isDestroyed = true;
+
+        int refund = Mathf.Max(0, buildCost / 2);
+        Economy.Award(FactionId, refund);
+        Debug.Log($"{gameObject.name} sold for {refund} silver.");
+
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayStructureDestructionSound();
+        Destroy(gameObject, 0.2f);
     }
 
     private void UpdateHealthUI()

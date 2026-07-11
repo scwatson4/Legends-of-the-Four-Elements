@@ -17,6 +17,7 @@ standing together, can pierce the First Shadow's shroud in the finale.
 
 | Chapter | Theme / terrain | Boss (level 5) | Redeems |
 |---|---|---|---|
+| Prologue — Boot Camp | training grounds | — (tutorial) | — |
 | 1 — Whispers on the Wind | windy peaks | **Zephyra of the Hollow Sky** | Air Avatar |
 | 2 — The Frozen Tide | glaciers, coast | **Kalani of the Weeping Ice** | Water Avatar |
 | 3 — Kingdom of Dust | quarries, ruins | **Boruk, the Mountain That Walks** | Earth Avatar |
@@ -48,7 +49,14 @@ Avatars themselves once redeemed.
   (`DialogueUI` — builds its own panel if you don't style one; click/space
   advances, Esc skips).
 - **Objectives**: destroy the enemy base, defeat the boss (boss-arena levels
-  have no enemy base), or survive a timed assault.
+  have no enemy base), survive a timed assault, or **escort** — deliver the
+  Relief Caravan (your nation's pack animal) alive to a golden beacon across
+  the map (mission 3-1 "The Broken Road"; lose the caravan, lose the level).
+- **Boot Camp tutorial**: the campaign opens with an interactive prologue -
+  a TutorialManager watches for REAL actions (select, move, found your base
+  with B, harvest, train, Ctrl+1 groups, F attack-move, win a fight, tame a
+  spirit with the Avatar) and advances a hint banner step by step. Zero
+  wiring; it builds its own UI. Set `isTutorial` on any level to reuse it.
 - **Varied maps**: each level carries its own `mapSeed`; on a MapGenerator
   scene every level's terrain layout, biomes, villages and portals differ.
   Optionally give each chapter its own themed scene (see wiring below).

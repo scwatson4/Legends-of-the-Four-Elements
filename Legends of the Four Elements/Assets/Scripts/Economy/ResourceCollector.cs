@@ -21,11 +21,18 @@ public class ResourceCollector : MonoBehaviour
     [Tooltip("Optional: shown while carrying a load (basket/sack model).")]
     public GameObject carryVisual;
 
-    private enum State { Idle, MovingToNode, Harvesting, MovingToDropoff }
+    [Header("Repair")]
+    public float repairPerSecond = 8f;
+    [Tooltip("Silver per point of health repaired.")]
+    public float repairCostPerHp = 0.5f;
+
+    private enum State { Idle, MovingToNode, Harvesting, MovingToDropoff, Repairing }
 
     private State state = State.Idle;
     private ResourceNode targetNode;
     private ResourceDropoff targetDropoff;
+    private Structure repairTarget;
+    private float repairTick;
     private NavMeshAgent agent;
     private UnitMovement unitMovement;
     private float harvestTimer;
@@ -43,7 +50,16 @@ public class ResourceCollector : MonoBehaviour
     public void SetTargetNode(ResourceNode node)
     {
         targetNode = node;
+        repairTarget = null;
         state = node != null ? State.MovingToNode : State.Idle;
+    }
+
+    /// <summary>Player order: repair this building (right-click a damaged friendly structure).</summary>
+    public void SetRepairTarget(Structure structure)
+    {
+        if (structure == null || !structure.IsDamaged) return;
+        repairTarget = structure;
+        state = State.Repairing;
     }
 
     private void Update()
@@ -99,6 +115,38 @@ public class ResourceCollector : MonoBehaviour
                 else
                 {
                     agent.SetDestination(targetDropoff.transform.position);
+                }
+                break;
+
+            case State.Repairing:
+                if (repairTarget == null || !repairTarget.IsDamaged)
+                {
+                    repairTarget = null;
+                    state = State.Idle; // job done, back to work
+                    break;
+                }
+
+                if (!InRangeOf(repairTarget.transform.position))
+                {
+                    agent.SetDestination(repairTarget.transform.position);
+                    break;
+                }
+
+                agent.SetDestination(transform.position); // hold and hammer
+                repairTick -= Time.deltaTime;
+                if (repairTick <= 0f)
+                {
+                    repairTick = 0.5f;
+                    float amount = repairPerSecond * 0.5f;
+                    int cost = Mathf.CeilToInt(amount * repairCostPerHp);
+                    if (Economy.TrySpend(FactionUtility.GetFactionId(gameObject), cost))
+                    {
+                        repairTarget.Repair(amount);
+                    }
+                    else
+                    {
+                        state = State.Idle; // can't afford repairs right now
+                    }
                 }
                 break;
         }

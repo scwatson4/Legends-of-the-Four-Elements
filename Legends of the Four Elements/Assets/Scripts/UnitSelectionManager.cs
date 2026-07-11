@@ -58,6 +58,24 @@ public class UnitSelectionManager : MonoBehaviour
         // While embodying a unit, mouse/keys drive that unit instead.
         if (EmbodimentController.IsActive) return;
 
+        // While a superweapon awaits its target, the click belongs to it.
+        if (Superweapon.IsTargeting) return;
+
+        // Sell a building: hover it and press X (refunds half its cost).
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            RaycastHit sellHit;
+            Ray sellRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(sellRay, out sellHit, Mathf.Infinity))
+            {
+                Structure structure = sellHit.collider.GetComponentInParent<Structure>();
+                if (structure != null && FactionUtility.IsLocallyControlled(structure.gameObject))
+                {
+                    structure.Sell();
+                }
+            }
+        }
+
         HandleControlGroups();
 
         // F arms attack-move: the next left-click on ground sends the army
@@ -180,6 +198,19 @@ public class UnitSelectionManager : MonoBehaviour
                     foreach (GameObject unit in selectedUnitsList)
                     {
                         transport.OrderBoard(unit);
+                    }
+                }
+
+                // Repair order: right-click a damaged friendly building
+                // with workers selected.
+                Structure damagedBuilding = hit.collider.GetComponentInParent<Structure>();
+                if (damagedBuilding != null && damagedBuilding.IsDamaged &&
+                    FactionUtility.IsLocallyControlled(damagedBuilding.gameObject))
+                {
+                    foreach (GameObject unit in selectedUnitsList)
+                    {
+                        ResourceCollector worker = unit != null ? unit.GetComponent<ResourceCollector>() : null;
+                        if (worker != null) worker.SetRepairTarget(damagedBuilding);
                     }
                 }
             }

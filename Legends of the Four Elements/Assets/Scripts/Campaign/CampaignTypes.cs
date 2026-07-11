@@ -6,7 +6,8 @@ public enum CampaignObjective
 {
     DestroyEnemyBase = 0,  // classic: raze every rival command center
     DefeatBoss = 1,        // boss arena: kill the boss (no enemy base)
-    Survive = 2            // hold out for surviveSeconds against the assault
+    Survive = 2,           // hold out for surviveSeconds against the assault
+    Escort = 3             // deliver the caravan alive to the golden beacon
 }
 
 /// <summary>Which boss, if any, appears in a level.</summary>
@@ -57,6 +58,9 @@ public class CampaignLevel
     public CampaignBoss boss = CampaignBoss.None;
     public float surviveSeconds = 300f;
     public List<Nation> enemyNations = new List<Nation>();
+
+    [Tooltip("Boot Camp: attaches the interactive TutorialManager to this level.")]
+    public bool isTutorial = false;
 
     public int chiReward = 100;
 

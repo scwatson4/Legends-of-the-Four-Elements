@@ -41,6 +41,25 @@ public static class DefaultCampaign
         List<CampaignChapter> chapters = new List<CampaignChapter>();
 
         // ==============================================================
+        // PROLOGUE - BOOT CAMP
+        // ==============================================================
+        CampaignChapter c0 = new CampaignChapter
+        {
+            title = "Prologue — Boot Camp",
+            description = "Before the sky tears open: Elder Miza drills you in the arts of command."
+        };
+        CampaignLevel bootCamp = L("c0l1", "The Proving Grounds",
+            "Learn to command: movement, building, harvesting, and the Avatar's gifts.",
+            CampaignObjective.DestroyEnemyBase, CampaignBoss.None, 50, 50,
+            new[] { Nation.Fire },
+            D("Elder Miza", "Every master was once a student, Commander. Today the mountain is your classroom."),
+            D("Kesu", "I 'borrowed' a Fire Nation training camp for the final exam. They were... not using it politely."),
+            D("Elder Miza", "Follow my instructions at the top of your vision. We begin with the simplest art: seeing your own people."));
+        bootCamp.isTutorial = true;
+        c0.levels.Add(bootCamp);
+        chapters.Add(c0);
+
+        // ==============================================================
         // CHAPTER 1 - WHISPERS ON THE WIND
         // ==============================================================
         CampaignChapter c1 = new CampaignChapter
@@ -142,11 +161,12 @@ public static class DefaultCampaign
                           "the land into fiefdoms while Boruk - the Mountain That Walks - sleeps beneath the quarries."
         };
         c3.levels.Add(L("c3l1", "The Broken Road",
-            "Reopen the trade road through warlord territory.",
-            CampaignObjective.DestroyEnemyBase, CampaignBoss.None, 301, 200,
+            "ESCORT: bring the relief caravan through warlord territory to the golden beacon alive.",
+            CampaignObjective.Escort, CampaignBoss.None, 301, 200,
             new[] { Nation.Earth },
-            D("Kesu", "Every mile of this road has a new 'king' taxing it. This one has catapults."),
-            D("Kalani", "The earth here is angry. Boruk's dreams bleed into the stone - the warlords are drunk on it without knowing why.")));
+            D("Kesu", "Every mile of this road has a new 'king' taxing it. And we're walking a relief caravan straight down the middle of it."),
+            D("Elder Miza", "The caravan must reach the beacon at the far pass. If it falls, the villages east of here starve this winter."),
+            D("Kalani", "The earth here is angry. Boruk's dreams bleed into the stone - the warlords are drunk on it without knowing why. Guard the caravan closely.")));
         c3.levels.Add(L("c3l2", "Salt and Crystal",
             "Seize the great crystal quarries before the warlords bleed them dry.",
             CampaignObjective.DestroyEnemyBase, CampaignBoss.None, 302, 220,
@@ -282,11 +302,24 @@ public static class DefaultCampaign
             for (int l = 0; l < chapters[c].levels.Count; l++)
             {
                 CampaignLevel level = chapters[c].levels[l];
-                level.waveBaseSize = 2 + c;                       // ch1: 2 ... ch5: 6
-                level.waveGrowth = 1 + c / 2;                     // ch1-2: +1, ch3-4: +2, ch5: +3
-                level.waveInterval = Mathf.Max(40f, 75f - c * 6f);
-                level.firstWaveDelay = Mathf.Max(60f, 100f - c * 8f);
-                level.startingSilver = 600 + c * 50;              // costs rise, so does the stake
+
+                // Boot Camp stays gentle: one tiny wave, lots of breathing room.
+                if (level.isTutorial)
+                {
+                    level.waveBaseSize = 1;
+                    level.waveGrowth = 0;
+                    level.waveInterval = 120f;
+                    level.firstWaveDelay = 180f;
+                    level.startingSilver = 700;
+                    continue;
+                }
+
+                int tier = Mathf.Max(0, c - 1);                     // prologue doesn't count
+                level.waveBaseSize = 2 + tier;                      // ch1: 2 ... ch5: 6
+                level.waveGrowth = 1 + tier / 2;                    // ch1-2: +1, ch3-4: +2, ch5: +3
+                level.waveInterval = Mathf.Max(40f, 75f - tier * 6f);
+                level.firstWaveDelay = Mathf.Max(60f, 100f - tier * 8f);
+                level.startingSilver = 600 + tier * 50;             // costs rise, so does the stake
             }
         }
     }

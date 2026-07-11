@@ -277,6 +277,18 @@ instructions + test checklist: **[`CAMPAIGN.md`](CAMPAIGN.md)**.
   (Earthbender). Earth Gate = same + `Gate` (assign the door piece to
   Gate Model so it sinks open). Add both to the Earth NationData buildings
   list — the ghost turns red if you have no living earthbenders.
+- **Superweapons**: add the `Superweapon` component to each nation's
+  Special building with the matching power (Fire CometBarrage, Water
+  FlashFreeze, Air GreatStorm, Earth StoneRampart — assign the Stone Wall
+  prefab to its Wall Prefab slot). Optional impact VFX slot. P arms it
+  when charged. See the ROSTERS.md superweapon table.
+- **Sell & repair**: nothing to wire — X over a friendly building sells
+  for half `Structure.buildCost` (set automatically when placed; set it
+  manually on hand-placed scene buildings), and right-clicking a damaged
+  friendly building with workers selected repairs it for silver.
+- **Boot Camp & escort**: nothing to wire — the campaign now opens with a
+  tutorial prologue (its hint banner builds itself), and mission 3-1 is an
+  escort. See CAMPAIGN.md.
 
 ## Phase 9 — Full test matrix
 

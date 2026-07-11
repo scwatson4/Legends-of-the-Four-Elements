@@ -173,6 +173,11 @@ public class BuildingPlacer : MonoBehaviour
 
         GameObject building = Instantiate(entry.prefab, position, rotation);
         FactionUtility.SetFaction(building, FactionManager.LocalPlayerFactionId);
+
+        // Remember the price so selling can refund half.
+        Structure structure = building.GetComponentInChildren<Structure>();
+        if (structure != null) structure.buildCost = entry.cost;
+
         if (SoundManager.Instance != null) SoundManager.Instance.PlayBuildingPlaced();
     }
 
