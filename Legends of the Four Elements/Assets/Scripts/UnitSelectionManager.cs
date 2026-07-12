@@ -460,14 +460,18 @@ public class UnitSelectionManager : MonoBehaviour
         groundMarker.SetActive(false);
         groundMarker.SetActive(true);
 
-        foreach (GameObject unit in selectedUnitsList)
+        for (int i = 0; i < selectedUnitsList.Count; i++)
         {
+            GameObject unit = selectedUnitsList[i];
             if (unit == null) continue;
 
             AttackController attack = unit.GetComponent<AttackController>();
             if (attack != null) attack.targetToAttack = null;
 
-            if (NetworkUnit.TryRelayMove(unit, destination)) continue;
+            // Advance in formation, not as a single-point dogpile.
+            Vector3 slot = FormationUtility.GetDestination(destination, i, selectedUnitsList.Count);
+
+            if (NetworkUnit.TryRelayMove(unit, slot)) continue;
 
             UnityEngine.AI.NavMeshAgent agent = unit.GetComponent<UnityEngine.AI.NavMeshAgent>();
             if (agent != null && agent.enabled && agent.isOnNavMesh)
@@ -475,7 +479,7 @@ public class UnitSelectionManager : MonoBehaviour
                 // Deliberately NOT setting isCommandedToMove: that flag
                 // suppresses target acquisition, and attack-move should
                 // engage everything hostile along the way.
-                agent.SetDestination(destination);
+                agent.SetDestination(slot);
             }
         }
         Debug.Log($"Attack-move: {selectedUnitsList.Count} units advancing.");

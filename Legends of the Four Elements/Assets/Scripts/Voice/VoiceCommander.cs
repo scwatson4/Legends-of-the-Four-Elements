@@ -319,7 +319,7 @@ public class VoiceCommander : MonoBehaviour
 
             AttackController attack = go.GetComponent<AttackController>();
             if (attack != null) attack.targetToAttack = null;
-            agent.SetDestination(target);
+            agent.SetDestination(FormationUtility.GetDestination(target, sent, count));
             sent++;
         }
 

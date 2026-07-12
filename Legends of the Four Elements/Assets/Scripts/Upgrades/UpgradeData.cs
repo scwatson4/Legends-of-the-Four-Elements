@@ -35,6 +35,15 @@ public class UpgradeData : ScriptableObject
     public int healPerSecondPerLevel = 2;
     public float healRadius = 7f;
 
+    [Header("Shield Mastery")]
+    [Tooltip("This upgrade strengthens the benders' Q shields (use restrictToUnitTypes " +
+             "to target one bender type - it applies to ALL units of that type).")]
+    public bool improvesShields = false;
+    [Tooltip("Per level: shield strength (+15% reduction/absorb), duration, cooldown cut.")]
+    public float shieldStrengthBonus = 0.15f;
+    public float shieldDurationBonus = 0.2f;
+    [Range(0f, 0.3f)] public float shieldCooldownReduction = 0.1f;
+
     [Header("Applies to")]
     public UnitCategory[] categories = { UnitCategory.Infantry };
     [Tooltip("Optional extra filter: only these unit types benefit " +

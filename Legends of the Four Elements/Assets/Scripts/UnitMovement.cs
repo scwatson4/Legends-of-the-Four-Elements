@@ -37,11 +37,24 @@ public class UnitMovement : MonoBehaviour
                 }
                 isCommandedToMove = true;
 
+                // Group orders fan out into a battle formation instead of
+                // everyone piling onto the same exact point.
+                Vector3 destination = hit.point;
+                if (UnitSelectionManager.Instance != null)
+                {
+                    var selection = UnitSelectionManager.Instance.selectedUnitsList;
+                    int index = selection.IndexOf(gameObject);
+                    if (index >= 0 && selection.Count > 1)
+                    {
+                        destination = FormationUtility.GetDestination(hit.point, index, selection.Count);
+                    }
+                }
+
                 // In multiplayer the server owns the simulation: relay the
                 // order instead of moving the local (visual-only) agent.
-                if (!NetworkUnit.TryRelayMove(gameObject, hit.point) && AgentReady)
+                if (!NetworkUnit.TryRelayMove(gameObject, destination) && AgentReady)
                 {
-                    agent.SetDestination(hit.point);
+                    agent.SetDestination(destination);
                 }
 
                 if (directionIndicator != null) directionIndicator.DrawLine(hit);

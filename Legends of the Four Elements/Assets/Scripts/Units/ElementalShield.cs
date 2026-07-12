@@ -29,7 +29,8 @@ public class ElementalShield : MonoBehaviour, IDamageInterceptor
     private bool slowed;
     private float auraTick;
 
-    public static ElementalShield Apply(Unit target, Nation element, float duration)
+    public static ElementalShield Apply(Unit target, Nation element, float duration,
+        float strengthMultiplier = 1f)
     {
         if (target == null) return null;
 
@@ -40,12 +41,12 @@ public class ElementalShield : MonoBehaviour, IDamageInterceptor
             target.RefreshDamageInterceptors(); // make sure we're consulted
         }
 
-        shield.Configure(element);
+        shield.Configure(element, strengthMultiplier);
         shield.remaining = Mathf.Max(shield.remaining, duration);
         return shield;
     }
 
-    private void Configure(Nation newElement)
+    private void Configure(Nation newElement, float strength)
     {
         element = newElement;
         switch (element)
@@ -57,7 +58,7 @@ public class ElementalShield : MonoBehaviour, IDamageInterceptor
                 break;
             case Nation.Water:
                 damageTakenMultiplier = 1f;
-                absorbPool = Mathf.Max(absorbPool, 60f);
+                absorbPool = Mathf.Max(absorbPool, 60f * strength);
                 blocksKnockback = false; fireAuraDamagePerSecond = 0f; bearerSpeedMultiplier = 1f;
                 break;
             case Nation.Earth:
@@ -67,10 +68,18 @@ public class ElementalShield : MonoBehaviour, IDamageInterceptor
                 break;
             case Nation.Fire:
                 damageTakenMultiplier = 0.7f;
-                fireAuraDamagePerSecond = 4f;
+                fireAuraDamagePerSecond = 4f * strength;
                 blocksKnockback = false; absorbPool = 0f; bearerSpeedMultiplier = 1f;
                 break;
         }
+
+        // Shield-mastery upgrades deepen the damage reduction (capped at 90%).
+        if (!Mathf.Approximately(strength, 1f) && damageTakenMultiplier < 1f)
+        {
+            float reduction = Mathf.Min(0.9f, (1f - damageTakenMultiplier) * strength);
+            damageTakenMultiplier = 1f - reduction;
+        }
+
         RefreshVisual();
         ApplyBearerSlow();
     }

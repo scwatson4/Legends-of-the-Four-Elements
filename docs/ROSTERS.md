@@ -191,6 +191,14 @@ Also implemented: **sell** any building for half its cost (hover + X) and
 **worker repairs** (right-click a damaged friendly building with workers
 selected; ~0.5 silver per HP).
 
+**Shield mastery upgrades**: benders' Q shields are upgradable per bender
+type — tick `improvesShields` on an UpgradeData and restrict it to that
+nation's bender (buying a level empowers EVERY bender of that type at once,
+current and future). Suggested per nation, 3 levels, 175 base: Air
+"Unbending Wind", Water "Deep Ice", Earth "Mountain's Patience", Fire
+"Inner Flame" — each level: +15% shield strength (reduction/absorb/aura),
++20% duration, -10% cooldown.
+
 **Tower & wall upgrades**: give every nation a **Reinforced Battlements**
 upgrade (3 levels, 175 base, categories = **Building**): per level
 +15% tower damage (damageBonus), +15% building HP (healthBonus). For

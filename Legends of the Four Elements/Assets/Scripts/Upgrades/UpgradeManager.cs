@@ -118,6 +118,34 @@ public static class UpgradeManager
         baseStats.ApplyMultipliers(damageMult, healthMult, speedMult, sightMult);
     }
 
+    /// <summary>Shield-mastery bonuses for a unit's faction+type: strength and
+    /// duration multipliers (>= 1) and a cooldown multiplier (<= 1).</summary>
+    public static void GetShieldMultipliers(Unit unit,
+        out float strengthMult, out float durationMult, out float cooldownMult)
+    {
+        strengthMult = 1f;
+        durationMult = 1f;
+        cooldownMult = 1f;
+        if (unit == null) return;
+
+        int factionId = unit.FactionId;
+        Faction faction = FactionManager.Get(factionId);
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null && faction != null ? db.Get(faction.nation) : null;
+        if (data == null || data.upgrades == null) return;
+
+        foreach (UpgradeData upgrade in data.upgrades)
+        {
+            if (upgrade == null || !upgrade.improvesShields || !upgrade.AppliesToUnit(unit)) continue;
+            int level = GetLevel(factionId, upgrade);
+            if (level <= 0) continue;
+
+            strengthMult += level * upgrade.shieldStrengthBonus;
+            durationMult += level * upgrade.shieldDurationBonus;
+            cooldownMult *= Mathf.Pow(1f - upgrade.shieldCooldownReduction, level);
+        }
+    }
+
     /// <summary>Applies Building-category upgrades to a tower/wall/building.</summary>
     public static void ApplyToBuilding(Structure structure)
     {

@@ -63,6 +63,12 @@ public class ElementalShieldAbility : MonoBehaviour
         int shielded = 0;
         int myFaction = unit.FactionId;
 
+        // Shield-mastery upgrades: bought once, they empower EVERY bender of
+        // the upgrade's unit type - stronger, longer, more often.
+        float strengthMult, durationMult, cooldownMult;
+        UpgradeManager.GetShieldMultipliers(unit, out strengthMult, out durationMult, out cooldownMult);
+        float duration = shieldDuration * durationMult;
+
         // Nearest allies first, caster included.
         System.Collections.Generic.List<Unit> allies = new System.Collections.Generic.List<Unit> { unit };
         foreach (Collider hit in Physics.OverlapSphere(transform.position, castRadius))
@@ -79,11 +85,11 @@ public class ElementalShieldAbility : MonoBehaviour
         foreach (Unit ally in allies)
         {
             if (shielded >= maxTargets) break;
-            ElementalShield.Apply(ally, element, shieldDuration);
+            ElementalShield.Apply(ally, element, duration, strengthMult);
             shielded++;
         }
 
-        cooldownRemaining = cooldownSeconds;
+        cooldownRemaining = cooldownSeconds * cooldownMult;
         Debug.Log($"{gameObject.name} raises a {element} shield over {shielded} unit(s)!");
     }
 
