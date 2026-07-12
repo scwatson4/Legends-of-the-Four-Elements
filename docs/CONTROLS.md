@@ -28,6 +28,7 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | **Esc** (nothing else active) | **pause menu** — resume, restart, main menu, volume |
 | Click / drag the **minimap** | jump the camera there |
 | **F9** | 🧸 **Plastic Soldiers mode** — everyone becomes shiny toy plastic in kingdom colors (Army Men homage; toggle again to restore) |
+| **Q** | selected benders shield nearby allies in their element: Air = 40% reduction + knockback immunity, Water = absorbs 60 damage then shatters, Earth = 60% reduction but slower, Fire = 30% reduction + scorching aura (8s, 25s cooldown; AI benders cast automatically) |
 | **T** | Avatar: cycle bent element (Air → Water → Earth → Fire) |
 | **G** | Avatar State — **quick surge**: 5s, costs 30 energy (~1.75× damage) |
 | **Shift + G** | Avatar State — **long surge**: 10s, costs 55 energy (~2.25× damage) |

@@ -147,6 +147,11 @@ public static class KnockbackUtility
     public static void Push(Unit victim, Vector3 fromPoint, float distance)
     {
         if (victim == null) return;
+
+        // An air shield plants the bearer like a mountain in the wind.
+        ElementalShield shield = victim.GetComponent<ElementalShield>();
+        if (shield != null && shield.blocksKnockback) return;
+
         NavMeshAgent agent = victim.GetComponent<NavMeshAgent>();
         if (agent == null || !agent.enabled || !agent.isOnNavMesh) return;
 

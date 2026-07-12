@@ -77,6 +77,14 @@ public class Unit : MonoBehaviour
             gameObject.AddComponent<AttackStyleSet>();
         }
 
+        // Benders can shield their allies (Q).
+        bool isBender = unitType == UnitType.Airbender || unitType == UnitType.Waterbender ||
+                        unitType == UnitType.Earthbender || unitType == UnitType.Firebender;
+        if (isBender && attackController != null && GetComponent<ElementalShieldAbility>() == null)
+        {
+            gameObject.AddComponent<ElementalShieldAbility>();
+        }
+
         NavMeshHit hit;
         if (!NavMesh.SamplePosition(transform.position, out hit, 10f, NavMesh.AllAreas))
         {
@@ -147,6 +155,13 @@ public class Unit : MonoBehaviour
         if (damageToInflict <= 0) return;
 
         ApplyHealth(unitHealth - damageToInflict);
+    }
+
+    /// <summary>Call after adding/removing an IDamageInterceptor at runtime
+    /// (e.g. an ElementalShield) so the cached list is rebuilt.</summary>
+    internal void RefreshDamageInterceptors()
+    {
+        damageInterceptors = null;
     }
 
     /// <summary>Used by the network layer to mirror the server's health on clients.</summary>

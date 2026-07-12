@@ -157,6 +157,11 @@ public class DefenseTower : MonoBehaviour
     private void Knockback(Unit victim, Vector3 fromPoint)
     {
         if (victim == null) return;
+
+        // Air shields anchor their bearer against wind.
+        ElementalShield shield = victim.GetComponent<ElementalShield>();
+        if (shield != null && shield.blocksKnockback) return;
+
         NavMeshAgent agent = victim.GetComponent<NavMeshAgent>();
         if (agent == null || !agent.enabled || !agent.isOnNavMesh) return;
 
