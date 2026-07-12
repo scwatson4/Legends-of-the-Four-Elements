@@ -60,6 +60,12 @@ public class NationSelectController : MonoBehaviour
         GameSetup.Difficulty = (Difficulty)Mathf.Clamp(difficultyIndex, 0, 2);
     }
 
+    /// <summary>Optional toggle: everyone renders as shiny toy plastic (F9 in-game too).</summary>
+    public void SetPlasticMode(bool enabled)
+    {
+        GameSetup.PlasticSoldiersMode = enabled;
+    }
+
     /// <summary>Wire map-list buttons to this (index into mapSceneNames).</summary>
     public void SelectMap(int mapIndex)
     {

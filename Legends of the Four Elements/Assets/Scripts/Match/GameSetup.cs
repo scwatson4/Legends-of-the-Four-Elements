@@ -57,6 +57,10 @@ public static class GameSetup
 
     public static Difficulty Difficulty = Difficulty.Normal;
 
+    /// <summary>Silly mode: everyone renders as shiny single-color plastic
+    /// toys (Army Men RTS homage). Toggle in the menu or with F9 in-game.</summary>
+    public static bool PlasticSoldiersMode = false;
+
     /// <summary>Scales AI income and enemy wave sizes.</summary>
     public static float EnemyStrengthMultiplier =>
         Difficulty == Difficulty.Easy ? 0.7f :
@@ -72,6 +76,7 @@ public static class GameSetup
         MapSceneName = "";
         MapSeed = 0;
         Difficulty = Difficulty.Normal;
+        PlasticSoldiersMode = false;
     }
 
     public static void ConfigureSurvival(Nation playerNation)

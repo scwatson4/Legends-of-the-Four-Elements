@@ -27,6 +27,7 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | **Esc / right-click** | cancel placement, cancel attack-move, skip dialogue |
 | **Esc** (nothing else active) | **pause menu** — resume, restart, main menu, volume |
 | Click / drag the **minimap** | jump the camera there |
+| **F9** | 🧸 **Plastic Soldiers mode** — everyone becomes shiny toy plastic in kingdom colors (Army Men homage; toggle again to restore) |
 | **T** | Avatar: cycle bent element (Air → Water → Earth → Fire) |
 | **G** | Avatar State — **quick surge**: 5s, costs 30 energy (~1.75× damage) |
 | **Shift + G** | Avatar State — **long surge**: 10s, costs 55 energy (~2.25× damage) |
