@@ -26,7 +26,13 @@ public class ResourceCollector : MonoBehaviour
     [Tooltip("Silver per point of health repaired.")]
     public float repairCostPerHp = 0.5f;
 
-    private enum State { Idle, MovingToNode, Harvesting, MovingToDropoff, Repairing }
+    [Header("Self-Preservation")]
+    public float panicRadius = 9f;
+    public float fleeCheckInterval = 0.5f;
+
+    private enum State { Idle, MovingToNode, Harvesting, MovingToDropoff, Repairing, Fleeing }
+    private State stateBeforeFleeing = State.Idle;
+    private float fleeCheckTimer;
 
     private State state = State.Idle;
     private ResourceNode targetNode;
@@ -67,6 +73,30 @@ public class ResourceCollector : MonoBehaviour
         // A direct move order from the player always wins; resume after.
         if (unitMovement != null && unitMovement.isCommandedToMove) return;
         if (agent == null || !agent.enabled || !agent.isOnNavMesh) return;
+
+        // Self-preservation: run from danger, then RETURN TO WORK.
+        fleeCheckTimer -= Time.deltaTime;
+        if (fleeCheckTimer <= 0f)
+        {
+            fleeCheckTimer = fleeCheckInterval;
+            bool threatened = ThreatNearby();
+
+            if (threatened && state != State.Fleeing)
+            {
+                stateBeforeFleeing = state == State.Harvesting ? State.MovingToNode : state;
+                state = State.Fleeing;
+            }
+            else if (!threatened && state == State.Fleeing)
+            {
+                state = stateBeforeFleeing; // danger's past - back to the job
+            }
+        }
+
+        if (state == State.Fleeing)
+        {
+            FleeTowardSafety();
+            return;
+        }
 
         switch (state)
         {
@@ -161,6 +191,40 @@ public class ResourceCollector : MonoBehaviour
 
         // Head back for another load (or find a new node if ours ran dry).
         state = targetNode != null && !targetNode.IsDepleted ? State.MovingToNode : State.Idle;
+    }
+
+    private bool ThreatNearby()
+    {
+        foreach (Collider hit in Physics.OverlapSphere(transform.position, panicRadius))
+        {
+            Unit other = hit.GetComponentInParent<Unit>();
+            if (other == null) continue;
+            if (other.GetComponent<AttackController>() == null) continue; // harmless
+            if (FactionUtility.AreHostile(gameObject, other.gameObject)) return true;
+        }
+        return false;
+    }
+
+    private void FleeTowardSafety()
+    {
+        // Run for the nearest friendly dropoff (usually home base).
+        ResourceDropoff safety = FindNearestDropoff();
+        if (safety != null)
+        {
+            agent.SetDestination(safety.transform.position);
+        }
+        else
+        {
+            // Nowhere safe: at least run away from the nearest threat.
+            foreach (Collider hit in Physics.OverlapSphere(transform.position, panicRadius))
+            {
+                Unit other = hit.GetComponentInParent<Unit>();
+                if (other == null || !FactionUtility.AreHostile(gameObject, other.gameObject)) continue;
+                Vector3 away = (transform.position - other.transform.position).normalized * 10f;
+                agent.SetDestination(transform.position + away);
+                break;
+            }
+        }
     }
 
     private bool InRangeOf(Vector3 position)

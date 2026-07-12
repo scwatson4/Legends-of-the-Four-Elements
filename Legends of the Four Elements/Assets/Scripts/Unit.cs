@@ -39,6 +39,9 @@ public class Unit : MonoBehaviour
     [Tooltip("Population this unit occupies. Suggested: infantry/worker 1, animal 2, vehicle 3, Avatar 5.")]
     public int populationCost = 1;
 
+    [Tooltip("Seconds the body lingers on the field before despawning - battles leave evidence.")]
+    public float corpseDuration = 10f;
+
     public HealthTracker healthTracker;
 
     /// <summary>Fired with (current, max) whenever health changes. Used by the network sync layer.</summary>
@@ -133,12 +136,28 @@ public class Unit : MonoBehaviour
                 navMeshAgent.enabled = false;
             }
 
-            Destroy(gameObject, 1f);
+            // The body lingers as evidence, but stops being a game entity NOW:
+            // colliders off (so nothing targets or trips over it), out of the
+            // selection/population/fog bookkeeping immediately.
+            foreach (Collider collider in GetComponentsInChildren<Collider>())
+            {
+                collider.enabled = false;
+            }
+            if (attackController != null) attackController.enabled = false;
+            if (unitMovement != null) unitMovement.enabled = false;
+            if (UnitSelectionManager.Instance != null)
+            {
+                UnitSelectionManager.Instance.OnUnitDestroyed(gameObject);
+            }
+
+            Destroy(gameObject, Mathf.Max(1f, corpseDuration));
         }
     }
 
     internal void TakeDamage(int damageToInflict)
     {
+        if (isDying) return; // the fallen are beyond further harm
+
         // In multiplayer only the server applies damage; clients receive the
         // result through NetworkUnit's synced health.
         if (NetworkGuard.BlockLocalSimulation) return;

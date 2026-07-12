@@ -13,8 +13,44 @@ public class HealthTracker : MonoBehaviour
     public Material yellowEmission;
     public Material redEmission;
 
+    [Header("Smart Visibility")]
+    [Tooltip("Show only when damaged, selected, or recently hit (declutters the battlefield).")]
+    public bool hideWhenIrrelevant = true;
+    public float showAfterHitSeconds = 3f;
 
     private Coroutine smoothHealthChangeCoroutine;
+    private CanvasGroup canvasGroup;
+    private GameObject owner;
+    private float lastHitTime = -99f;
+    private float currentFraction = 1f;
+
+    private void Awake()
+    {
+        // CanvasGroup (not Canvas.enabled) so fog-of-war hiding and smart
+        // visibility can both act without fighting each other.
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+        Unit unit = GetComponentInParent<Unit>();
+        Structure structure = GetComponentInParent<Structure>();
+        CommandCenter cc = GetComponentInParent<CommandCenter>();
+        owner = unit != null ? unit.gameObject
+            : structure != null ? structure.gameObject
+            : cc != null ? cc.gameObject : null;
+    }
+
+    private void Update()
+    {
+        if (!hideWhenIrrelevant || canvasGroup == null) return;
+
+        bool dead = currentFraction <= 0.001f;
+        bool damaged = currentFraction < 0.999f;
+        bool recentlyHit = Time.time - lastHitTime < showAfterHitSeconds;
+        bool selected = owner != null && UnitSelectionManager.Instance != null &&
+                        UnitSelectionManager.Instance.selectedUnitsList.Contains(owner);
+
+        canvasGroup.alpha = (!dead && (damaged || recentlyHit || selected)) ? 1f : 0f;
+    }
 
 
     // Call this method to update the health bar and color
@@ -22,6 +58,9 @@ public class HealthTracker : MonoBehaviour
     {
         // Calculate the health percentage
         float healthPercentage = Mathf.Clamp01(currentHealth / maxHealth);
+
+        if (healthPercentage < currentFraction) lastHitTime = Time.time; // took a hit
+        currentFraction = healthPercentage;
 
         // Update the slider value and size
        // HealthBarSlider.value = healthPercentage;

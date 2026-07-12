@@ -95,7 +95,7 @@ public class NationSelectController : MonoBehaviour
             : GameSetup.MapSceneName;
 
         Debug.Log($"Starting {selectedMode} as {NationInfo.DisplayName(selectedNation)} on {scene} (seed {GameSetup.MapSeed})");
-        SceneManager.LoadScene(scene);
+        SceneLoader.Load(scene);
     }
 
     private void RefreshLabels()

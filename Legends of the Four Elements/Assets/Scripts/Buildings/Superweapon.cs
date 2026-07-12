@@ -131,6 +131,8 @@ public class Superweapon : MonoBehaviour
             Destroy(Instantiate(impactVfx, point, Quaternion.identity), 8f);
         }
 
+        GameFeel.Shake(0.6f, 1.1f); // the earth remembers a superweapon
+
         switch (power)
         {
             case PowerType.CometBarrage: StartCoroutine(CometBarrage(point)); break;

@@ -72,7 +72,7 @@ public class CampaignManager : MonoBehaviour
 
         targetSceneName = string.IsNullOrEmpty(level.sceneName) ? defaultSceneName : level.sceneName;
         Debug.Log($"[Campaign] Launching {level.id} '{level.title}' on {targetSceneName} (seed {level.mapSeed}).");
-        SceneManager.LoadScene(targetSceneName);
+        SceneLoader.Load(targetSceneName); // with a lore quote while it loads
     }
 
     private void OnEnable()
@@ -616,7 +616,12 @@ public class CampaignManager : MonoBehaviour
 
         if (CurrentLevel.objective == CampaignObjective.DefeatBoss && GameManager.Instance != null)
         {
-            GameManager.Instance.ShowVictory();
+            // Savor the moment: slow motion, THEN the victory screen.
+            GameFeel.Shake(0.5f, 1.2f);
+            GameFeel.SlowMoThen(0.3f, 1.5f, () =>
+            {
+                if (GameManager.Instance != null) GameManager.Instance.ShowVictory();
+            });
         }
     }
 
@@ -625,7 +630,11 @@ public class CampaignManager : MonoBehaviour
         if (levelFinished) return;
 
         Debug.Log("[Campaign] The First Shadow unravels. The rupture seals. BALANCE IS RESTORED.");
-        if (GameManager.Instance != null) GameManager.Instance.ShowVictory();
+        GameFeel.Shake(0.9f, 2f);
+        GameFeel.SlowMoThen(0.25f, 2.5f, () =>
+        {
+            if (GameManager.Instance != null) GameManager.Instance.ShowVictory();
+        });
     }
 
     private void OnVictory()

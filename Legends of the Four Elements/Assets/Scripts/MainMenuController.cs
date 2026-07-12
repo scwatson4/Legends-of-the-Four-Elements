@@ -38,7 +38,7 @@ public class MainMenuController : MonoBehaviour
 
         // Legacy flow: jump straight into the level as the Air Nomads.
         GameSetup.ConfigureSurvival(Nation.Air);
-        SceneManager.LoadScene(levelSceneName);
+        SceneLoader.Load(levelSceneName);
     }
 
     /// <summary>Wire to the nation-select panel's Back button.</summary>

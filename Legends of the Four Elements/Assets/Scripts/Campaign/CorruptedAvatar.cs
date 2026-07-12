@@ -90,6 +90,7 @@ public class CorruptedAvatar : MonoBehaviour
             {
                 attackController.unitDamage = Mathf.RoundToInt(baseDamage * (1f + phase * phaseDamageBonus));
             }
+            GameFeel.Shake(0.35f + phase * 0.1f, 0.7f);
             Debug.Log($"{bossName} enters phase {phase + 1}!");
         }
     }
