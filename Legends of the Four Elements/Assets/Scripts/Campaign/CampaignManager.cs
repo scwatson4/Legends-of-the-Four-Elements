@@ -113,8 +113,19 @@ public class CampaignManager : MonoBehaviour
         ApplyPermanentUpgrades();
         SetupScratchStart();
 
-        // Story first, then the fighting starts.
-        DialogueUI.Play(CurrentLevel.dialogue, OnDialogueFinished);
+        // A new chapter opens with a full-screen interlude (first visit only),
+        // then the level's dialogue, then the fighting starts.
+        bool showInterlude = !string.IsNullOrEmpty(CurrentLevel.interludeTitle) &&
+                             !progress.IsLevelCompleted(CurrentLevel.id);
+        if (showInterlude)
+        {
+            InterludeUI.Show(CurrentLevel.interludeTitle, CurrentLevel.interludeText,
+                () => DialogueUI.Play(CurrentLevel.dialogue, OnDialogueFinished));
+        }
+        else
+        {
+            DialogueUI.Play(CurrentLevel.dialogue, OnDialogueFinished);
+        }
     }
 
     private void OnDialogueFinished()

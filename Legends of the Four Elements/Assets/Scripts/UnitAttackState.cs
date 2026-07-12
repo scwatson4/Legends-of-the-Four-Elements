@@ -88,6 +88,20 @@ public class UnitAttackState : StateMachineBehaviour
 
         if (targetUnit != null && attackController.IsHostileTo(targetUnit.gameObject))
         {
+            // Metalbending: earthbenders tear into machines.
+            MetalBending metal = attackController.GetComponent<MetalBending>();
+            if (metal != null && targetUnit.category == UnitCategory.Vehicle)
+            {
+                damageToInflict = Mathf.RoundToInt(damageToInflict * metal.vehicleDamageMultiplier);
+            }
+
+            // Lightning can be caught and thrown back by upgraded firebenders.
+            if (style != null && style.isLightning &&
+                LightningRedirect.TryRedirect(targetUnit, damageToInflict, attackController.gameObject))
+            {
+                return; // the bolt went home instead
+            }
+
             targetUnit.TakeDamage(damageToInflict);
 
             // Rider effects from the chosen technique (burn / slow / knockback).
@@ -113,6 +127,13 @@ public class UnitAttackState : StateMachineBehaviour
         }
         else if (targetStructure != null && attackController.IsHostileTo(targetStructure.gameObject))
         {
+            // Metalbenders peel fortifications open.
+            MetalBending metalVsWalls = attackController.GetComponent<MetalBending>();
+            if (metalVsWalls != null)
+            {
+                damageToInflict = Mathf.RoundToInt(damageToInflict * metalVsWalls.structureDamageMultiplier);
+            }
+
             targetStructure.TakeDamage(damageToInflict);
 
             if (targetStructure.CurrentHealth <= 0)

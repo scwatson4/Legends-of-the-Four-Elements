@@ -32,14 +32,18 @@ public class AttackStyleSet : MonoBehaviour
         public string styleName = "Strike";
         public float damageMultiplier = 1f;
         public StyleEffect effect = StyleEffect.None;
+        [Tooltip("Lightning attacks can be REDIRECTED by upgraded firebenders.")]
+        public bool isLightning = false;
 
         public Style() { }
 
-        public Style(string name, float damageMultiplier, StyleEffect effect = StyleEffect.None)
+        public Style(string name, float damageMultiplier, StyleEffect effect = StyleEffect.None,
+            bool isLightning = false)
         {
             styleName = name;
             this.damageMultiplier = damageMultiplier;
             this.effect = effect;
+            this.isLightning = isLightning;
         }
     }
 
@@ -99,7 +103,7 @@ public class AttackStyleSet : MonoBehaviour
                     new Style("Fire Jab", 1f),
                     new Style("Flame Burst", 1.2f, StyleEffect.Burn),
                     new Style("Fire Whip", 1.1f, StyleEffect.Burn),
-                    new Style("Lightning Jolt", 1.6f)
+                    new Style("Lightning Jolt", 1.6f, StyleEffect.None, true)
                 };
                 break;
             case Unit.UnitType.Spirit:

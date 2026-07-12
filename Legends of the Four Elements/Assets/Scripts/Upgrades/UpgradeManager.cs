@@ -79,6 +79,8 @@ public static class UpgradeManager
         float damageMult = 1f, healthMult = 1f, speedMult = 1f, sightMult = 1f;
         int grantedHealPerSecond = 0;
         float grantedHealRadius = 7f;
+        float redirectChance = 0f;
+        bool metalBending = false;
 
         foreach (UpgradeData upgrade in data.upgrades)
         {
@@ -97,6 +99,14 @@ public static class UpgradeManager
                 grantedHealPerSecond += level * upgrade.healPerSecondPerLevel;
                 grantedHealRadius = Mathf.Max(grantedHealRadius, upgrade.healRadius);
             }
+            if (upgrade.grantsLightningRedirect)
+            {
+                redirectChance += level * upgrade.redirectChancePerLevel;
+            }
+            if (upgrade.grantsMetalBending)
+            {
+                metalBending = true;
+            }
         }
 
         if (grantedHealPerSecond > 0)
@@ -106,6 +116,18 @@ public static class UpgradeManager
             healer.healAmount = grantedHealPerSecond;
             healer.healInterval = 1f;
             healer.healRadius = grantedHealRadius;
+        }
+
+        if (redirectChance > 0f)
+        {
+            LightningRedirect redirect = unit.GetComponent<LightningRedirect>();
+            if (redirect == null) redirect = unit.gameObject.AddComponent<LightningRedirect>();
+            redirect.chance = Mathf.Min(0.9f, redirectChance);
+        }
+
+        if (metalBending && unit.GetComponent<MetalBending>() == null)
+        {
+            unit.gameObject.AddComponent<MetalBending>();
         }
 
         if (Mathf.Approximately(damageMult, 1f) &&

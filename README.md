@@ -47,6 +47,8 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
   master phase-by-phase checklist for wiring everything in the Unity Editor.
 - [`docs/ROSTERS.md`](docs/ROSTERS.md) — the full faction design sheet
   (units, buildings, upgrades, Avatar, biomes, economy sources).
+- [`docs/BRANCH_HISTORY.md`](docs/BRANCH_HISTORY.md) — the full chronicle of
+  every commit and system on this branch.
 - [`docs/CAMPAIGN.md`](docs/CAMPAIGN.md) — the 25-level story campaign:
   plot, bosses, redemption/summoning, chi progression, and its (tiny)
   wiring needs.

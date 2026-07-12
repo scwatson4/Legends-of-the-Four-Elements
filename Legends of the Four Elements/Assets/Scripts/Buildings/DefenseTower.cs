@@ -88,8 +88,12 @@ public class DefenseTower : MonoBehaviour
             case TowerElement.Fire:
                 if (special)
                 {
-                    // Lightning: pure, devastating, instant.
-                    target.TakeDamage(damage * 3);
+                    // Lightning: pure, devastating, instant - unless the
+                    // target knows Iroh's redirection technique.
+                    if (!LightningRedirect.TryRedirect(target, damage * 3, gameObject))
+                    {
+                        target.TakeDamage(damage * 3);
+                    }
                 }
                 else
                 {

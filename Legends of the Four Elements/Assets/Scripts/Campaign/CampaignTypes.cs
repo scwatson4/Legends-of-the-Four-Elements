@@ -62,6 +62,10 @@ public class CampaignLevel
     [Tooltip("Boot Camp: attaches the interactive TutorialManager to this level.")]
     public bool isTutorial = false;
 
+    [Header("Chapter Interlude (auto-filled on each chapter's first level)")]
+    public string interludeTitle = "";
+    [TextArea] public string interludeText = "";
+
     public int chiReward = 100;
 
     [Header("Scratch Start (Avatar + builder, build your own base)")]

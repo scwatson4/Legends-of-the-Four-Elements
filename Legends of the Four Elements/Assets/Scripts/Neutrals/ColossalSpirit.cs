@@ -142,6 +142,7 @@ public class ColossalSpirit : MonoBehaviour, IDamageInterceptor
         }
 
         GameFeel.Shake(0.8f, 1.5f);
+        if (SoundManager.Instance != null) SoundManager.Instance.StartColossusDirge();
         Debug.Log($"THE COLOSSUS AWAKENS - the Avatar walks as a giant for {awakenedSeconds:0}s!");
     }
 
@@ -149,6 +150,7 @@ public class ColossalSpirit : MonoBehaviour, IDamageInterceptor
     {
         IsAwakened = false;
         cooldownRemaining = cooldownSeconds;
+        if (SoundManager.Instance != null) SoundManager.Instance.StopColossusDirge();
 
         // The Avatar steps out of the fading giant.
         if (mergedAvatar != null)

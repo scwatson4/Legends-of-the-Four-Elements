@@ -30,8 +30,14 @@ public class SoundManager : MonoBehaviour
     public AudioClip victoryClip;
     public AudioClip defeatClip;
 
+    [Header("Colossus Dirge")]
+    [Tooltip("Looping drumbeat that plays ONLY while a colossal spirit walks the field.")]
+    public AudioClip colossusDirgeClip;
+
     private AudioSource barkChannel;
     private AudioSource stingerChannel;
+    private AudioSource dirgeChannel;
+    private int dirgeRequests;
     private float lastBarkTime = -10f;
 
     private void Awake()
@@ -65,6 +71,33 @@ public class SoundManager : MonoBehaviour
         stingerChannel = gameObject.AddComponent<AudioSource>();
         stingerChannel.volume = 0.4f;
         stingerChannel.playOnAwake = false;
+
+        dirgeChannel = gameObject.AddComponent<AudioSource>();
+        dirgeChannel.volume = 0.35f;
+        dirgeChannel.loop = true;
+        dirgeChannel.playOnAwake = false;
+    }
+
+    // ------------------------------------------------------------------
+    // The Colossus Dirge: a slow drumbeat the whole map hears while a
+    // colossal spirit walks. Count-based so overlapping awakenings work.
+    // ------------------------------------------------------------------
+
+    public void StartColossusDirge()
+    {
+        dirgeRequests++;
+        if (colossusDirgeClip == null || dirgeChannel.isPlaying) return;
+        dirgeChannel.clip = colossusDirgeClip;
+        dirgeChannel.Play();
+    }
+
+    public void StopColossusDirge()
+    {
+        dirgeRequests = Mathf.Max(0, dirgeRequests - 1);
+        if (dirgeRequests == 0 && dirgeChannel.isPlaying)
+        {
+            dirgeChannel.Stop();
+        }
     }
 
     // ------------------------------------------------------------------

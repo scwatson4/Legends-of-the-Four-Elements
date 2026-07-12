@@ -35,6 +35,15 @@ public class UpgradeData : ScriptableObject
     public int healPerSecondPerLevel = 2;
     public float healRadius = 7f;
 
+    [Header("Elite Techniques")]
+    [Tooltip("Firebenders only: chance per level to redirect lightning back at its source (Iroh's technique).")]
+    public bool grantsLightningRedirect = false;
+    [Range(0f, 0.5f)] public float redirectChancePerLevel = 0.25f;
+
+    [Tooltip("Earthbenders' absolute top tier: METALBENDING - bonus damage vs vehicles and buildings. " +
+             "Make it a single expensive level (maxLevel 1).")]
+    public bool grantsMetalBending = false;
+
     [Header("Shield Mastery")]
     [Tooltip("This upgrade strengthens the benders' Q shields (use restrictToUnitTypes " +
              "to target one bender type - it applies to ALL units of that type).")]

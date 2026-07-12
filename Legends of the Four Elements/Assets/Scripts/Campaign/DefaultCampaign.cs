@@ -287,6 +287,14 @@ public static class DefaultCampaign
         chapters.Add(c5);
 
         ApplyDifficultyCurve(chapters);
+
+        // Each chapter opens with a full-screen interlude on its first level.
+        foreach (CampaignChapter chapter in chapters)
+        {
+            if (chapter.levels.Count == 0) continue;
+            chapter.levels[0].interludeTitle = chapter.title;
+            chapter.levels[0].interludeText = chapter.description;
+        }
         return chapters;
     }
 

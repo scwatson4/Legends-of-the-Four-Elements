@@ -58,6 +58,9 @@ public class Village : MonoBehaviour
         }
     }
 
+    /// <summary>Who holds this village right now (used by trade routes too).</summary>
+    public int ControllingFactionId() => GetControllingFaction();
+
     /// <summary>The single team holding the village, or NoFaction if empty/contested.</summary>
     private int GetControllingFaction()
     {
