@@ -25,6 +25,8 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | **B** | (campaign) place a new command center — found or expand your base |
 | **R** | rotate the building ghost while placing |
 | **Esc / right-click** | cancel placement, cancel attack-move, skip dialogue |
+| **Esc** (nothing else active) | **pause menu** — resume, restart, main menu, volume |
+| Click / drag the **minimap** | jump the camera there |
 | **T** | Avatar: cycle bent element (Air → Water → Earth → Fire) |
 | **G** | Avatar State — **quick surge**: 5s, costs 30 energy (~1.75× damage) |
 | **Shift + G** | Avatar State — **long surge**: 10s, costs 55 energy (~2.25× damage) |

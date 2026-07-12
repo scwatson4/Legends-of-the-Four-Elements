@@ -74,6 +74,16 @@ public class RTSCameraController : MonoBehaviour
         }
     }
 
+    /// <summary>Instantly move the camera rig to look at a world position
+    /// (minimap click-to-jump). Keeps the current height and angle.</summary>
+    public void JumpTo(Vector3 worldPosition)
+    {
+        followTransform = null;
+        Vector3 target = new Vector3(worldPosition.x, transform.position.y, worldPosition.z);
+        transform.position = target;
+        newPosition = target;
+    }
+
     private void Update()
     {
         if (cameraLocked) return;

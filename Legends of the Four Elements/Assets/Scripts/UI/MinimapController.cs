@@ -42,8 +42,37 @@ public class MinimapController : MonoBehaviour
         texture.wrapMode = TextureWrapMode.Clamp;
         pixels = new Color32[textureSize * textureSize];
 
-        if (minimapImage != null) minimapImage.texture = texture;
+        if (minimapImage != null)
+        {
+            minimapImage.texture = texture;
+
+            // Click (or drag) the minimap to jump the camera there.
+            MinimapClickRelay relay = minimapImage.gameObject.GetComponent<MinimapClickRelay>();
+            if (relay == null) relay = minimapImage.gameObject.AddComponent<MinimapClickRelay>();
+            relay.controller = this;
+        }
         else Debug.LogWarning("MinimapController: assign a RawImage.");
+    }
+
+    /// <summary>Camera jump from a pointer position over the minimap image.</summary>
+    public void JumpCameraTo(Vector2 screenPoint, Camera eventCamera)
+    {
+        if (minimapImage == null || RTSCameraController.instance == null) return;
+
+        Vector2 local;
+        RectTransform rect = minimapImage.rectTransform;
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, screenPoint, eventCamera, out local))
+        {
+            return;
+        }
+
+        // Local point -> 0..1 UV -> world.
+        Rect r = rect.rect;
+        float u = Mathf.Clamp01((local.x - r.xMin) / r.width);
+        float v = Mathf.Clamp01((local.y - r.yMin) / r.height);
+
+        Vector3 world = AreaCenter + new Vector3((u - 0.5f) * AreaSize.x, 0f, (v - 0.5f) * AreaSize.y);
+        RTSCameraController.instance.JumpTo(world);
     }
 
     private void Update()
@@ -171,5 +200,24 @@ public class MinimapController : MonoBehaviour
         float u = (x + 0.5f) / textureSize - 0.5f;
         float v = (y + 0.5f) / textureSize - 0.5f;
         return AreaCenter + new Vector3(u * AreaSize.x, 0f, v * AreaSize.y);
+    }
+}
+
+/// <summary>Forwards clicks/drags on the minimap RawImage to the controller
+/// (added automatically by MinimapController).</summary>
+public class MinimapClickRelay : MonoBehaviour,
+    UnityEngine.EventSystems.IPointerDownHandler,
+    UnityEngine.EventSystems.IDragHandler
+{
+    [HideInInspector] public MinimapController controller;
+
+    public void OnPointerDown(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        if (controller != null) controller.JumpCameraTo(eventData.position, eventData.pressEventCamera);
+    }
+
+    public void OnDrag(UnityEngine.EventSystems.PointerEventData eventData)
+    {
+        if (controller != null) controller.JumpCameraTo(eventData.position, eventData.pressEventCamera);
     }
 }

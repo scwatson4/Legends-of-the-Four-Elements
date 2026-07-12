@@ -19,6 +19,10 @@ public class DialogueUI : MonoBehaviour
 {
     public static DialogueUI Instance { get; private set; }
 
+    /// <summary>True while a dialogue is on screen (other Esc handlers should yield).</summary>
+    public static bool IsShowing =>
+        Instance != null && Instance.panelRoot != null && Instance.panelRoot.activeSelf;
+
     [Header("Optional custom UI (auto-built when empty)")]
     public GameObject panelRoot;
     public TextMeshProUGUI speakerLabel;
