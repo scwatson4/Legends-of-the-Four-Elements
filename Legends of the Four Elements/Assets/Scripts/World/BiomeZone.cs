@@ -37,6 +37,25 @@ public class BiomeZone : MonoBehaviour
     private void OnEnable() => all.Add(this);
     private void OnDisable() => all.Remove(this);
 
+    /// <summary>Is any of the given climates within `radius` of the point?
+    /// (e.g. is there bendable water nearby?)</summary>
+    public static bool IsClimateNear(Vector3 position, float radius, params ClimateType[] climates)
+    {
+        foreach (BiomeZone zone in all)
+        {
+            if (zone == null) continue;
+            foreach (ClimateType climate in climates)
+            {
+                if (zone.climate != climate) continue;
+                if (Vector3.Distance(position, zone.transform.position) <= zone.radius + radius)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /// <summary>Combined attack multiplier for a unit standing where it is.</summary>
     public static float GetAttackMultiplier(GameObject unitGo)
     {

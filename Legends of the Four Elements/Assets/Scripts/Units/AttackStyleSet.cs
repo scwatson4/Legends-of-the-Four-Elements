@@ -21,7 +21,9 @@ public class AttackStyleSet : MonoBehaviour
         None = 0,
         Burn = 1,
         Slow = 2,
-        Knockback = 3
+        Knockback = 3,
+        Root = 4,   // earth grips the target's feet - works anywhere
+        Freeze = 5  // full ice prison - only near a large water source
     }
 
     [System.Serializable]
@@ -50,6 +52,10 @@ public class AttackStyleSet : MonoBehaviour
     public float slowMultiplier = 0.55f;
     public float slowDuration = 2.5f;
     public float knockbackDistance = 3f;
+    public float rootDuration = 2f;
+    public float freezeDuration = 3f;
+    [Tooltip("How close a river/glacier/fish-shoal must be for freezing to work.")]
+    public float waterSearchRadius = 18f;
 
     private void Awake()
     {
@@ -75,15 +81,15 @@ public class AttackStyleSet : MonoBehaviour
                     new Style("Water Whip", 1f),
                     new Style("Ice Shard", 1.1f, StyleEffect.Slow),
                     new Style("Wave Crash", 1.35f),
-                    new Style("Frost Bind", 0.8f, StyleEffect.Slow)
+                    new Style("Ice Prison", 0.7f, StyleEffect.Freeze) // needs real water nearby
                 };
                 break;
             case Unit.UnitType.Earthbender:
                 styles = new[]
                 {
                     new Style("Rock Throw", 1f),
-                    new Style("Stone Fist", 1.2f),
                     new Style("Boulder Smash", 1.5f),
+                    new Style("Earth Grip", 0.8f, StyleEffect.Root), // the ground itself holds them
                     new Style("Quake Kick", 0.9f, StyleEffect.Knockback)
                 };
                 break;
@@ -136,6 +142,23 @@ public class AttackStyleSet : MonoBehaviour
                 break;
             case StyleEffect.Knockback:
                 KnockbackUtility.Push(target, transform.position, knockbackDistance);
+                break;
+            case StyleEffect.Root:
+                // Earthbending: the ground clamps around their feet - anywhere.
+                RootEffect.Apply(target, rootDuration);
+                break;
+            case StyleEffect.Freeze:
+                // Waterbending needs actual water to freeze someone solid;
+                // far from any source it's just a chilling splash (slow).
+                if (WaterProximity.IsNearWater(transform.position, waterSearchRadius))
+                {
+                    RootEffect.Apply(target, freezeDuration);
+                    SlowEffect.Apply(target, slowMultiplier, freezeDuration + 1.5f); // lingering chill
+                }
+                else
+                {
+                    SlowEffect.Apply(target, slowMultiplier, slowDuration);
+                }
                 break;
         }
     }

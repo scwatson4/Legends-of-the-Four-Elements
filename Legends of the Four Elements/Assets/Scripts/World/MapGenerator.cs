@@ -47,6 +47,8 @@ public class MapGenerator : MonoBehaviour
     public int spiritCount = 4;
     public GameObject spiritPortalPrefab;
     public int spiritPortalCount = 2;
+    [Tooltip("Optional: ONE sleeping colossal spirit near the map center - the prize both sides race their Avatars toward.")]
+    public GameObject colossalSpiritPrefab;
 
     [Header("Start Locations")]
     [Tooltip("Created evenly around the map edge unless the scene already has StartLocations.")]
@@ -191,6 +193,13 @@ public class MapGenerator : MonoBehaviour
             {
                 Instantiate(spiritPortalPrefab, SnapToGround(RandomPoint()), RandomYRotation());
             }
+        }
+
+        // The sleeping giant waits near the middle of the world.
+        if (colossalSpiritPrefab != null)
+        {
+            Vector3 nearCenter = transform.position + RandomInsideCircle(mapSize.x * 0.15f);
+            Instantiate(colossalSpiritPrefab, SnapToGround(nearCenter), RandomYRotation());
         }
 
         for (int i = 0; i < spiritCount; i++)

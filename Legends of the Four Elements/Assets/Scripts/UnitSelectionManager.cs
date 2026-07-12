@@ -29,6 +29,7 @@ public class UnitSelectionManager : MonoBehaviour
     private float lastClickTime;
     private GameObject lastClickedUnit;
     private UnitSpawner selectedSpawner;
+    private float lastSelectArmyTime = -10f;
 
     private void Awake()
     {
@@ -77,6 +78,15 @@ public class UnitSelectionManager : MonoBehaviour
         }
 
         HandleControlGroups();
+
+        // E: select the ENTIRE army (all military, workers excluded).
+        // Double-tap E: also jump the camera to the army's center.
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            bool doubleTap = Time.unscaledTime - lastSelectArmyTime < 0.4f;
+            lastSelectArmyTime = Time.unscaledTime;
+            SelectEntireArmy(doubleTap);
+        }
 
         // F arms attack-move: the next left-click on ground sends the army
         // there, engaging everything hostile it meets on the way.
@@ -174,6 +184,22 @@ public class UnitSelectionManager : MonoBehaviour
                     foreach (GameObject unit in selectedUnitsList)
                     {
                         if (unit != null && tameable.CanBeTamedBy(unit)) tameable.OrderTame(unit);
+                    }
+                }
+
+                // Colossus awakening: only an Avatar can merge with the
+                // sleeping giant - right-click it with your Avatar selected.
+                ColossalSpirit colossus = hit.collider.GetComponentInParent<ColossalSpirit>();
+                if (colossus != null && !colossus.IsAwakened)
+                {
+                    foreach (GameObject unit in selectedUnitsList)
+                    {
+                        AvatarUnit avatar = unit != null ? unit.GetComponent<AvatarUnit>() : null;
+                        if (avatar != null && FactionUtility.IsLocallyControlled(unit) &&
+                            colossus.OrderChannel(avatar))
+                        {
+                            break; // one Avatar is all it takes
+                        }
                     }
                 }
 
@@ -451,6 +477,36 @@ public class UnitSelectionManager : MonoBehaviour
                     SelectUnit(unit, true);
                 }
             }
+        }
+    }
+
+    /// <summary>Halo Wars style: grab every military unit you own (workers
+    /// keep working). Also wireable to a UI button.</summary>
+    public void SelectEntireArmy(bool centerCamera = false)
+    {
+        DeselectAll();
+
+        Vector3 centroid = Vector3.zero;
+        int count = 0;
+
+        foreach (GameObject go in allUnitsList)
+        {
+            if (go == null || !FactionUtility.IsLocallyControlled(go)) continue;
+            if (go.GetComponent<AttackController>() == null) continue;      // pacifists stay
+            if (go.GetComponent<ResourceCollector>() != null) continue;     // workers keep working
+
+            selectedUnitsList.Add(go);
+            SelectUnit(go, true);
+            centroid += go.transform.position;
+            count++;
+        }
+
+        if (count == 0) return;
+        Debug.Log($"Entire army selected: {count} units.");
+
+        if (centerCamera && RTSCameraController.instance != null)
+        {
+            RTSCameraController.instance.JumpTo(centroid / count);
         }
     }
 

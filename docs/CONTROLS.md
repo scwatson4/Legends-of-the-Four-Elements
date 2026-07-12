@@ -19,7 +19,9 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 
 | Key | Action |
 |---|---|
+| **E** | select your **entire army** (workers excluded); double-tap to also center the camera on it |
 | **F** then left-click | **attack-move**: advance to the point, engaging everything hostile on the way |
+| Right-click a sleeping **colossal spirit** (Avatar selected) | the Avatar channels 10s, then **merges into the giant** and fights as it for 60s (Korra-style); the spirit sleeps again after |
 | **Ctrl + 1–9** | assign selection to a control group |
 | **1–9** | select that control group |
 | **B** | (campaign) place a new command center — found or expand your base |

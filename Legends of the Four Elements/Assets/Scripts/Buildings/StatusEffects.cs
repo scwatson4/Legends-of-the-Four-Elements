@@ -39,6 +39,82 @@ public class BurnEffect : MonoBehaviour
 }
 
 /// <summary>
+/// Total immobilization: earthbenders bending the ground around a foe's
+/// feet, or waterbenders flash-freezing them. The victim can still attack -
+/// they just cannot move until it wears off.
+/// </summary>
+public class RootEffect : MonoBehaviour
+{
+    private NavMeshAgent agent;
+    private float remaining;
+
+    public static void Apply(Unit target, float duration)
+    {
+        if (target == null) return;
+        NavMeshAgent agent = target.GetComponent<NavMeshAgent>();
+        if (agent == null || !agent.enabled) return;
+
+        RootEffect root = target.GetComponent<RootEffect>();
+        if (root == null)
+        {
+            root = target.gameObject.AddComponent<RootEffect>();
+            root.agent = agent;
+            agent.isStopped = true;
+        }
+        root.remaining = Mathf.Max(root.remaining, duration);
+    }
+
+    private void Update()
+    {
+        remaining -= Time.deltaTime;
+        if (remaining <= 0f)
+        {
+            if (agent != null && agent.enabled && agent.isOnNavMesh) agent.isStopped = false;
+            Destroy(this);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (agent != null && agent.enabled && agent.isOnNavMesh) agent.isStopped = false;
+    }
+}
+
+/// <summary>
+/// True when a point is close to a large water source: River Lands or
+/// Glacier biome, or a Fish Shoal node. Waterbenders can only flash-freeze
+/// enemies where there is real water to bend. Node lookups are cached.
+/// </summary>
+public static class WaterProximity
+{
+    private static ResourceNode[] cachedNodes;
+    private static float cacheTime = -99f;
+
+    public static bool IsNearWater(Vector3 position, float radius = 18f)
+    {
+        // Watery climates count as standing water.
+        if (BiomeZone.IsClimateNear(position, radius,
+                BiomeZone.ClimateType.RiverLands, BiomeZone.ClimateType.Glacier))
+        {
+            return true;
+        }
+
+        // So do fishing waters.
+        if (Time.time - cacheTime > 3f)
+        {
+            cachedNodes = Object.FindObjectsByType<ResourceNode>(FindObjectsSortMode.None);
+            cacheTime = Time.time;
+        }
+        foreach (ResourceNode node in cachedNodes)
+        {
+            if (node == null || node.nodeType != ResourceNode.NodeType.FishShoal) continue;
+            if (Vector3.Distance(position, node.transform.position) <= radius) return true;
+        }
+        return false;
+    }
+}
+
+/// <summary>
 /// Movement slow from water towers (ice crystals). Restores the original
 /// speed when it expires; reapplying refreshes the duration.
 /// </summary>
