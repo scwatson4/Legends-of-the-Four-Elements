@@ -30,6 +30,19 @@ public class Structure : MonoBehaviour
     {
         health = maxHealth;
         UpdateHealthUI();
+
+        // Apply any Building-category upgrade levels the owner has bought.
+        UpgradeManager.ApplyToBuilding(this);
+    }
+
+    /// <summary>Upgrade system: rescale max health keeping the same fraction.</summary>
+    internal void SetMaxHealth(float newMax)
+    {
+        if (newMax <= 0f || isDestroyed) return;
+        float fraction = maxHealth > 0f ? Mathf.Clamp01(health / maxHealth) : 1f;
+        maxHealth = newMax;
+        health = newMax * fraction;
+        UpdateHealthUI();
     }
 
     public void TakeDamage(int damage)

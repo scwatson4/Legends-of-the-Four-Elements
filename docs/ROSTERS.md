@@ -191,6 +191,14 @@ Also implemented: **sell** any building for half its cost (hover + X) and
 **worker repairs** (right-click a damaged friendly building with workers
 selected; ~0.5 silver per HP).
 
+**Tower & wall upgrades**: give every nation a **Reinforced Battlements**
+upgrade (3 levels, 175 base, categories = **Building**): per level
++15% tower damage (damageBonus), +15% building HP (healthBonus). For
+Building-category upgrades, `speedBonus` means **fire rate** and
+`sightBonus` means **tower range** — e.g. a Fire-only "Gunnery Drills"
+(speedBonus 0.15) makes Flame Turrets shoot faster. Applies to standing
+buildings and everything built afterward.
+
 ## Elemental climates (`BiomeZone`) — implemented modifiers
 
 | Climate | Empowers | Weakens |

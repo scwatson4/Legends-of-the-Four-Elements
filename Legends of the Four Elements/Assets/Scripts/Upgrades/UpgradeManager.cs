@@ -118,17 +118,61 @@ public static class UpgradeManager
         baseStats.ApplyMultipliers(damageMult, healthMult, speedMult, sightMult);
     }
 
+    /// <summary>Applies Building-category upgrades to a tower/wall/building.</summary>
+    public static void ApplyToBuilding(Structure structure)
+    {
+        if (structure == null) return;
+
+        int factionId = structure.FactionId;
+        Faction faction = FactionManager.Get(factionId);
+        if (faction == null) return;
+
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null ? db.Get(faction.nation) : null;
+        if (data == null || data.upgrades == null || data.upgrades.Length == 0) return;
+
+        float damageMult = 1f, healthMult = 1f, rateMult = 1f, rangeMult = 1f;
+        foreach (UpgradeData upgrade in data.upgrades)
+        {
+            if (upgrade == null || !upgrade.AppliesTo(UnitCategory.Building)) continue;
+            int level = GetLevel(factionId, upgrade);
+            if (level <= 0) continue;
+
+            damageMult += level * upgrade.damageBonus;
+            healthMult += level * upgrade.healthBonus;
+            rateMult += level * upgrade.speedBonus;   // speed = fire rate for towers
+            rangeMult += level * upgrade.sightBonus;  // sight = range for towers
+        }
+
+        if (Mathf.Approximately(damageMult, 1f) && Mathf.Approximately(healthMult, 1f) &&
+            Mathf.Approximately(rateMult, 1f) && Mathf.Approximately(rangeMult, 1f)) return;
+
+        StructureBaseStats baseStats = structure.GetComponent<StructureBaseStats>();
+        if (baseStats == null) baseStats = structure.gameObject.AddComponent<StructureBaseStats>();
+        baseStats.ApplyMultipliers(damageMult, healthMult, rateMult, rangeMult);
+    }
+
     private static void ReapplyToFaction(int factionId)
     {
-        if (UnitSelectionManager.Instance == null) return;
-
-        foreach (GameObject go in UnitSelectionManager.Instance.allUnitsList)
+        if (UnitSelectionManager.Instance != null)
         {
-            if (go == null) continue;
-            Unit unit = go.GetComponent<Unit>();
-            if (unit != null && unit.FactionId == factionId)
+            foreach (GameObject go in UnitSelectionManager.Instance.allUnitsList)
             {
-                ApplyTo(unit);
+                if (go == null) continue;
+                Unit unit = go.GetComponent<Unit>();
+                if (unit != null && unit.FactionId == factionId)
+                {
+                    ApplyTo(unit);
+                }
+            }
+        }
+
+        // Buildings too: towers hit harder, walls stand longer.
+        foreach (Structure structure in Object.FindObjectsByType<Structure>(FindObjectsSortMode.None))
+        {
+            if (structure.FactionId == factionId)
+            {
+                ApplyToBuilding(structure);
             }
         }
     }

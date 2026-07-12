@@ -120,7 +120,11 @@ public class BuildingPlacer : MonoBehaviour
         placementValid = ValidatePlacement(hit.point);
         TintGhost(placementValid ? validTint : invalidTint);
 
-        if (placementValid && Input.GetMouseButtonDown(0))
+        // Don't place through UI buttons.
+        bool pointerOverUI = UnityEngine.EventSystems.EventSystem.current != null &&
+                             UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+
+        if (placementValid && !pointerOverUI && Input.GetMouseButtonDown(0))
         {
             Place(hit.point, ghost.transform.rotation);
         }
@@ -207,11 +211,14 @@ public class BuildingPlacer : MonoBehaviour
 
     private void MakeGhostly(GameObject go)
     {
-        foreach (MonoBehaviour behaviour in go.GetComponentsInChildren<MonoBehaviour>())
+        // Behaviour covers MonoBehaviours AND engine components like
+        // NavMeshObstacle (which would otherwise carve the NavMesh while the
+        // ghost is dragged around), Animator, AudioSource, Light...
+        foreach (Behaviour behaviour in go.GetComponentsInChildren<Behaviour>(true))
         {
             behaviour.enabled = false;
         }
-        foreach (Collider collider in go.GetComponentsInChildren<Collider>())
+        foreach (Collider collider in go.GetComponentsInChildren<Collider>(true))
         {
             collider.enabled = false;
         }

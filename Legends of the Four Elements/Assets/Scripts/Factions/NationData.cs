@@ -7,7 +7,8 @@ public enum UnitCategory
     Animal = 1,    // sky bison, polar bear dogs, badgermoles, komodo rhinos
     Vehicle = 2,   // ships, tanks, war balloons
     Worker = 3,    // harvesters: acolytes, fishermen, miners, engineers
-    Avatar = 4     // the one-per-player hero
+    Avatar = 4,    // the one-per-player hero
+    Building = 5   // upgrade target for towers/walls (not a trainable unit)
 }
 
 /// <summary>Building roles for UI grouping. Serialized - append only.</summary>
