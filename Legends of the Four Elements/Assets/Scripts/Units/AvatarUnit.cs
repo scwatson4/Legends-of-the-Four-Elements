@@ -30,6 +30,10 @@ public class AvatarUnit : MonoBehaviour, IDamageInterceptor
     [Header("Energy Bending")]
     public bool canEnergyBend = true;
 
+    [Tooltip("Arrive in the style of the origin nation: bison descent, dragon " +
+             "flight, wave ride, or erupting from the earth.")]
+    public bool ceremonialArrival = true;
+
     [Header("Element Bending")]
     public Nation currentElement = Nation.Air;
     public KeyCode cycleElementKey = KeyCode.T;
@@ -94,6 +98,9 @@ public class AvatarUnit : MonoBehaviour, IDamageInterceptor
         CurrentEnergy = maxEnergy * 0.3f; // arrive with a spark, not a full tank
         ApplyElement(currentElement);
         if (avatarStateAura != null) avatarStateAura.SetActive(false);
+
+        // A dignified entrance: bison, dragon, wave, or the earth itself.
+        AvatarArrival.Play(this);
     }
 
     private void OnDestroy()

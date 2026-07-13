@@ -71,6 +71,11 @@ public class NationData : ScriptableObject
     [Header("Upgrades")]
     public UpgradeData[] upgrades;
 
+    [Header("Avatar Arrival")]
+    [Tooltip("The mount that carries this nation's Avatar to the field (bison, " +
+             "dragon, wave-serpent...). Empty = a greybox mount is built at runtime.")]
+    public GameObject avatarMountPrefab;
+
     [Header("Audio")]
     public AudioClip attackSound;
 
