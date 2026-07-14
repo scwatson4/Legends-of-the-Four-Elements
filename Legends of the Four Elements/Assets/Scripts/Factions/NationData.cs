@@ -49,6 +49,12 @@ public class NationData : ScriptableObject
         public int cost = 150;
         public Sprite icon;
         public BuildingCategory category = BuildingCategory.Production;
+
+        [Tooltip("Can be raised on steep mountainsides, out of ground units' " +
+                 "reach. Air Nomad buildings can ALWAYS perch (this flag lets " +
+                 "another nation's building opt in too). Perched buildings swap " +
+                 "to the prefab's 'MountainModel' child if it has one.")]
+        public bool mountainSite = false;
     }
 
     [Header("Identity")]

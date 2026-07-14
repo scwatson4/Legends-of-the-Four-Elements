@@ -62,6 +62,15 @@ public class CampaignLevel
     [Tooltip("Boot Camp: attaches the interactive TutorialManager to this level.")]
     public bool isTutorial = false;
 
+    [Tooltip("Optional levels (the nation academies) never block progression: " +
+             "the unlock chain skips them when deciding what the 'previous level' is.")]
+    public bool isOptional = false;
+
+    [Tooltip("Nation academies force the player into one nation so its " +
+             "curriculum matches the army being commanded.")]
+    public bool forcesNation = false;
+    public Nation forcedNation = Nation.Air;
+
     [Header("Chapter Interlude (auto-filled on each chapter's first level)")]
     public string interludeTitle = "";
     [TextArea] public string interludeText = "";

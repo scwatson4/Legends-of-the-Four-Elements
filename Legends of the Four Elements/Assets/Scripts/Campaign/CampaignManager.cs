@@ -60,6 +60,9 @@ public class CampaignManager : MonoBehaviour
         summonedThisLevel.Clear();
         progress = CampaignProgress.Load();
 
+        // Nation academies teach ONE nation - the level overrides your pick.
+        if (level.forcesNation) playerNation = level.forcedNation;
+
         // Configure the match: campaign mode, this level's enemies, its seed.
         GameSetup.PlayerNation = playerNation;
         GameSetup.Mode = GameMode.Campaign;

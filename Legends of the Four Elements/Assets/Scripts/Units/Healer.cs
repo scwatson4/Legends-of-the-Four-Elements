@@ -36,6 +36,7 @@ public class Healer : MonoBehaviour
         if (patient != null)
         {
             patient.Heal(healAmount);
+            if (TutorialSignals.IsPlayerAction(gameObject)) TutorialSignals.HealsDone++;
         }
     }
 

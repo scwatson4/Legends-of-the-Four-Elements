@@ -1,6 +1,7 @@
 # Campaign Mode — "The Rupture"
 
-A 25-level story campaign in five chapters, fully driven by code
+A 25-level story campaign in five chapters — plus a five-level training
+prologue (Boot Camp + four optional nation academies) — fully driven by code
 (`Assets/Scripts/Campaign/`). The complete script — every level's title,
 objective, enemies, map seed and opening dialogue — ships in
 `DefaultCampaign.cs`, so the campaign is playable the moment the menu is
@@ -17,7 +18,7 @@ standing together, can pierce the First Shadow's shroud in the finale.
 
 | Chapter | Theme / terrain | Boss (level 5) | Redeems |
 |---|---|---|---|
-| Prologue — Boot Camp | training grounds | — (tutorial) | — |
+| Prologue — Boot Camp + 4 nation academies | training grounds | — (tutorials) | — |
 | 1 — Whispers on the Wind | windy peaks | **Zephyra of the Hollow Sky** | Air Avatar |
 | 2 — The Frozen Tide | glaciers, coast | **Kalani of the Weeping Ice** | Water Avatar |
 | 3 — Kingdom of Dust | quarries, ruins | **Boruk, the Mountain That Walks** | Earth Avatar |
@@ -62,6 +63,17 @@ Avatars themselves once redeemed.
   with B, harvest, train, Ctrl+1 groups, F attack-move, win a fight, tame a
   spirit with the Avatar) and advances a hint banner step by step. Zero
   wiring; it builds its own UI. Set `isTutorial` on any level to reuse it.
+- **Nation academies (optional)**: four more prologue levels — *The Western
+  Spires* (Air), *The Tidecaller's Circle* (Water), *The Granite Yard*
+  (Earth), *The Ember Court* (Fire). Each **forces you into that nation**
+  and runs an element-specific curriculum that only advances when you
+  actually perform the technique (scooter/glider trips, Q shields, healing,
+  freezes, roots, wall-building, burns, lightning — tracked through
+  `TutorialSignals`). They're marked `isOptional`, so the unlock chain
+  **skips them**: Chapter 1 opens the moment Boot Camp is done, and all four
+  academies unlock at that same moment — play them in any order, or never.
+  (`TutorialManager.track` can also be hand-set on any scene to run one of
+  the four curricula standalone.)
 - **Varied maps**: each level carries its own `mapSeed`; on a MapGenerator
   scene every level's terrain layout, biomes, villages and portals differ.
   Optionally give each chapter its own themed scene (see wiring below).
@@ -115,7 +127,10 @@ Avatars themselves once redeemed.
 
 ## Testing checklist
 
-- [ ] Campaign menu lists 5 chapters / 25 levels; only 1-1 unlocked at first
+- [ ] Campaign menu lists the prologue + 5 chapters; only Boot Camp unlocked
+      at first; finishing Boot Camp unlocks chapter 1 AND all four academies
+- [ ] An academy (e.g. The Granite Yard) forces its nation and its hint
+      banner only advances when you really perform each technique
 - [ ] Level intro dialogue plays paused; Esc skips; game resumes after
 - [ ] Level starts with Avatar + builder + starting silver, no base; B opens
       command-center placement; builder auto-harvests once a dropoff exists

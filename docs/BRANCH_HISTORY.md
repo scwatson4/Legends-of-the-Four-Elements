@@ -150,6 +150,7 @@ dispatch raidable carts to your base). Fishing piers (water-edge building
 launching boats that visibly work the shoals). Full-screen chapter
 interludes. Elder Miza's contextual advice toasts. The Colossus Dirge
 (a drumbeat the whole map hears while a giant walks).
+*(Landed as `99e2205`.)*
 
 ### 21. `18b5d43` — Ceremonial Avatar arrivals
 Avatars ARRIVE: bison descent (Air), dragon flight (Fire), wave ride
@@ -157,7 +158,7 @@ Avatars ARRIVE: bison descent (Air), dragon flight (Fire), wave ride
 greybox mount fallbacks; the Avatar is suspended (unhittable) during
 transit.
 
-### 22. *(latest)* — Flight, spirit travel, sky supply lines, base completion levels
+### 22. `626519a` — Flight, spirit travel, sky supply lines, base completion levels
 `FlyingMover` smooth surface-hugging flight (climbs small hills/buildings,
 steers AROUND mountains). `AirbenderMobility`: auto air-scooter sprints and
 staff-glider flight for airbenders. Buildings/CCs auto-carve the NavMesh
@@ -167,6 +168,23 @@ to the linked portal). `AirSupplyPost` Sky Moorings with shoot-down-able
 flying bison couriers. Campaign missions open at per-level base completion
 (1-1 at 75%; several at 0% where the first befriended village grants a
 500-silver alliance gift).
+
+### 23. *(latest)* — Lavabending, mountain perches, nation academies, the asset shopping list
+**Lavabending**: the Earth Kingdom's second ultimate (beside Metalbending) —
+upgrade-granted; every strike ignites the victim, splashes molten rock onto
+packed enemies, and melts fortifications (+40%); stacks with Metalbending.
+**Mountain perches**: Air Nomad buildings can be raised on steep
+mountainsides (>22°), out of reach of ground armies; slope validation for
+everyone else; perched Air buildings SWAP DESIGNS via a `MountainModel`
+prefab child (greybox platform + cliff struts generated when absent).
+**Nation academies**: four optional prologue tutorials — The Western Spires
+(Air mobility), The Tidecaller's Circle (Water sustain), The Granite Yard
+(Earth fortification), The Ember Court (Fire aggression) — each forces its
+nation and confirms every technique through new `TutorialSignals` action
+counters; the campaign unlock chain skips optional levels so Chapter 1
+still opens right after Boot Camp. Plus `ASSET_LIST.md` (the complete
+model/VFX/audio/sprite shopping list) and a latent `Mathf` compile fix in
+DefaultCampaign.
 
 ---
 

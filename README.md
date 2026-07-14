@@ -64,3 +64,6 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
 - [`docs/AI_WIRING_PLAYBOOK.md`](docs/AI_WIRING_PLAYBOOK.md) — copy-paste
   prompts for having Claude + Unity MCP do the editor wiring for you,
   phase by phase.
+- [`docs/ASSET_LIST.md`](docs/ASSET_LIST.md) — the complete asset shopping
+  list: every model, VFX, sound and sprite the finished game wants, with
+  buy-in-passes priorities (the game plays greybox without any of it).

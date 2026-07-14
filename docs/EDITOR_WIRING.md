@@ -55,6 +55,10 @@ Create folder `Assets/Nations/`.
    - `damageBonus` / `healthBonus` / `speedBonus` / `sightBonus`: fraction
      per level (0.15 = +15%). Seismic Sensing uses **sightBonus** only.
    - `categories`: which unit categories it affects (empty = all)
+   - Elite techniques (see the ROSTERS.md table): Lightning Redirection
+     ticks `grantsLightningRedirect` (Fire), Metalbending ticks
+     `grantsMetalBending` (Earth), **Lavabending** ticks `grantsLavaBending`
+     (Earth) — all restricted via `restrictToUnitTypes` to their bender.
 2. **Four NationData assets** (Assets > Create > Legends > Nation Data):
    `AirNation`, `WaterNation`, `EarthNation`, `FireNation`.
    - Identity: nation enum, display name, description (shows in menu),
@@ -149,6 +153,12 @@ role component:
 - [ ] **Command centers** for Water/Earth: duplicate AirNationTemple /
       FireNationCitadel, reskin; keep `CommandCenter` + add
       `ResourceDropoff`.
+- [ ] **Air mountain variants**: give each Air building prefab a *disabled*
+      child named `MountainModel` (cliff-hugging design). Placement on a
+      steep slope (>22°) auto-swaps it in for the `Model` child; without one
+      a greybox platform + struts is generated. No other wiring — Air
+      buildings are always allowed on mountainsides; other nations' entries
+      only if you tick `mountainSite` on their BuildingEntry.
 
 ## Phase 4 — Main menu scene
 
@@ -247,8 +257,11 @@ automatically; random maps use the shared `multiplayerSeed`.
 
 The 25-level story campaign ("The Rupture") is code-driven — dialogue,
 bosses, progression and saves all bootstrap themselves. The only wiring is
-the campaign menu panel and one final-boss prefab in Resources. Full
-instructions + test checklist: **[`CAMPAIGN.md`](CAMPAIGN.md)**.
+the campaign menu panel and one final-boss prefab in Resources. The prologue
+now holds Boot Camp **plus four optional nation academies** (element-specific
+tutorials that force their nation) — zero extra wiring, they're plain
+campaign levels. Full instructions + test checklist:
+**[`CAMPAIGN.md`](CAMPAIGN.md)**.
 
 ## Phase 11 — Polish systems (all code-complete)
 

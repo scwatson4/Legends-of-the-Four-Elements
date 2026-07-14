@@ -90,6 +90,7 @@ public class ElementalShieldAbility : MonoBehaviour
         }
 
         cooldownRemaining = cooldownSeconds * cooldownMult;
+        if (TutorialSignals.IsPlayerAction(gameObject)) TutorialSignals.ShieldsCast++;
         Debug.Log($"{gameObject.name} raises a {element} shield over {shielded} unit(s)!");
     }
 

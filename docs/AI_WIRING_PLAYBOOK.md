@@ -87,9 +87,13 @@ VFX can even be a colored point light or default particle system — the
 ### P2 — Data assets
 > Do Phase 2 of EDITOR_WIRING.md: create every UpgradeData asset from the
 > ROSTERS.md tables (exact ids, costs, bonuses, categories — include
-> Seismic Sensing's sightBonus), then the four NationData assets with
-> identity fields filled from ROSTERS.md, then the NationDatabase at
-> exactly Assets/Resources/NationDatabase.asset with all four linked.
+> Seismic Sensing's sightBonus, and the three elite techniques: Lightning
+> Redirection with grantsLightningRedirect restricted to Firebender,
+> Metalbending with grantsMetalBending and Lavabending with
+> grantsLavaBending both restricted to Earthbender, single expensive
+> levels), then the four NationData assets with identity fields filled from
+> ROSTERS.md, then the NationDatabase at exactly
+> Assets/Resources/NationDatabase.asset with all four linked.
 > Leave prefab slots empty for now.
 
 ### P3 — Unit prefab variants
@@ -122,6 +126,10 @@ VFX can even be a colored point light or default particle system — the
 > Fill NationData.buildings lists, and set each NationData's Avatar Mount
 > Prefab (use the bison model for Air; leave others empty for greybox).
 > Add a Sky Mooring to the Air roster (Structure + AirSupplyPost, cost 180).
+> On every AIR building prefab also add a DISABLED child named
+> "MountainModel" containing a visibly different placeholder (e.g. the same
+> primitive on stilt cylinders) — the game swaps it in automatically when
+> the building is placed on a mountainside.
 > Confirm every building prefab has a collider (pathing obstacles are added
 > automatically at runtime). Save the DarkSpirit prefab copy at
 > Assets/Resources/Campaign/DarkSpirit.prefab and a scaled-up variant at
@@ -183,6 +191,10 @@ VFX can even be a colored point light or default particle system — the
 > Compare NationData assets against ROSTERS.md and report mismatches.
 
 ## The art-swap pass (after everything plays)
+
+**What to buy/collect**: the complete shopping list — every model, VFX,
+sound and sprite the finished game wants, with priorities — lives in
+[`ASSET_LIST.md`](ASSET_LIST.md).
 
 When you've picked real models/VFX, the swap per prefab is mechanical —
 and you can even delegate the boring half of it back to the AI:

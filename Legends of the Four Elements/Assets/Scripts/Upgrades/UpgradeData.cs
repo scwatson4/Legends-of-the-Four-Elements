@@ -44,6 +44,11 @@ public class UpgradeData : ScriptableObject
              "Make it a single expensive level (maxLevel 1).")]
     public bool grantsMetalBending = false;
 
+    [Tooltip("Earthbenders' other ultimate: LAVABENDING - strikes ignite the victim, " +
+             "splash molten rock onto packed enemies, and melt fortifications. " +
+             "Make it a single expensive level (maxLevel 1), restricted to Earthbender.")]
+    public bool grantsLavaBending = false;
+
     [Header("Shield Mastery")]
     [Tooltip("This upgrade strengthens the benders' Q shields (use restrictToUnitTypes " +
              "to target one bender type - it applies to ALL units of that type).")]

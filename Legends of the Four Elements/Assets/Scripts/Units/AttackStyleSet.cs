@@ -136,20 +136,26 @@ public class AttackStyleSet : MonoBehaviour
     {
         if (style == null || target == null) return;
 
+        bool playerAction = TutorialSignals.IsPlayerAction(gameObject);
+
         switch (style.effect)
         {
             case StyleEffect.Burn:
                 BurnEffect.Apply(target, burnDamagePerSecond, burnDuration);
+                if (playerAction) TutorialSignals.BurnsApplied++;
                 break;
             case StyleEffect.Slow:
                 SlowEffect.Apply(target, slowMultiplier, slowDuration);
+                if (playerAction) TutorialSignals.WaterEffectsApplied++;
                 break;
             case StyleEffect.Knockback:
                 KnockbackUtility.Push(target, transform.position, knockbackDistance);
+                if (playerAction) TutorialSignals.KnockbacksApplied++;
                 break;
             case StyleEffect.Root:
                 // Earthbending: the ground clamps around their feet - anywhere.
                 RootEffect.Apply(target, rootDuration);
+                if (playerAction) TutorialSignals.RootsApplied++;
                 break;
             case StyleEffect.Freeze:
                 // Waterbending needs actual water to freeze someone solid;
@@ -158,11 +164,13 @@ public class AttackStyleSet : MonoBehaviour
                 {
                     RootEffect.Apply(target, freezeDuration);
                     SlowEffect.Apply(target, slowMultiplier, freezeDuration + 1.5f); // lingering chill
+                    if (playerAction) TutorialSignals.FreezesApplied++;
                 }
                 else
                 {
                     SlowEffect.Apply(target, slowMultiplier, slowDuration);
                 }
+                if (playerAction) TutorialSignals.WaterEffectsApplied++;
                 break;
         }
     }

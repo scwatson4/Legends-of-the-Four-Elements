@@ -11,18 +11,30 @@ using TMPro;
 /// Attached automatically by CampaignManager on tutorial levels
 /// (CampaignLevel.isTutorial); it builds its own hint panel, so nothing
 /// needs wiring. Also usable standalone: drop it in any scene.
+///
+/// NATION ACADEMIES: on a campaign level that forces a nation (the optional
+/// prologue academies), the curriculum switches to that element's deep dive -
+/// Air mobility, Water sustain, Earth fortification, Fire aggression - with
+/// each technique confirmed through TutorialSignals counters.
 /// </summary>
 public class TutorialManager : MonoBehaviour
 {
+    public enum Track { General = 0, Air = 1, Water = 2, Earth = 3, Fire = 4 }
+
+    [Tooltip("Which curriculum runs. Campaign academies set this automatically.")]
+    public Track track = Track.General;
+
     private class Step
     {
         public string hint;
-        public Func<bool> isComplete;
+        public Func<bool> isComplete;   // null = an informational tip...
+        public float autoAdvanceAfter;  // ...that advances itself after this long
         public Action onEnter;
     }
 
     private readonly List<Step> steps = new List<Step>();
     private int currentStep = -1;
+    private float stepTimer;
 
     private GameObject panel;
     private TextMeshProUGUI hintLabel;
@@ -32,9 +44,26 @@ public class TutorialManager : MonoBehaviour
 
     private void Start()
     {
+        ResolveTrack();
         BuildUI();
         BuildSteps();
         Advance();
+    }
+
+    /// <summary>Campaign academies force a nation; teach that nation.</summary>
+    private void ResolveTrack()
+    {
+        if (track != Track.General) return; // hand-set in the inspector wins
+        CampaignLevel level = CampaignManager.Instance != null ? CampaignManager.Instance.CurrentLevel : null;
+        if (level == null || !level.forcesNation) return;
+
+        switch (level.forcedNation)
+        {
+            case Nation.Air: track = Track.Air; break;
+            case Nation.Water: track = Track.Water; break;
+            case Nation.Earth: track = Track.Earth; break;
+            case Nation.Fire: track = Track.Fire; break;
+        }
     }
 
     private void Update()
@@ -46,7 +75,13 @@ public class TutorialManager : MonoBehaviour
             return;
         }
 
-        if (steps[currentStep].isComplete())
+        Step step = steps[currentStep];
+        if (step.isComplete == null)
+        {
+            stepTimer -= Time.deltaTime;
+            if (stepTimer <= 0f) Advance();
+        }
+        else if (step.isComplete())
         {
             Advance();
         }
@@ -65,14 +100,162 @@ public class TutorialManager : MonoBehaviour
 
         Step step = steps[currentStep];
         step.onEnter?.Invoke();
+        stepTimer = step.autoAdvanceAfter > 0f ? step.autoAdvanceAfter : 10f;
         SetHint($"({currentStep + 1}/{steps.Count})  {step.hint}");
     }
 
     // ------------------------------------------------------------------
-    // The Boot Camp curriculum
+    // Step builders
+    // ------------------------------------------------------------------
+
+    /// <summary>A step confirmed by a TutorialSignals counter rising above
+    /// its value when the step began.</summary>
+    private static Step Counter(string hint, Func<int> counter)
+    {
+        int baseline = 0;
+        Step step = new Step { hint = hint };
+        step.onEnter = () => baseline = counter();
+        step.isComplete = () => counter() > baseline;
+        return step;
+    }
+
+    /// <summary>An informational tip that advances itself.</summary>
+    private static Step Tip(string hint, float seconds = 9f)
+    {
+        return new Step { hint = hint, isComplete = null, autoAdvanceAfter = seconds };
+    }
+
+    // ------------------------------------------------------------------
+    // Curricula
     // ------------------------------------------------------------------
 
     private void BuildSteps()
+    {
+        switch (track)
+        {
+            case Track.Air: BuildAcademyCore("airbender"); BuildAirSteps(); return;
+            case Track.Water: BuildAcademyCore("waterbender"); BuildWaterSteps(); return;
+            case Track.Earth: BuildAcademyCore("earthbender"); BuildEarthSteps(); return;
+            case Track.Fire: BuildAcademyCore("firebender"); BuildFireSteps(); return;
+        }
+        BuildGeneralSteps();
+    }
+
+    /// <summary>Every academy opens the same way: command, found, economy, train.</summary>
+    private void BuildAcademyCore(string benderName)
+    {
+        steps.Add(new Step
+        {
+            hint = "Left-click or drag-select your starting units.",
+            isComplete = AnyOwnedUnitSelected
+        });
+
+        steps.Add(new Step
+        {
+            hint = "Press B and place your COMMAND CENTER (green ghost = valid, R rotates).",
+            isComplete = OwnedCommandCenterExists
+        });
+
+        steps.Add(new Step
+        {
+            hint = "Get your worker harvesting - right-click a resource node.",
+            isComplete = AnyWorkerNearNode
+        });
+
+        steps.Add(new Step
+        {
+            hint = $"Train a {benderName} from your production buttons.",
+            onEnter = () => unitCountAtStepStart = OwnedUnitCount(),
+            isComplete = () => OwnedUnitCount() > unitCountAtStepStart
+        });
+    }
+
+    private void BuildAirSteps()
+    {
+        steps.Add(Counter(
+            "AIR SCOOTER: order an airbender somewhere FAR across the map - on long runs they conjure an air ball and ride it at +60% speed.",
+            () => TutorialSignals.ScooterSprints));
+
+        steps.Add(Counter(
+            "STAFF GLIDER: order an airbender somewhere VERY far - they take flight, soaring over water, hills and buildings (around true mountains).",
+            () => TutorialSignals.GliderFlights));
+
+        steps.Add(Counter(
+            "WIND SHIELD: select a bender and press Q - allies inside gain 40% damage reduction and cannot be knocked back.",
+            () => TutorialSignals.ShieldsCast));
+
+        steps.Add(Tip(
+            "MOUNTAIN PERCHES: Air Nomad buildings can be placed ON steep mountainsides - out of reach of any army that cannot fly. Temples, sanctuaries, Sky Moorings... the high ground is yours."));
+
+        steps.Add(Tip(
+            "Sky Bison carry troops (right-click to board, U to unload) and Sky Moorings fly silver home from distant outposts. Now - clear out the intruders' camp!"));
+    }
+
+    private void BuildWaterSteps()
+    {
+        steps.Add(Counter(
+            "Buy an UPGRADE - Healing Waters if it's available. One purchase empowers every waterbender you'll ever train.",
+            () => TutorialSignals.UpgradesPurchased));
+
+        steps.Add(Counter(
+            "Let your benders fight beside wounded allies - upgraded waterbenders HEAL them (watch the health bars climb).",
+            () => TutorialSignals.HealsDone));
+
+        steps.Add(Counter(
+            "WATER TECHNIQUES: land Ice Shards and Ice Prisons in battle - they chill and slow. Near a river, lake or fish shoal, Ice Prison freezes enemies SOLID.",
+            () => TutorialSignals.WaterEffectsApplied));
+
+        steps.Add(Counter(
+            "ICE SHIELD: select a bender and press Q - a barrier of ice that absorbs damage outright before it shatters.",
+            () => TutorialSignals.ShieldsCast));
+
+        steps.Add(Tip(
+            "Fight NEAR WATER whenever you can: watery climates empower your benders and enable true freezes. Fishing Docks + piers keep the silver flowing. Now break their warband!"));
+    }
+
+    private void BuildEarthSteps()
+    {
+        steps.Add(Counter(
+            "FORTIFY: place a defensive structure - a Rock Launcher tower, or Stone Walls (walls need living earthbenders in your army to raise).",
+            () => TutorialSignals.DefensesPlaced));
+
+        steps.Add(Counter(
+            "EARTH GRIP: fight! Your earthbenders' techniques clamp the ground around enemies' feet, holding them in place while the boulders land.",
+            () => TutorialSignals.RootsApplied));
+
+        steps.Add(Counter(
+            "STONE SHIELD: select a bender and press Q - 60% damage reduction for allies (they move slower; mountains don't hurry).",
+            () => TutorialSignals.ShieldsCast));
+
+        steps.Add(Tip(
+            "THE DEEP ARTS: master earthbenders can learn METALBENDING (tear machines and fortifications apart) and LAVABENDING (strikes ignite foes and melt walls). Both are ultimate upgrades - expensive, and worth it."));
+
+        steps.Add(Tip(
+            "Seismic Sensing extends your benders' sight through the fog. Build deep, hold the quarries - then bury their camp!"));
+    }
+
+    private void BuildFireSteps()
+    {
+        steps.Add(Counter(
+            "IGNITE: attack! Firebender techniques like Flame Burst set enemies BURNING - damage that keeps ticking after the hit.",
+            () => TutorialSignals.BurnsApplied));
+
+        steps.Add(Counter(
+            "LIGHTNING: keep fighting - your firebenders periodically channel Lightning Jolts for massive damage.",
+            () => TutorialSignals.LightningThrown));
+
+        steps.Add(Counter(
+            "FLAME SHIELD: select a bender and press Q - allies take less damage and the barrier SCORCHES anything that presses in.",
+            () => TutorialSignals.ShieldsCast));
+
+        steps.Add(Tip(
+            "BEWARE REDIRECTION: enemy masters with the Lightning Redirection upgrade can catch your bolts and hurl them back. You can learn it too."));
+
+        steps.Add(Tip(
+            "Fire wins by PRESSING: attack-move (F), burn their economy, and when your superweapon charges, press P and bring down the Comet Barrage. Now raze their camp!"));
+    }
+
+    private void BuildGeneralSteps()
     {
         steps.Add(new Step
         {

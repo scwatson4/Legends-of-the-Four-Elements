@@ -75,6 +75,10 @@ public class UnitAttackState : StateMachineBehaviour
         if (style != null)
         {
             damageToInflict = Mathf.Max(1, Mathf.RoundToInt(damageToInflict * style.damageMultiplier));
+            if (style.isLightning && TutorialSignals.IsPlayerAction(attackController.gameObject))
+            {
+                TutorialSignals.LightningThrown++;
+            }
         }
 
         if (SoundManager.Instance != null && unit != null)
@@ -104,6 +108,14 @@ public class UnitAttackState : StateMachineBehaviour
 
             targetUnit.TakeDamage(damageToInflict);
 
+            // Lavabending: the strike superheats the ground - the victim
+            // ignites and molten rock splashes onto enemies around them.
+            LavaBending lava = attackController.GetComponent<LavaBending>();
+            if (lava != null)
+            {
+                lava.Erupt(targetUnit, damageToInflict);
+            }
+
             // Rider effects from the chosen technique (burn / slow / knockback).
             if (style != null && styleSet != null && targetUnit.CurrentHealth > 0)
             {
@@ -132,6 +144,13 @@ public class UnitAttackState : StateMachineBehaviour
             if (metalVsWalls != null)
             {
                 damageToInflict = Mathf.RoundToInt(damageToInflict * metalVsWalls.structureDamageMultiplier);
+            }
+
+            // Lavabenders melt them instead (the bonuses stack if you have both).
+            LavaBending lavaVsWalls = attackController.GetComponent<LavaBending>();
+            if (lavaVsWalls != null)
+            {
+                damageToInflict = Mathf.RoundToInt(damageToInflict * lavaVsWalls.structureDamageMultiplier);
             }
 
             targetStructure.TakeDamage(damageToInflict);

@@ -59,17 +59,30 @@ public class CampaignProgress
         Save();
     }
 
-    /// <summary>A level unlocks when the previous level in the campaign is done.</summary>
+    /// <summary>A level unlocks when the previous REQUIRED level is done.
+    /// Optional levels (the nation academies) are skipped by the chain, so
+    /// they never gate the story - and they unlock alongside whatever
+    /// required level precedes them.</summary>
     public bool IsLevelUnlocked(List<CampaignChapter> chapters, int chapterIndex, int levelIndex)
     {
-        if (chapterIndex == 0 && levelIndex == 0) return true;
-
-        if (levelIndex > 0)
+        // Walk backwards through the flattened campaign to the nearest
+        // non-optional predecessor; that's the gate.
+        int c = chapterIndex, l = levelIndex;
+        while (true)
         {
-            return IsLevelCompleted(chapters[chapterIndex].levels[levelIndex - 1].id);
+            l--;
+            if (l < 0)
+            {
+                c--;
+                if (c < 0) return true; // nothing required before this level
+                l = chapters[c].levels.Count - 1;
+                if (l < 0) continue;    // empty chapter
+            }
+
+            CampaignLevel previous = chapters[c].levels[l];
+            if (previous.isOptional) continue;
+            return IsLevelCompleted(previous.id);
         }
-        List<CampaignLevel> previousChapter = chapters[chapterIndex - 1].levels;
-        return IsLevelCompleted(previousChapter[previousChapter.Count - 1].id);
     }
 
     // ------------------------------------------------------------------

@@ -59,6 +59,17 @@ Wire a TMP label to `PopulationHUD` next to the Silver counter ("23 / 45").
 | Sky Mooring | Special | 180 | `AirSupplyPost`: bison couriers FLY silver from your command center to this outpost — farther = bigger pay; couriers can be shot down |
 | Spirit Shrine | Special | 250 | unlock flavor: place near Spirit Wilds; passive income + heals nearby units (add `Healer` with big radius) |
 
+> **Mountain perches (Air only)**: every Air Nomad building can be placed on
+> **steep mountainsides**, out of reach of ground armies (steep rock is off
+> the NavMesh — only flyers and ranged fire threaten a perch; your own
+> ground units can't reach it either, so perch support buildings, not
+> dropoffs you need workers at). Perched Air buildings switch to a different
+> design: give each prefab a disabled child named **`MountainModel`**
+> (cliff-hugging/stilted architecture) and the game swaps it in
+> automatically; without one, a greybox platform + struts is generated.
+> Other nations' buildings refuse steep slopes entirely (a per-entry
+> `mountainSite` override exists on BuildingEntry for exceptions).
+
 **Upgrades** (`UpgradeData` assets)
 
 | Upgrade | Levels | Cost base | Effect/level | Applies |
@@ -199,6 +210,18 @@ current and future). Suggested per nation, 3 levels, 175 base: Air
 "Unbending Wind", Water "Deep Ice", Earth "Mountain's Patience", Fire
 "Inner Flame" — each level: +15% shield strength (reduction/absorb/aura),
 +20% duration, -10% cooldown.
+
+**Elite technique upgrades** (the ultimates — single expensive level each,
+`maxLevel 1` unless noted, restricted to the bender type):
+
+| Upgrade | Nation | Cost | Flag on UpgradeData | Effect |
+|---|---|---|---|---|
+| Lightning Redirection | Fire | 350 (2 levels) | `grantsLightningRedirect`, `redirectChancePerLevel` 0.25 | firebenders catch enemy lightning (bolts AND tower strikes) and hurl it back — 25%/50% chance |
+| Metalbending | Earth | 500 | `grantsMetalBending` | earthbenders tear into machines and fortifications: +60% vs vehicles, +30% vs buildings |
+| **Lavabending** | Earth | 500 | `grantsLavaBending` | every earthbender strike IGNITES the victim (lava burn), splashes molten rock onto packed enemies around them, and melts buildings (+40%) — stacks with Metalbending |
+
+Restrict all three with `restrictToUnitTypes` (Firebender / Earthbender) so
+animals and vehicles don't learn them.
 
 **Tower & wall upgrades**: give every nation a **Reinforced Battlements**
 upgrade (3 levels, 175 base, categories = **Building**): per level

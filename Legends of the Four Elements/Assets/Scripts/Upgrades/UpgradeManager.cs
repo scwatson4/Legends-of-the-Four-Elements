@@ -40,6 +40,8 @@ public static class UpgradeManager
         levels[(factionId, upgrade.upgradeId)] = currentLevel + 1;
         Debug.Log($"Faction {factionId} bought {upgrade.displayName} level {currentLevel + 1}.");
 
+        if (factionId == FactionManager.LocalPlayerFactionId) TutorialSignals.UpgradesPurchased++;
+
         ReapplyToFaction(factionId);
         return true;
     }
@@ -81,6 +83,7 @@ public static class UpgradeManager
         float grantedHealRadius = 7f;
         float redirectChance = 0f;
         bool metalBending = false;
+        bool lavaBending = false;
 
         foreach (UpgradeData upgrade in data.upgrades)
         {
@@ -107,6 +110,10 @@ public static class UpgradeManager
             {
                 metalBending = true;
             }
+            if (upgrade.grantsLavaBending)
+            {
+                lavaBending = true;
+            }
         }
 
         if (grantedHealPerSecond > 0)
@@ -128,6 +135,11 @@ public static class UpgradeManager
         if (metalBending && unit.GetComponent<MetalBending>() == null)
         {
             unit.gameObject.AddComponent<MetalBending>();
+        }
+
+        if (lavaBending && unit.GetComponent<LavaBending>() == null)
+        {
+            unit.gameObject.AddComponent<LavaBending>();
         }
 
         if (Mathf.Approximately(damageMult, 1f) &&

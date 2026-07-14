@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// The built-in 25-level campaign: five chapters of five levels, each chapter
@@ -36,6 +37,22 @@ public static class DefaultCampaign
         return level;
     }
 
+    /// <summary>A nation academy: an OPTIONAL tutorial that locks you into one
+    /// nation and runs its element-specific curriculum (TutorialManager).</summary>
+    private static CampaignLevel Academy(string id, string title, Nation nation,
+        Nation rival, int seed, params DialogueLine[] lines)
+    {
+        CampaignLevel level = L(id, title,
+            $"Academy (optional): master the {NationInfo.DisplayName(nation)} - their units, buildings and signature arts.",
+            CampaignObjective.DestroyEnemyBase, CampaignBoss.None, seed, 60,
+            new[] { rival }, lines);
+        level.isTutorial = true;
+        level.isOptional = true;
+        level.forcesNation = true;
+        level.forcedNation = nation;
+        return level;
+    }
+
     public static List<CampaignChapter> Build()
     {
         List<CampaignChapter> chapters = new List<CampaignChapter>();
@@ -57,6 +74,27 @@ public static class DefaultCampaign
             D("Elder Miza", "Follow my instructions at the top of your vision. We begin with the simplest art: seeing your own people."));
         bootCamp.isTutorial = true;
         c0.levels.Add(bootCamp);
+
+        // The four NATION ACADEMIES: optional deep-dive tutorials, one per
+        // element. Each forces you into that nation and teaches its identity
+        // (Air mobility, Water sustain, Earth fortification, Fire aggression).
+        // They never block campaign progress - chapter 1 opens after Boot Camp.
+        c0.levels.Add(Academy("c0l2", "The Western Spires", Nation.Air, Nation.Fire, 51,
+            D("Elder Miza", "The Air Nomads own no fortresses - the sky is their wall. Learn to be everywhere before your enemy is anywhere."),
+            D("Kesu", "Their monks ride balls of air and LEAP OFF CLIFFS on purpose. I checked; they enjoy it."),
+            D("Elder Miza", "Mobility, evasion, the high ground above the high ground. Begin.")));
+        c0.levels.Add(Academy("c0l3", "The Tidecaller's Circle", Nation.Water, Nation.Earth, 52,
+            D("Elder Miza", "Water endures. Where other armies trade lives, the Water Tribe trades time - healing, slowing, freezing."),
+            D("Kesu", "Rule one of fighting waterbenders: never fight them near water. Rule two: it is ALWAYS near water."),
+            D("Elder Miza", "Sustain your warriors and the long battle is already yours.")));
+        c0.levels.Add(Academy("c0l4", "The Granite Yard", Nation.Earth, Nation.Fire, 53,
+            D("Elder Miza", "Earth waits. Walls, gates, towers - and benders who can hold a foe's feet in the ground while the boulder lands."),
+            D("Kesu", "Their drill sergeant made me stand in a hole for an hour to 'appreciate stillness'. I appreciated it VERY much."),
+            D("Elder Miza", "Build deep, strike heavy. The mountain does not chase - it does not need to.")));
+        c0.levels.Add(Academy("c0l5", "The Ember Court", Nation.Fire, Nation.Water, 54,
+            D("Elder Miza", "Fire is momentum. Burn, press, never let them breathe - and master the lightning that only discipline can hold."),
+            D("Kesu", "Everything in this academy is on fire. The TRAINING DUMMIES are on fire. I think that's the curriculum."),
+            D("Elder Miza", "Strike first, strike again. Hesitation is the only thing fire cannot burn.")));
         chapters.Add(c0);
 
         // ==============================================================
@@ -311,6 +349,7 @@ public static class DefaultCampaign
         var levels = new Dictionary<string, float>
         {
             { "c0l1", 0f },    // Boot Camp teaches founding a base (keeps full silver)
+            { "c0l2", 0f },    { "c0l3", 0f },    { "c0l4", 0f },    { "c0l5", 0f },   // academies build from scratch too
             { "c1l1", 0.75f }, { "c1l2", 0.5f },  { "c1l3", 0.75f }, { "c1l4", 0.5f },  { "c1l5", 0.75f },
             { "c2l1", 0f },    { "c2l2", 0.5f },  { "c2l3", 0.75f }, { "c2l4", 0.5f },  { "c2l5", 0.75f },
             { "c3l1", 0.5f },  { "c3l2", 0.5f },  { "c3l3", 0f },    { "c3l4", 0.5f },  { "c3l5", 0.75f },

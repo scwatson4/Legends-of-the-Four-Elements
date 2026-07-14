@@ -75,6 +75,7 @@ public class AirbenderMobility : MonoBehaviour
         glider.cruiseHeight = glideHeight;
         glider.SetDestination(destination);
 
+        if (TutorialSignals.IsPlayerAction(gameObject)) TutorialSignals.GliderFlights++;
         Debug.Log($"{gameObject.name} opens their glider!");
     }
 
@@ -119,6 +120,7 @@ public class AirbenderMobility : MonoBehaviour
         scooting = true;
         preScootSpeed = agent.speed;
         agent.speed = preScootSpeed * scooterSpeedMultiplier;
+        if (TutorialSignals.IsPlayerAction(gameObject)) TutorialSignals.ScooterSprints++;
 
         if (scooterBall == null)
         {

@@ -117,7 +117,7 @@ public class BuildingPlacer : MonoBehaviour
         if (!Physics.Raycast(ray, out hit, Mathf.Infinity, groundMask)) return;
 
         ghost.transform.position = hit.point;
-        placementValid = ValidatePlacement(hit.point);
+        placementValid = ValidatePlacement(hit.point, hit.normal);
         TintGhost(placementValid ? validTint : invalidTint);
 
         // Don't place through UI buttons.
@@ -126,12 +126,21 @@ public class BuildingPlacer : MonoBehaviour
 
         if (placementValid && !pointerOverUI && Input.GetMouseButtonDown(0))
         {
-            Place(hit.point, ghost.transform.rotation);
+            Place(hit.point, ghost.transform.rotation, hit.normal);
         }
     }
 
-    private bool ValidatePlacement(Vector3 position)
+    private bool ValidatePlacement(Vector3 position, Vector3 surfaceNormal)
     {
+        // Slope rules: normal buildings demand flat ground; Air Nomad
+        // buildings (and entries flagged mountainSite) may perch on steep
+        // mountainsides, out of reach of ground armies.
+        if (MountainPlacement.IsMountainside(surfaceNormal) &&
+            !MountainPlacement.EntryAllowsMountains(pendingEntry, GetLocalNationData()))
+        {
+            return false;
+        }
+
         // No units/buildings in the footprint (the ghost's own colliders are disabled).
         Vector3 checkCenter = position + Vector3.up * 1f;
         foreach (Collider hit in Physics.OverlapSphere(checkCenter, clearanceRadius, obstructionMask))
@@ -164,7 +173,7 @@ public class BuildingPlacer : MonoBehaviour
         return true;
     }
 
-    private void Place(Vector3 position, Quaternion rotation)
+    private void Place(Vector3 position, Quaternion rotation, Vector3 surfaceNormal)
     {
         NationData.BuildingEntry entry = pendingEntry;
         int index = pendingIndex;
@@ -178,9 +187,23 @@ public class BuildingPlacer : MonoBehaviour
         GameObject building = Instantiate(entry.prefab, position, rotation);
         FactionUtility.SetFaction(building, FactionManager.LocalPlayerFactionId);
 
+        // Mountainside perch: swap in the mountain design (or greybox struts).
+        if (MountainPlacement.IsMountainside(surfaceNormal))
+        {
+            MountainPerch.Apply(building, surfaceNormal);
+        }
+
         // Remember the price so selling can refund half.
         Structure structure = building.GetComponentInChildren<Structure>();
         if (structure != null) structure.buildCost = entry.cost;
+
+        // Tutorial bookkeeping (the nation academies watch these).
+        TutorialSignals.BuildingsPlaced++;
+        if (building.GetComponentInChildren<DefenseTower>() != null ||
+            building.GetComponentInChildren<RequiresBenderPresence>() != null)
+        {
+            TutorialSignals.DefensesPlaced++;
+        }
 
         if (SoundManager.Instance != null) SoundManager.Instance.PlayBuildingPlaced();
     }
