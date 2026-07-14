@@ -84,6 +84,7 @@ public static class UpgradeManager
         float redirectChance = 0f;
         bool metalBending = false;
         bool lavaBending = false;
+        bool tremorAssault = false;
 
         foreach (UpgradeData upgrade in data.upgrades)
         {
@@ -114,6 +115,10 @@ public static class UpgradeManager
             {
                 lavaBending = true;
             }
+            if (upgrade.grantsTremorAssault)
+            {
+                tremorAssault = true;
+            }
         }
 
         if (grantedHealPerSecond > 0)
@@ -140,6 +145,11 @@ public static class UpgradeManager
         if (lavaBending && unit.GetComponent<LavaBending>() == null)
         {
             unit.gameObject.AddComponent<LavaBending>();
+        }
+
+        if (tremorAssault && unit.GetComponent<TremorAssault>() == null)
+        {
+            unit.gameObject.AddComponent<TremorAssault>();
         }
 
         if (Mathf.Approximately(damageMult, 1f) &&

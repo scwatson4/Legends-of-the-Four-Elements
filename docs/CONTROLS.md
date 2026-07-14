@@ -27,7 +27,7 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | **1–9** | select that control group |
 | **B** | (campaign) place a new command center — found or expand your base |
 | **R** | rotate the building ghost while placing |
-| *(placement rule)* | buildings need **flat ground** — except **Air Nomad buildings**, which may also perch on steep **mountainsides**, out of reach of ground armies (their design changes when perched) |
+| *(placement rule)* | buildings need **flat ground** — except **Air Nomad buildings**, which may also perch on steep **mountainsides**, out of reach of ground armies (their design changes when perched). Counterplay: earthbenders with the **Mountain Breaker** upgrade shake perched buildings apart from the mountain's foot |
 | **Esc / right-click** | cancel placement, cancel attack-move, skip dialogue |
 | **Esc** (nothing else active) | **pause menu** — resume, restart, main menu, volume |
 | Click / drag the **minimap** | jump the camera there |

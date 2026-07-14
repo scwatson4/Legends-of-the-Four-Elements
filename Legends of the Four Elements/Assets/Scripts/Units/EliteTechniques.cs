@@ -56,6 +56,82 @@ public class MetalBending : MonoBehaviour
 }
 
 /// <summary>
+/// Mountain Breaker - the counter to Air Nomad mountain perches. Granted by
+/// an upgrade (UpgradeData.grantsTremorAssault): earthbenders standing at a
+/// mountain's foot bend TREMORS up through the rock itself, steadily shaking
+/// apart any hostile building perched on the slopes above - the one way a
+/// ground army can touch a perch. Damage stacks per earthbender, so a full
+/// squad brings a temple down fast. Applied by UpgradeManager; don't add
+/// by hand.
+/// </summary>
+public class TremorAssault : MonoBehaviour
+{
+    [Tooltip("How far up/around the tremors reach - perched hostile buildings " +
+             "inside this radius take damage.")]
+    public float tremorRadius = 25f;
+    public int damagePerTick = 6;
+    public float tickInterval = 1f;
+
+    private float timer;
+
+    // Perches are rare; share one cached lookup between all tremor-benders.
+    private static MountainPerch[] cachedPerches;
+    private static float cacheTime = -99f;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        cachedPerches = null;
+        cacheTime = -99f;
+    }
+
+    private void Update()
+    {
+        if (NetworkGuard.BlockLocalSimulation) return;
+
+        timer -= Time.deltaTime;
+        if (timer > 0f) return;
+        timer = tickInterval;
+
+        if (Time.time - cacheTime > 3f)
+        {
+            cachedPerches = FindObjectsByType<MountainPerch>(FindObjectsSortMode.None);
+            cacheTime = Time.time;
+        }
+        if (cachedPerches == null || cachedPerches.Length == 0) return;
+
+        int myFaction = FactionUtility.GetFactionId(gameObject);
+        foreach (MountainPerch perch in cachedPerches)
+        {
+            if (perch == null) continue;
+            if (Vector3.Distance(transform.position, perch.transform.position) > tremorRadius) continue;
+            if (!FactionManager.AreHostile(myFaction, FactionUtility.GetFactionId(perch.gameObject))) continue;
+
+            Structure structure = perch.GetComponentInParent<Structure>();
+            if (structure != null)
+            {
+                structure.TakeDamage(damagePerTick);
+                Debug.DrawLine(transform.position, perch.transform.position, new Color(0.5f, 0.35f, 0.1f), tickInterval);
+                continue;
+            }
+
+            CommandCenter commandCenter = perch.GetComponentInParent<CommandCenter>();
+            if (commandCenter != null)
+            {
+                commandCenter.TakeDamage(damagePerTick);
+                Debug.DrawLine(transform.position, perch.transform.position, new Color(0.5f, 0.35f, 0.1f), tickInterval);
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(0.6f, 0.4f, 0.15f, 0.5f);
+        Gizmos.DrawWireSphere(transform.position, tremorRadius);
+    }
+}
+
+/// <summary>
 /// Lavabending - the other ultimate earthbender art (Ghazan/Bolin's gift),
 /// the Earth Kingdom's answer to lightning. Granted by an upgrade
 /// (UpgradeData.grantsLavaBending): every strike superheats the stone -

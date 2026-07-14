@@ -49,6 +49,12 @@ public class UpgradeData : ScriptableObject
              "Make it a single expensive level (maxLevel 1), restricted to Earthbender.")]
     public bool grantsLavaBending = false;
 
+    [Tooltip("MOUNTAIN BREAKER: earthbenders near a mountain's foot shake apart " +
+             "hostile buildings PERCHED on the slopes above - the ground army's " +
+             "only answer to Air Nomad mountain perches. Make it the priciest " +
+             "single level of all, restricted to Earthbender.")]
+    public bool grantsTremorAssault = false;
+
     [Header("Shield Mastery")]
     [Tooltip("This upgrade strengthens the benders' Q shields (use restrictToUnitTypes " +
              "to target one bender type - it applies to ALL units of that type).")]

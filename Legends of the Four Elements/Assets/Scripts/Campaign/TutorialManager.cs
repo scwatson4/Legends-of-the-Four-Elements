@@ -228,7 +228,7 @@ public class TutorialManager : MonoBehaviour
             () => TutorialSignals.ShieldsCast));
 
         steps.Add(Tip(
-            "THE DEEP ARTS: master earthbenders can learn METALBENDING (tear machines and fortifications apart) and LAVABENDING (strikes ignite foes and melt walls). Both are ultimate upgrades - expensive, and worth it."));
+            "THE DEEP ARTS: master earthbenders can learn METALBENDING (tear machines and fortifications apart), LAVABENDING (strikes ignite foes and melt walls), and MOUNTAIN BREAKER (shake enemy buildings perched on mountainsides apart from below). Ultimate upgrades - expensive, and worth it."));
 
         steps.Add(Tip(
             "Seismic Sensing extends your benders' sight through the fog. Build deep, hold the quarries - then bury their camp!"));

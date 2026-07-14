@@ -87,11 +87,11 @@ VFX can even be a colored point light or default particle system — the
 ### P2 — Data assets
 > Do Phase 2 of EDITOR_WIRING.md: create every UpgradeData asset from the
 > ROSTERS.md tables (exact ids, costs, bonuses, categories — include
-> Seismic Sensing's sightBonus, and the three elite techniques: Lightning
-> Redirection with grantsLightningRedirect restricted to Firebender,
-> Metalbending with grantsMetalBending and Lavabending with
-> grantsLavaBending both restricted to Earthbender, single expensive
-> levels), then the four NationData assets with identity fields filled from
+> Seismic Sensing's sightBonus, and the four elite techniques: Lightning
+> Redirection with grantsLightningRedirect restricted to Firebender, plus
+> Metalbending (grantsMetalBending), Lavabending (grantsLavaBending) and
+> Mountain Breaker (grantsTremorAssault) all restricted to Earthbender,
+> single expensive levels), then the four NationData assets with identity fields filled from
 > ROSTERS.md, then the NationDatabase at exactly
 > Assets/Resources/NationDatabase.asset with all four linked.
 > Leave prefab slots empty for now.

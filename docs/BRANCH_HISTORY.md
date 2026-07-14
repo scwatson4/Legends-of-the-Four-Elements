@@ -169,7 +169,7 @@ flying bison couriers. Campaign missions open at per-level base completion
 (1-1 at 75%; several at 0% where the first befriended village grants a
 500-silver alliance gift).
 
-### 23. *(latest)* — Lavabending, mountain perches, nation academies, the asset shopping list
+### 23. `34307fe` — Lavabending, mountain perches, nation academies, the asset shopping list
 **Lavabending**: the Earth Kingdom's second ultimate (beside Metalbending) —
 upgrade-granted; every strike ignites the victim, splashes molten rock onto
 packed enemies, and melts fortifications (+40%); stacks with Metalbending.
@@ -185,6 +185,13 @@ counters; the campaign unlock chain skips optional levels so Chapter 1
 still opens right after Boot Camp. Plus `ASSET_LIST.md` (the complete
 model/VFX/audio/sprite shopping list) and a latent `Mathf` compile fix in
 DefaultCampaign.
+
+### 24. *(latest)* — Mountain Breaker
+The counter to mountain perches: Earth's priciest elite upgrade
+(`grantsTremorAssault`). Earthbenders at a mountain's foot bend tremors up
+through the rock, steadily shaking apart hostile perched buildings within
+~25m — damage stacks per earthbender. Perches are safe from swords, not
+from the mountain itself.
 
 ---
 

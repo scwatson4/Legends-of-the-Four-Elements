@@ -58,7 +58,9 @@ Create folder `Assets/Nations/`.
    - Elite techniques (see the ROSTERS.md table): Lightning Redirection
      ticks `grantsLightningRedirect` (Fire), Metalbending ticks
      `grantsMetalBending` (Earth), **Lavabending** ticks `grantsLavaBending`
-     (Earth) — all restricted via `restrictToUnitTypes` to their bender.
+     (Earth), **Mountain Breaker** ticks `grantsTremorAssault` (Earth — the
+     anti-perch tremor, priciest of all) — all restricted via
+     `restrictToUnitTypes` to their bender.
 2. **Four NationData assets** (Assets > Create > Legends > Nation Data):
    `AirNation`, `WaterNation`, `EarthNation`, `FireNation`.
    - Identity: nation enum, display name, description (shows in menu),

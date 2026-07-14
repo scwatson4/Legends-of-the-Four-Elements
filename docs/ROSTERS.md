@@ -69,6 +69,9 @@ Wire a TMP label to `PopulationHUD` next to the Silver counter ("23 / 45").
 > automatically; without one, a greybox platform + struts is generated.
 > Other nations' buildings refuse steep slopes entirely (a per-entry
 > `mountainSite` override exists on BuildingEntry for exceptions).
+> **Counterplay**: Earth's expensive *Mountain Breaker* upgrade lets
+> earthbenders at the mountain's foot shake perched buildings apart with
+> tremors — perches are safe from swords, not from the mountain itself.
 
 **Upgrades** (`UpgradeData` assets)
 
@@ -219,9 +222,11 @@ current and future). Suggested per nation, 3 levels, 175 base: Air
 | Lightning Redirection | Fire | 350 (2 levels) | `grantsLightningRedirect`, `redirectChancePerLevel` 0.25 | firebenders catch enemy lightning (bolts AND tower strikes) and hurl it back — 25%/50% chance |
 | Metalbending | Earth | 500 | `grantsMetalBending` | earthbenders tear into machines and fortifications: +60% vs vehicles, +30% vs buildings |
 | **Lavabending** | Earth | 500 | `grantsLavaBending` | every earthbender strike IGNITES the victim (lava burn), splashes molten rock onto packed enemies around them, and melts buildings (+40%) — stacks with Metalbending |
+| **Mountain Breaker** | Earth | 650 | `grantsTremorAssault` | earthbenders bend TREMORS up through the rock: hostile buildings **perched on mountainsides** within ~25m steadily shake apart — the only way a ground army can touch an Air perch (damage stacks per earthbender) |
 
-Restrict all three with `restrictToUnitTypes` (Firebender / Earthbender) so
-animals and vehicles don't learn them.
+Restrict all four with `restrictToUnitTypes` (Firebender / Earthbender) so
+animals and vehicles don't learn them. Mountain Breaker is deliberately the
+priciest — it deletes the Air Nomads' safest real estate.
 
 **Tower & wall upgrades**: give every nation a **Reinforced Battlements**
 upgrade (3 levels, 175 base, categories = **Building**): per level
