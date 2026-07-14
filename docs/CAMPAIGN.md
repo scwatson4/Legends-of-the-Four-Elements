@@ -73,7 +73,9 @@ Avatars themselves once redeemed.
   **skips them**: Chapter 1 opens the moment Boot Camp is done, and all four
   academies unlock at that same moment — play them in any order, or never.
   (`TutorialManager.track` can also be hand-set on any scene to run one of
-  the four curricula standalone.)
+  the four curricula standalone.) Note: the Air and Water academies ask the
+  player to BUY upgrades, so the level scene needs its upgrade buttons wired
+  (`UpgradePurchaser.Purchase(0..n)` — Phase 5 of EDITOR_WIRING).
 - **Varied maps**: each level carries its own `mapSeed`; on a MapGenerator
   scene every level's terrain layout, biomes, villages and portals differ.
   Optionally give each chapter its own themed scene (see wiring below).

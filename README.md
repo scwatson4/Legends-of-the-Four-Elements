@@ -43,8 +43,11 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
 
 ## Docs
 
-- [`docs/EDITOR_WIRING.md`](docs/EDITOR_WIRING.md) — **start here**: the
-  master phase-by-phase checklist for wiring everything in the Unity Editor.
+- [`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md) — **START HERE**: the ordered
+  checklist for your next session at the laptop (compile → bootstrap →
+  wire two scenes → 15-minute smoke test → report back).
+- [`docs/EDITOR_WIRING.md`](docs/EDITOR_WIRING.md) — the master
+  phase-by-phase checklist for wiring everything in the Unity Editor.
 - [`docs/ROSTERS.md`](docs/ROSTERS.md) — the full faction design sheet
   (units, buildings, upgrades, Avatar, biomes, economy sources).
 - [`docs/BRANCH_HISTORY.md`](docs/BRANCH_HISTORY.md) — the full chronicle of

@@ -282,7 +282,10 @@ Gameplay tuning knobs worth a pass once it's playable:
 ## Part 11 — Upgrades & the Avatar
 
 1. Create `UpgradeData` assets (Assets > Create > Legends > Upgrade) from the
-   ROSTERS.md tables; drag them into each NationData's **upgrades** list.
+   ROSTERS.md tech-tree tables; drag them into each NationData's **upgrades**
+   list. *(Or skip this entirely: the `Legends ► Bootstrap` editor menu
+   creates the full tree — prerequisites, exclusive branches, research
+   buildings — automatically.)*
 2. Add an `UpgradePurchaser` to the side panel; wire upgrade buttons to
    `Purchase(0..n)` (index into the nation's upgrade list — same buttons work
    for all nations). Optional TMP label shows feedback.

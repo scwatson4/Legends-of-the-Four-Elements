@@ -193,7 +193,7 @@ through the rock, steadily shaking apart hostile perched buildings within
 ~25m — damage stacks per earthbender. Perches are safe from swords, not
 from the mountain itself.
 
-### 25. *(latest)* — Upgrade tech trees, branch abilities, and the generated starter pack
+### 25. `ae343b1` — Upgrade tech trees, branch abilities, and the generated starter pack
 Upgrades became **branching tech trees**: prerequisites chain nodes,
 **exclusive branches permanently lock each other out** (Lavabending ⛔
 Metalbending, Healing Waters ⛔ Everfrost, Staff Gliders ⛔ Tornado
@@ -208,6 +208,13 @@ Plus the **generated starter pack**: `Legends ► Bootstrap ALL` editor menu
 (creates the full tree, greybox prefabs for every unit/building/neutral,
 NationData ×4, NationDatabase), 25 procedural WAV sounds auto-wired through
 SoundManager fallbacks, 4 nation emblem PNGs, and 5 OBJ props.
+
+### 26. *(latest)* — NEXT_STEPS.md return checklist + doc freshness pass
+One ordered checklist for the first laptop session (compile → bootstrap →
+wire menu + one scene → 15-minute smoke test → report back), linked first
+in the README. Staleness fixes: ROSTERS' airbender row now says glider
+flight is learned (tech tree), FINISHING_GUIDE points at the bootstrap
+menu, CAMPAIGN notes the academies need upgrade buttons wired.
 
 ---
 
