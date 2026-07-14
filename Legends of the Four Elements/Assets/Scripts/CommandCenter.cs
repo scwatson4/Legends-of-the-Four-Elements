@@ -29,6 +29,9 @@ public class CommandCenter : MonoBehaviour
         }
 
         MinimapPOI.Ensure(gameObject, MinimapPOI.POIType.CommandCenter);
+
+        // Command centers block pathing too - units walk around, not through.
+        NavObstacleUtility.Ensure(gameObject);
     }
 
     private void UpdateHealthUI()

@@ -289,6 +289,21 @@ instructions + test checklist: **[`CAMPAIGN.md`](CAMPAIGN.md)**.
 - **Boot Camp & escort**: nothing to wire — the campaign now opens with a
   tutorial prologue (its hint banner builds itself), and mission 3-1 is an
   escort. See CAMPAIGN.md.
+- **Pathing integrity**: every building/CC auto-adds a carving
+  NavMeshObstacle sized from its collider at runtime, so units path AROUND
+  structures — which means **every building prefab needs a proper collider**
+  (they do anyway, for targeting). Terrain trees/rocks must be baked into
+  the NavMesh as not-walkable for ground units to respect them.
+- **Airbender flight**: automatic (AirbenderMobility is added at runtime).
+  It raycasts the world below to hold glide height, so terrain/props need
+  colliders (they do). Tune glide distance/height on the component.
+- **Sky Mooring** (Air Special building): mooring model + collider +
+  Structure + `AirSupplyPost`. Optional bison courier prefab slot;
+  greybox couriers otherwise.
+- **Spirit portal travel**: automatic — portals auto-link to the FARTHEST
+  other portal (or set Linked Portal explicitly for a designed network).
+- **Avatar arrival mounts**: assign each NationData's Avatar Mount Prefab
+  (your bison model for Air!); greybox mounts otherwise.
 
 ## Phase 9 — Full test matrix
 

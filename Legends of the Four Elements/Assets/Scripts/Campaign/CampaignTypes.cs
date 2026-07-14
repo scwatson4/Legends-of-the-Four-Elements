@@ -72,6 +72,12 @@ public class CampaignLevel
     [Tooltip("Starting silver: enough to place the command center and get going.")]
     public int startingSilver = 600;
 
+    [Tooltip("How much of your base stands when the mission opens: " +
+             "0 = nothing (low silver too - befriend a local village for their alliance gift!), " +
+             "0.5 = command center, 0.75 = CC + housing + tower + extra worker, " +
+             "1 = all that plus a production building.")]
+    [Range(0f, 1f)] public float startingBaseLevel = 0.5f;
+
     [Header("Enemy Waves")]
     public float firstWaveDelay = 90f;
     public float waveInterval = 70f;

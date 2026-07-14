@@ -187,6 +187,20 @@ public class UnitSelectionManager : MonoBehaviour
                     }
                 }
 
+                // Spirit-world travel: right-click a portal to send the
+                // selected units through to its linked portal.
+                SpiritPortal portal = hit.collider.GetComponentInParent<SpiritPortal>();
+                if (portal != null && portal.travelEnabled)
+                {
+                    foreach (GameObject unit in selectedUnitsList)
+                    {
+                        if (unit != null && FactionUtility.IsLocallyControlled(unit))
+                        {
+                            portal.OrderTravel(unit);
+                        }
+                    }
+                }
+
                 // Colossus awakening: only an Avatar can merge with the
                 // sleeping giant - right-click it with your Avatar selected.
                 ColossalSpirit colossus = hit.collider.GetComponentInParent<ColossalSpirit>();

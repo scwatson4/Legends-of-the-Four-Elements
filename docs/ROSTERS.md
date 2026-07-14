@@ -40,7 +40,7 @@ Wire a TMP label to `PopulationHUD` next to the Silver counter ("23 / 45").
 | Unit | Cat | Cost | Build | Notes / model source |
 |---|---|---|---|---|
 | Air Acolyte | W | 40 | 4s | forager; `ResourceCollector` |
-| Airbender Monk | I | 50 | 3s | your existing AirbenderUnit |
+| Airbender Monk | I | 50 | 3s | your existing AirbenderUnit; auto-gains `AirbenderMobility` — air-scooter sprint on long ground moves, and STAFF GLIDER flight on very long orders (soars over water/hills/buildings, steers around mountains, lands on the NavMesh) |
 | Glider Warrior | I | 80 | 5s | faster (higher NavMeshAgent speed), lower HP |
 | Winged Lemur | A | 30 | 2s | cheap fast scout, tiny HP, no attack (omit AttackController); `VisionSource` 30 — your fog-of-war eyes |
 | Sky Bison | A | 200 | 12s | flying tank — big HP, knock-back wind attack; reuse your bison models! `VisionSource` 25 (sees far over the fog) |
@@ -56,6 +56,7 @@ Wire a TMP label to `PopulationHUD` next to the Silver counter ("23 / 45").
 | Bison Stable | Production | 180 | trains Lemur / Sky Bison |
 | Wind Cannon Pagoda | Defense | 140 | `DefenseTower` element **Air**: shots knock enemies back; special is a tornado that damages and scatters the pack |
 | Nomad Dormitories | Special | 100 | `PopulationHousing` +10 — more beds, more monks |
+| Sky Mooring | Special | 180 | `AirSupplyPost`: bison couriers FLY silver from your command center to this outpost — farther = bigger pay; couriers can be shot down |
 | Spirit Shrine | Special | 250 | unlock flavor: place near Spirit Wilds; passive income + heals nearby units (add `Healer` with big radius) |
 
 **Upgrades** (`UpgradeData` assets)

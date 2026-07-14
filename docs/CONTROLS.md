@@ -10,7 +10,7 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | Left-drag | box-select your units |
 | Shift + left-click | add/remove a unit from the selection |
 | Double left-click a unit | select ALL your units of that type |
-| Right-click ground | move order |
+| Right-click ground | move order (airbenders auto-scooter on long trips and glide on very long ones) |
 | Right-click enemy | attack order |
 | Right-click spirit | befriend/tame order (Avatar only — energy bending) |
 | Right-click resource node | send selected workers to harvest it |
@@ -21,6 +21,7 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 |---|---|
 | **E** | select your **entire army** (workers excluded); double-tap to also center the camera on it |
 | **F** then left-click | **attack-move**: advance to the point, engaging everything hostile on the way |
+| Right-click a **spirit portal** | selected units step into the spirit world and emerge from the linked portal (~4s transit) |
 | Right-click a sleeping **colossal spirit** (Avatar selected) | the Avatar channels 10s, then **merges into the giant** and fights as it for 60s (Korra-style); the spirit sleeps again after |
 | **Ctrl + 1–9** | assign selection to a control group |
 | **1–9** | select that control group |

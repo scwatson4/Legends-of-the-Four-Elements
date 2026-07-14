@@ -119,7 +119,11 @@ VFX can even be a colored point light or default particle system — the
 > or existing pack meshes as placeholders — I'll re-skin later. Add
 > ResourceDropoff to all four command center prefabs and set
 > commandCenterCost 400 + the CC prefab reference on each NationData.
-> Fill NationData.buildings lists. Save the DarkSpirit prefab copy at
+> Fill NationData.buildings lists, and set each NationData's Avatar Mount
+> Prefab (use the bison model for Air; leave others empty for greybox).
+> Add a Sky Mooring to the Air roster (Structure + AirSupplyPost, cost 180).
+> Confirm every building prefab has a collider (pathing obstacles are added
+> automatically at runtime). Save the DarkSpirit prefab copy at
 > Assets/Resources/Campaign/DarkSpirit.prefab and a scaled-up variant at
 > Assets/Resources/Campaign/FinalBoss.prefab.
 

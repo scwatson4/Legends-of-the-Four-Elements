@@ -19,7 +19,13 @@ public class Village : MonoBehaviour
     public float tributeInterval = 8f;
     public int tributeAmount = 15;
 
+    [Header("Alliance Gift (0%-base campaign missions)")]
+    [Tooltip("One-time silver pledged to whoever first befriends this village " +
+             "on missions where you start with nothing.")]
+    public int allianceGift = 500;
+
     private float tributeTimer;
+    private bool allianceGiftGiven;
 
     private void Start()
     {
@@ -46,6 +52,16 @@ public class Village : MonoBehaviour
 
         int controllingFaction = GetControllingFaction();
         if (controllingFaction == FactionManager.NoFaction) return;
+
+        // On start-from-nothing missions, the first faction to befriend this
+        // village receives its alliance gift - the seed of your new base.
+        if (!allianceGiftGiven && CampaignManager.VillageAllianceGiftsActive)
+        {
+            allianceGiftGiven = true;
+            Economy.Award(controllingFaction, allianceGift);
+            Debug.Log($"The village pledges its support: +{allianceGift} silver! " +
+                      "Enough to raise a command center.");
+        }
 
         if (MatchManager.Instance != null)
         {

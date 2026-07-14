@@ -229,15 +229,38 @@ public class CampaignManager : MonoBehaviour
     // Scratch start: one Avatar + one builder + seed silver, no free base
     // ------------------------------------------------------------------
 
+    /// <summary>True on 0%-base missions: villages give their alliance gift
+    /// to whoever befriends (controls) them first.</summary>
+    public static bool VillageAllianceGiftsActive =>
+        Instance != null && Instance.CurrentLevel != null &&
+        Instance.CurrentLevel.startingBaseLevel <= 0.01f && !Instance.CurrentLevel.isTutorial;
+
     private void SetupScratchStart()
     {
-        // Seed silver: enough to found the base and get the economy going.
+        float baseLevel = CurrentLevel.startingBaseLevel;
+
+        // Seed silver. On true 0% missions you can't even afford a command
+        // center - befriend a local village for its alliance gift instead.
+        int silver = CurrentLevel.startingSilver;
+        if (baseLevel <= 0.01f && !CurrentLevel.isTutorial)
+        {
+            silver = 150;
+        }
+        else if (baseLevel >= 0.45f)
+        {
+            // The base is pre-built; the treasury reflects what it cost.
+            NationDatabase silverDb = NationDatabase.Load();
+            NationData silverData = silverDb != null ? silverDb.Get(GameSetup.PlayerNation) : null;
+            int ccCost = silverData != null ? silverData.commandCenterCost : 400;
+            silver = Mathf.Max(200, silver - ccCost / 2);
+        }
         if (PlayerResources.Instance != null)
         {
-            PlayerResources.Instance.SetCredits(CurrentLevel.startingSilver);
+            PlayerResources.Instance.SetCredits(silver);
         }
 
         Vector3 startPos = FindPlayerStartPosition();
+        SetupStartingBase(baseLevel, startPos);
 
         GameObject avatarPrefab = FindAvatarPrefab(GameSetup.PlayerNation);
         if (avatarPrefab != null)
@@ -258,8 +281,90 @@ public class CampaignManager : MonoBehaviour
             FactionUtility.SetFaction(worker, FactionManager.LocalPlayerFactionId);
         }
 
-        Debug.Log($"[Campaign] Scratch start: Avatar + builder + {CurrentLevel.startingSilver} silver. " +
-                  "Press B (or the Found Base button) to place your command center!");
+        Debug.Log($"[Campaign] Mission opens at {Mathf.RoundToInt(CurrentLevel.startingBaseLevel * 100)}% base. " +
+                  (CurrentLevel.startingBaseLevel <= 0.01f
+                      ? "No base, thin purse - befriend a local village for their alliance gift!"
+                      : "Press B to expand your base."));
+    }
+
+    // ------------------------------------------------------------------
+    // Pre-built bases: 0% / 50% / 75% / 100% established at mission start
+    // ------------------------------------------------------------------
+
+    private void SetupStartingBase(float baseLevel, Vector3 startPos)
+    {
+        if (baseLevel < 0.25f) return; // nothing stands - the village path
+
+        // Hand-built scenes may already have a base; don't double it.
+        foreach (CommandCenter existing in FindObjectsByType<CommandCenter>(FindObjectsSortMode.None))
+        {
+            if (FactionUtility.IsLocallyControlled(existing.gameObject)) return;
+        }
+
+        NationDatabase db = NationDatabase.Load();
+        NationData data = db != null ? db.Get(GameSetup.PlayerNation) : null;
+        if (data == null || data.commandCenterPrefab == null)
+        {
+            Debug.LogWarning("[Campaign] No command center prefab for the player's nation - " +
+                             "starting base can't be pre-built.");
+            return;
+        }
+
+        // 50%+: the command center stands.
+        GameObject cc = Instantiate(data.commandCenterPrefab, startPos, Quaternion.identity);
+        FactionUtility.SetFaction(cc, FactionManager.LocalPlayerFactionId);
+
+        if (baseLevel < 0.7f) return;
+
+        // 75%: housing, a tower, and a second worker are already up.
+        SpawnRosterBuilding<PopulationHousing>(data, startPos + new Vector3(10f, 0f, 4f));
+        SpawnTower(data, startPos + new Vector3(-9f, 0f, 8f));
+        GameObject worker = FindWorkerPrefab(GameSetup.PlayerNation);
+        if (worker != null)
+        {
+            GameObject extra = Instantiate(worker, startPos + new Vector3(4f, 0f, -4f), Quaternion.identity);
+            FactionUtility.SetFaction(extra, FactionManager.LocalPlayerFactionId);
+        }
+
+        if (baseLevel < 0.95f) return;
+
+        // 100%: a production building completes the war camp.
+        SpawnRosterBuilding<UnitSpawner>(data, startPos + new Vector3(0f, 0f, 12f));
+    }
+
+    private void SpawnRosterBuilding<T>(NationData data, Vector3 position) where T : Component
+    {
+        if (data.buildings == null) return;
+        foreach (NationData.BuildingEntry entry in data.buildings)
+        {
+            if (entry == null || entry.prefab == null) continue;
+            if (entry.prefab.GetComponentInChildren<T>() == null) continue;
+
+            GameObject building = Instantiate(entry.prefab, position, Quaternion.identity);
+            FactionUtility.SetFaction(building, FactionManager.LocalPlayerFactionId);
+            return;
+        }
+    }
+
+    private void SpawnTower(NationData data, Vector3 position)
+    {
+        GameObject prefab = data.towerPrefab;
+        if (prefab == null && data.buildings != null)
+        {
+            foreach (NationData.BuildingEntry entry in data.buildings)
+            {
+                if (entry != null && entry.prefab != null &&
+                    entry.prefab.GetComponentInChildren<DefenseTower>() != null)
+                {
+                    prefab = entry.prefab;
+                    break;
+                }
+            }
+        }
+        if (prefab == null) return;
+
+        GameObject tower = Instantiate(prefab, position, Quaternion.identity);
+        FactionUtility.SetFaction(tower, FactionManager.LocalPlayerFactionId);
     }
 
     private Vector3 FindPlayerStartPosition()

@@ -88,6 +88,12 @@ public class Unit : MonoBehaviour
             gameObject.AddComponent<ElementalShieldAbility>();
         }
 
+        // Airbenders ride air scooters and glide over terrain on their staffs.
+        if (unitType == UnitType.Airbender && GetComponent<AirbenderMobility>() == null)
+        {
+            gameObject.AddComponent<AirbenderMobility>();
+        }
+
         NavMeshHit hit;
         if (!NavMesh.SamplePosition(transform.position, out hit, 10f, NavMesh.AllAreas))
         {
@@ -145,6 +151,11 @@ public class Unit : MonoBehaviour
             }
             if (attackController != null) attackController.enabled = false;
             if (unitMovement != null) unitMovement.enabled = false;
+
+            // A corpse doesn't keep flying.
+            FlyingMover flying = GetComponent<FlyingMover>();
+            if (flying != null) flying.enabled = false;
+
             if (UnitSelectionManager.Instance != null)
             {
                 UnitSelectionManager.Instance.OnUnitDestroyed(gameObject);

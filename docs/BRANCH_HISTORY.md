@@ -151,6 +151,23 @@ launching boats that visibly work the shoals). Full-screen chapter
 interludes. Elder Miza's contextual advice toasts. The Colossus Dirge
 (a drumbeat the whole map hears while a giant walks).
 
+### 21. `18b5d43` — Ceremonial Avatar arrivals
+Avatars ARRIVE: bison descent (Air), dragon flight (Fire), wave ride
+(Water), earth eruption (Earth). NationData.avatarMountPrefab slot with
+greybox mount fallbacks; the Avatar is suspended (unhittable) during
+transit.
+
+### 22. *(latest)* — Flight, spirit travel, sky supply lines, base completion levels
+`FlyingMover` smooth surface-hugging flight (climbs small hills/buildings,
+steers AROUND mountains). `AirbenderMobility`: auto air-scooter sprints and
+staff-glider flight for airbenders. Buildings/CCs auto-carve the NavMesh
+(`NavObstacleUtility`) so nothing paths through structures. Spirit portals
+became a travel network (right-click to send units through the spirit world
+to the linked portal). `AirSupplyPost` Sky Moorings with shoot-down-able
+flying bison couriers. Campaign missions open at per-level base completion
+(1-1 at 75%; several at 0% where the first befriended village grants a
+500-silver alliance gift).
+
 ---
 
 ## The system map (what talks to what)

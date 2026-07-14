@@ -1,6 +1,37 @@
 using UnityEngine;
 
 /// <summary>
+/// Ensures a building blocks unit pathing: adds a carving NavMeshObstacle
+/// sized from its collider if the prefab doesn't already have one.
+/// </summary>
+public static class NavObstacleUtility
+{
+    public static void Ensure(GameObject building)
+    {
+        if (building.GetComponentInChildren<UnityEngine.AI.NavMeshObstacle>() != null) return;
+        if (building.GetComponent<UnityEngine.AI.NavMeshAgent>() != null) return; // it's a mover
+
+        Collider collider = building.GetComponentInChildren<Collider>();
+        UnityEngine.AI.NavMeshObstacle obstacle =
+            building.AddComponent<UnityEngine.AI.NavMeshObstacle>();
+        obstacle.carving = true;
+        obstacle.shape = UnityEngine.AI.NavMeshObstacleShape.Box;
+
+        if (collider != null)
+        {
+            Bounds bounds = collider.bounds; // world space
+            obstacle.center = building.transform.InverseTransformPoint(bounds.center);
+
+            Vector3 scale = building.transform.lossyScale;
+            obstacle.size = new Vector3(
+                bounds.size.x / Mathf.Max(0.01f, Mathf.Abs(scale.x)),
+                bounds.size.y / Mathf.Max(0.01f, Mathf.Abs(scale.y)),
+                bounds.size.z / Mathf.Max(0.01f, Mathf.Abs(scale.z)));
+        }
+    }
+}
+
+/// <summary>
 /// Health + destruction for any non-command-center building (barracks,
 /// docks, refineries, towers, pens...). Command centers keep their own
 /// CommandCenter component because destroying one affects victory; losing a
@@ -33,6 +64,9 @@ public class Structure : MonoBehaviour
 
         // Apply any Building-category upgrade levels the owner has bought.
         UpgradeManager.ApplyToBuilding(this);
+
+        // Buildings carve the NavMesh so units path AROUND them, never through.
+        NavObstacleUtility.Ensure(gameObject);
     }
 
     /// <summary>Upgrade system: rescale max health keeping the same fraction.</summary>

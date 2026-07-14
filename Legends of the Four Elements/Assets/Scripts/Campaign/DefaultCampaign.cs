@@ -295,7 +295,39 @@ public static class DefaultCampaign
             chapter.levels[0].interludeTitle = chapter.title;
             chapter.levels[0].interludeText = chapter.description;
         }
+
+        ApplyBaseLevels(chapters);
         return chapters;
+    }
+
+    /// <summary>
+    /// How built-up your base is when each mission opens. The first real
+    /// mission (1-1) starts 75% established; some missions start from
+    /// NOTHING - too poor even for a command center - and you must befriend
+    /// a local village for its alliance gift to get going.
+    /// </summary>
+    private static void ApplyBaseLevels(List<CampaignChapter> chapters)
+    {
+        var levels = new Dictionary<string, float>
+        {
+            { "c0l1", 0f },    // Boot Camp teaches founding a base (keeps full silver)
+            { "c1l1", 0.75f }, { "c1l2", 0.5f },  { "c1l3", 0.75f }, { "c1l4", 0.5f },  { "c1l5", 0.75f },
+            { "c2l1", 0f },    { "c2l2", 0.5f },  { "c2l3", 0.75f }, { "c2l4", 0.5f },  { "c2l5", 0.75f },
+            { "c3l1", 0.5f },  { "c3l2", 0.5f },  { "c3l3", 0f },    { "c3l4", 0.5f },  { "c3l5", 0.75f },
+            { "c4l1", 0f },    { "c4l2", 0.5f },  { "c4l3", 1f },    { "c4l4", 0.5f },  { "c4l5", 0.75f },
+            { "c5l1", 0.5f },  { "c5l2", 1f },    { "c5l3", 0.5f },  { "c5l4", 0f },    { "c5l5", 0.75f },
+        };
+
+        foreach (CampaignChapter chapter in chapters)
+        {
+            foreach (CampaignLevel level in chapter.levels)
+            {
+                if (levels.TryGetValue(level.id, out float baseLevel))
+                {
+                    level.startingBaseLevel = baseLevel;
+                }
+            }
+        }
     }
 
     /// <summary>

@@ -50,6 +50,14 @@ public class UnitMovement : MonoBehaviour
                     }
                 }
 
+                // Airbenders may open their glider for very long journeys.
+                AirbenderMobility airMobility = GetComponent<AirbenderMobility>();
+                if (airMobility != null && airMobility.ConsiderTravel(destination))
+                {
+                    if (directionIndicator != null) directionIndicator.DrawLine(hit);
+                    return; // flight handles the trip
+                }
+
                 // In multiplayer the server owns the simulation: relay the
                 // order instead of moving the local (visual-only) agent.
                 if (!NetworkUnit.TryRelayMove(gameObject, destination) && AgentReady)

@@ -29,9 +29,14 @@ Avatars themselves once redeemed.
 
 ## How the systems work (all implemented)
 
-- **Scratch starts**: every campaign level begins with **your Avatar, one
-  builder, and just enough silver to found a base** (~600, scaling up by
-  chapter) — no free command center. Press **B** (or a "Found Base" button
+- **Base completion levels**: every mission opens at a set
+  `startingBaseLevel`: **1-1 begins 75% built** (command center + housing +
+  tower + extra worker); most missions start at 50% (just the command
+  center); a few (2-1 Landfall, 3-3, 4-1, 5-4) start at **0% — no base and
+  a nearly empty purse**, so you must befriend a local village: the first
+  faction to hold one receives its one-time **alliance gift** (500 silver —
+  enough to raise a command center). 100% starts add a production building.
+  You always begin with **your Avatar and one builder**. Press **B** (or a "Found Base" button
   wired to `BuildingPlacer.BeginCommandCenterPlacement`) to place your
   command center; its price is the new `commandCenterCost` field on each
   NationData (default 400). Your builder then harvests while you build up.
