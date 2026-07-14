@@ -196,6 +196,14 @@ Open `MainMenuScene`:
 
 ## Phase 5 — Gameplay scene(s)
 
+> **Shortcut**: **Legends ► Build Playable Skirmish Scene**
+> (`Assets/Editor/LegendsSceneBuilder.cs`) assembles this entire phase —
+> ground, camera rig, match rig, a self-building `GameHUD` (no button
+> wiring), StartLocations and a scattered map — and saves
+> `Assets/Scenes/Skirmish_Generated.unity`. You still bake the NavMesh
+> yourself. The by-hand steps below remain the reference for building your
+> own scenes or understanding what the generated one contains.
+
 Do this for Level1 (retrofit) and/or a duplicated `Skirmish1_Scene`:
 
 Keep from Level1: GameManager (+ win/lose panels), UnitSelectionManager,

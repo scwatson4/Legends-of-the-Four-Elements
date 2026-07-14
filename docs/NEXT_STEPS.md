@@ -28,34 +28,42 @@ each step is short, and steps 1–5 get you to a playable skirmish.
 - [ ] Any warnings it logged tell you what it skipped and why — paste them
       to Claude if unclear.
 
-## 3. Wire the main menu (~30 min)
+## 3. Build a playable scene — one click (~2 min)
 
-Follow **EDITOR_WIRING.md Phase 4** (or playbook prompt **P5** if using
-Unity MCP + AI): nation-select panel, campaign panel
-(`CampaignMenuController` + level-button prefab), difficulty buttons,
-map buttons, Start.
+- [ ] Menu → **Legends ► Build Playable Skirmish Scene**. It creates
+      `Assets/Scenes/Skirmish_Generated.unity` with everything wired: ground
+      (with hills + a steep mountain for testing perches), camera rig,
+      lighting, the match rig (MatchManager + selection + placement + fog +
+      sound), a **self-building GameHUD** (Train/Build/Upgrade panel — no
+      manual button wiring), two StartLocations, and scattered nodes /
+      village / portals / biome zones.
+- [ ] **Bake the NavMesh**: Window ► AI ► Navigation (or add a
+      NavMeshSurface to the Ground and Bake). Mark the ground + hills +
+      mountain as Navigation Static first. The steep mountain stays
+      unwalkable — that's what makes it a non-Air no-go and an Air perch site.
+- [ ] Press **Play**. The scene is playable directly (SkirmishAutoConfig
+      sets up Air vs. 1 AI when launched outside the menu).
 
-## 4. Wire one gameplay scene (~45 min)
+*(The from-scratch alternative — hand-wiring Level1_Scene via EDITOR_WIRING
+Phase 5, side-panel buttons to `QueueRosterUnit`/`BeginPlacement`/
+`UpgradePurchaser.Purchase` — still works and is documented there if you'd
+rather build your own scene. The generated scene is just the fast path.)*
 
-Follow **EDITOR_WIRING.md Phase 5** (or playbook **P6**) on Level1_Scene:
+## 4. Wire the main menu (~30 min, optional for a first playtest)
 
-- [ ] MatchController: `MatchManager` (database), `BuildingPlacer`
-      (ground mask), `FogOfWar`, minimap, 2–4 `StartLocation`s
-- [ ] Side panel: unit buttons → `QueueRosterUnit(0..4)` (0=bender,
-      1=worker, 2=beast, 3=war machine, 4=Avatar), build buttons →
-      `BeginPlacement(0..n)`, **Found Base** → `BeginCommandCenterPlacement`,
-      **upgrade buttons → `UpgradePurchaser.Purchase(0..n)`** (the tech tree
-      needs these — and the Air/Water academies teach through them)
-- [ ] Scatter a few villages / resource nodes / spirits / 2 portals /
-      biome zones; rename the credits label "Silver"
-- [ ] **Bake the NavMesh** with terrain + props static. Make sure your
-      mountains are STEEP (>22°): steepness is what makes them unwalkable,
-      un-buildable for non-Air, and valid Air perch sites.
+You can skip this and playtest the generated scene directly. When you want
+the front end: **EDITOR_WIRING.md Phase 4** (or playbook **P5**) —
+nation-select panel, campaign panel (`CampaignMenuController` +
+level-button prefab), difficulty/map buttons, Start.
 
 ## 5. The 15-minute smoke test
 
-Play a skirmish and tick these off — together they exercise everything new:
+Play the generated scene and tick these off — together they exercise
+everything new:
 
+- [ ] The HUD shows Silver + Population and a Train/Build/Upgrade panel;
+      press **B** or Build ► Found Base to place your command center, then
+      train a worker and a bender from the Train tab
 - [ ] Sounds play with zero wiring (attacks, barks, building placed) —
       SoundManager auto-loads the generated WAVs
 - [ ] Train a bender; buy **Tempest Training** (should succeed)
@@ -104,3 +112,8 @@ tuning is now over — numbers can finally be balanced against real play.
 - If gliders never trigger: the order must be ≥45m and the airbender must
   own the Staff Gliders upgrade this match (campaign chi can make it
   permanent).
+- The **generated scene must have its NavMesh baked** — units won't move
+  until you do. It's the one manual step the scene builder can't do for you
+  (NavMesh baking is editor-only and needs your Navigation-Static flags).
+- If the Train tab says "Found your base first": you haven't placed a
+  command center yet (the HUD trains from the CC's spawner). Press B.

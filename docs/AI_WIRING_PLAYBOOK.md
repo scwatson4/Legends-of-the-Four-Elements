@@ -89,6 +89,11 @@ VFX can even be a colored point light or default particle system — the
 > UI, multiplayer) still run as written. Generated placeholder sounds
 > auto-wire themselves (SoundManager loads Resources/Audio when slots are
 > empty), and the four nation emblems live in Assets/UI/Emblems.
+>
+> **Also skips most of P6**: run **`Legends ► Build Playable Skirmish
+> Scene`** to generate a complete scene (ground, camera, match rig, a
+> self-building GameHUD, StartLocations, scattered map) — bake the NavMesh
+> and play. P6 by hand remains for custom scenes.
 
 ### P1 — Layers sanity check
 > Check my Tags & Layers against Phase 1 of EDITOR_WIRING.md. Report the

@@ -208,11 +208,19 @@ Usable today, replace at leisure:
 - **4 nation emblems** in `Assets/UI/Emblems/` (Air pinwheel, Water
   crescent-wave, Earth square coin, Fire flame) — the bootstrap assigns
   them to each NationData.
-- **5 OBJ props** in `Assets/Models/Greybox/` — Torii Gate, 3-tier Pagoda,
-  Wall Segment, Watch Tower, Perch Platform — drop them in as `Model`
-  children or scene dressing.
+- **10 OBJ props** in `Assets/Models/Greybox/` — Torii Gate, 3-tier Pagoda,
+  Wall Segment, Watch Tower, Perch Platform, Tree, Rock, Crystal Cluster,
+  Dragon Mount, Wave-Serpent Mount — drop in as `Model` children or dressing.
+- **16 icon glyphs** in `Assets/UI/Icons/` — four elements, six unit
+  categories (infantry/worker/animal/vehicle/avatar/building), six stats
+  (damage/health/speed/shield/heal/sight). Assign to `UnitEntry.icon` /
+  `BuildingEntry.icon` / `UpgradeData.icon` as quick placeholders.
+- **2 looping ambient music beds** in `Assets/Resources/Audio/` —
+  `music_ambient_calm` (exploration) and `music_ambient_tense` (battle,
+  with a war-drum). Seamless loops; wire to your music player.
 - **Every greybox unit/building prefab** via the `Legends ► Bootstrap ALL`
-  editor menu (see AI_WIRING_PLAYBOOK.md).
+  editor menu, and a **full playable scene** via `Legends ► Build Playable
+  Skirmish Scene` (see AI_WIRING_PLAYBOOK.md / NEXT_STEPS.md).
 
 ---
 

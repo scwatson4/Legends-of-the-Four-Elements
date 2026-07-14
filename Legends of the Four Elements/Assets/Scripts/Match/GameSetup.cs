@@ -66,6 +66,11 @@ public static class GameSetup
         Difficulty == Difficulty.Easy ? 0.7f :
         Difficulty == Difficulty.Hard ? 1.4f : 1f;
 
+    /// <summary>True once the menu (or a scene autoconfig) has set up a match.
+    /// A generated scene played directly can use this to apply its own
+    /// defaults only when nothing else already has.</summary>
+    public static bool Configured { get; private set; }
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
     {
@@ -77,6 +82,7 @@ public static class GameSetup
         MapSeed = 0;
         Difficulty = Difficulty.Normal;
         PlasticSoldiersMode = false;
+        Configured = false;
     }
 
     public static void ConfigureSurvival(Nation playerNation)
@@ -85,6 +91,7 @@ public static class GameSetup
         Mode = GameMode.Survival;
         AIOpponents.Clear();
         AIOpponents.Add(new AIOpponent(Nation.Fire, 1));
+        Configured = true;
     }
 
     public static void ConfigureSkirmish(Nation playerNation, int aiOpponentCount)
@@ -92,6 +99,7 @@ public static class GameSetup
         PlayerNation = playerNation;
         Mode = GameMode.Skirmish;
         AIOpponents.Clear();
+        Configured = true;
 
         // Fill AI seats with the nations the player did not pick, each on
         // its own team (free-for-all).

@@ -71,9 +71,10 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
   list: every model, VFX, sound and sprite the finished game wants, with
   buy-in-passes priorities (the game plays greybox without any of it).
 
-**Fastest start**: open the project in Unity 6000.0.43f1 and run
-**`Legends ► Bootstrap ALL`** from the menu bar — it creates the upgrade
-tech trees, greybox prefabs for every unit and building, the four nations
-and the NationDatabase in one click (generated placeholder sounds and
-nation emblems are already on this branch). Then wire the scenes per
-`EDITOR_WIRING.md` phases 4–9.
+**Fastest start**: open the project in Unity 6000.0.43f1, then two menu
+clicks — **`Legends ► Bootstrap ALL`** (creates the upgrade tech trees,
+greybox prefabs for every unit/building, the four nations + database) and
+**`Legends ► Build Playable Skirmish Scene`** (assembles a complete scene
+with a self-building HUD). Bake the NavMesh, press Play. Generated
+placeholder sounds, music, icons and nation emblems are already on the
+branch. Full checklist in [`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md).

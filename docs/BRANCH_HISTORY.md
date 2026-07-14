@@ -209,12 +209,26 @@ Plus the **generated starter pack**: `Legends ► Bootstrap ALL` editor menu
 NationData ×4, NationDatabase), 25 procedural WAV sounds auto-wired through
 SoundManager fallbacks, 4 nation emblem PNGs, and 5 OBJ props.
 
-### 26. *(latest)* — NEXT_STEPS.md return checklist + doc freshness pass
+### 26. `a951a4d` — NEXT_STEPS.md return checklist + doc freshness pass
 One ordered checklist for the first laptop session (compile → bootstrap →
 wire menu + one scene → 15-minute smoke test → report back), linked first
 in the README. Staleness fixes: ROSTERS' airbender row now says glider
 flight is learned (tech tree), FINISHING_GUIDE points at the bootstrap
 menu, CAMPAIGN notes the academies need upgrade buttons wired.
+
+### 27. *(latest)* — One-click playable scene, self-building HUD, more generated art
+`GameHUD` builds and wires the ENTIRE in-game control panel in code
+(Train/Build/Upgrade tabs reading the nation roster, Silver + Population
+counters, tech-tree-aware upgrade buys) — zero manual UnityEvent wiring.
+`LegendsSceneBuilder` (**Legends ► Build Playable Skirmish Scene**)
+assembles a complete, playable `.unity` scene: ground with hills + a steep
+test mountain, camera rig, match rig, the HUD, StartLocations and scattered
+map objects. `SkirmishAutoConfig` + a new `GameSetup.Configured` flag let
+the generated scene be Play-tested directly. Command centers gained a
+`UnitSpawner` (the HUD's default trainer). More generated art: 16 icon
+glyphs, 5 more OBJ props (tree/rock/crystal/dragon/wave-serpent mounts),
+2 seamless ambient music loops. NEXT_STEPS/EDITOR_WIRING now lead with the
+scene builder as the fast path.
 
 ---
 

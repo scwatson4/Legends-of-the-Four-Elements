@@ -421,12 +421,14 @@ public static class LegendsBootstrap
         string n = nation.ToString();
         bool air = nation == Nation.Air;
 
-        // Command center: big box + CommandCenter + dropoff + housing.
+        // Command center: big box + CommandCenter + dropoff + housing +
+        // a UnitSpawner (the HUD's default trainer for basic units/workers).
         MakeBuilding($"{n}CommandCenter", PrimitiveType.Cube, new Vector3(6f, 4f, 6f), air, go =>
         {
             go.AddComponent<CommandCenter>();
             go.AddComponent<ResourceDropoff>();
             go.AddComponent<PopulationHousing>().populationProvided = 20;
+            go.AddComponent<UnitSpawner>();
         });
 
         // Defense tower with the nation's element.
