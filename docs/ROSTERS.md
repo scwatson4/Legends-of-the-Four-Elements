@@ -73,13 +73,7 @@ Wire a TMP label to `PopulationHUD` next to the Silver counter ("23 / 45").
 > earthbenders at the mountain's foot shake perched buildings apart with
 > tremors — perches are safe from swords, not from the mountain itself.
 
-**Upgrades** (`UpgradeData` assets)
-
-| Upgrade | Levels | Cost base | Effect/level | Applies |
-|---|---|---|---|---|
-| Tempest Training | 3 | 150 | +15% damage | Infantry |
-| Nomad's Endurance | 3 | 150 | +15% HP | Infantry, Animal |
-| Gale Stride | 2 | 200 | +10% speed | everything |
+**Upgrades**: see the **Upgrade Tech Trees** section below (Air tree).
 
 ## Water Tribe — sustain & control
 
@@ -103,10 +97,8 @@ Ice Cutters, 200).
 
 Add a **Tribal Lodge** (Special 100, `PopulationHousing` +10).
 
-**Upgrades**: Moonlight Discipline (+dmg, Infantry) · Glacial Hide (+HP,
-Animal/Vehicle) · **Healing Waters** (3 levels, 200 base): tick
-`grantsHealing`, restrict to `Waterbender` — every waterbender becomes a
-field medic, healing nearby allies 2 HP/s per level (Katara-style).
+**Upgrades**: see the **Upgrade Tech Trees** section below (Water tree —
+the Healing branch vs. the Ice branch is the tribe's defining choice).
 
 ## Earth Kingdom — toughness & siege
 
@@ -133,10 +125,9 @@ wall recipe + `Gate`: slides into the ground for friendlies, seals against
 enemies, and won't operate at all if your last earthbender falls) ·
 **Stone Tenements** (Special 100, `PopulationHousing` +10).
 
-**Upgrades**: Neutral Jing (+HP, Infantry) · Master Sculpting (+dmg,
-Infantry) · Reinforced Hide Plates (+HP, Animal/Vehicle) · **Seismic Sensing**
-(2 levels, 180 base, `sightBonus` +0.3/level, Infantry) — Toph-style: your
-earthbenders see much further through the fog of war.
+**Upgrades**: see the **Upgrade Tech Trees** section below (Earth tree —
+Lavabending and Metalbending live in different research buildings and lock
+each other out; Mountain Breaker is shared by both paths).
 
 ## Fire Nation — aggression & machines
 
@@ -159,8 +150,8 @@ targets (burn over time); special is a lightning strike for 3x damage).
 
 Add **Garrison Quarters** (Special 100, `PopulationHousing` +10).
 
-**Upgrades**: Sozin's Comet Doctrine (+dmg, everything, expensive) · Drill
-Plating (+HP, Vehicle) · Forced March (+speed, Infantry/Animal).
+**Upgrades**: see the **Upgrade Tech Trees** section below (Fire tree —
+the Lightning path vs. the Inferno path).
 
 ---
 
@@ -214,19 +205,85 @@ current and future). Suggested per nation, 3 levels, 175 base: Air
 "Inner Flame" — each level: +15% shield strength (reduction/absorb/aura),
 +20% duration, -10% cooldown.
 
-**Elite technique upgrades** (the ultimates — single expensive level each,
-`maxLevel 1` unless noted, restricted to the bender type):
+## Upgrade Tech Trees (implemented)
 
-| Upgrade | Nation | Cost | Flag on UpgradeData | Effect |
+Upgrades form **branching trees** with three rules, all enforced in code
+(`UpgradeManager.CanPurchase` — locked buys explain themselves in the UI):
+
+1. **Prerequisites** (`prerequisiteUpgradeIds`): a node needs its parent at
+   level 1+ first.
+2. **Exclusive branches** (`exclusiveWithUpgradeIds`): buying one side
+   permanently SEALS the other — real strategic identity per match.
+3. **Research buildings** (`requiredBuildingKeyword`): branch nodes are
+   studied in a specific hall — you must OWN a building whose name contains
+   the keyword. Different buildings anchor different branches.
+
+The **`Legends ► Bootstrap`** editor menu creates every asset below
+automatically. Legend: ⛔ = mutually exclusive, 🏛 = research building.
+
+### Air — Way of the Sky vs. Way of the Storm
+
+| Node | Lv | Cost | Needs | Effect |
 |---|---|---|---|---|
-| Lightning Redirection | Fire | 350 (2 levels) | `grantsLightningRedirect`, `redirectChancePerLevel` 0.25 | firebenders catch enemy lightning (bolts AND tower strikes) and hurl it back — 25%/50% chance |
-| Metalbending | Earth | 500 | `grantsMetalBending` | earthbenders tear into machines and fortifications: +60% vs vehicles, +30% vs buildings |
-| **Lavabending** | Earth | 500 | `grantsLavaBending` | every earthbender strike IGNITES the victim (lava burn), splashes molten rock onto packed enemies around them, and melts buildings (+40%) — stacks with Metalbending |
-| **Mountain Breaker** | Earth | 650 | `grantsTremorAssault` | earthbenders bend TREMORS up through the rock: hostile buildings **perched on mountainsides** within ~25m steadily shake apart — the only way a ground army can touch an Air perch (damage stacks per earthbender) |
+| Tempest Training | 3 | 150 | — | +15% damage (infantry) |
+| Gale Stride | 2 | 200 | — | +10% speed (everything) |
+| Unbending Wind | 3 | 175 | Tempest Training | stronger wind shields (Q) |
+| **Staff Gliders** | 1 | 250 | Gale Stride · 🏛 Pavilion · ⛔ Tornado Summoning | airbenders unlock TRUE FLIGHT on very long orders (scooter is innate; flight is learned) |
+| **Tornado Summoning** | 1 | 450 | Unbending Wind · 🏛 Pavilion · ⛔ Staff Gliders | airbenders periodically conjure tornadoes on their targets (AoE + scatter) |
+| Bison Plate Barding | 2 | 200 | 🏛 Stable | +20% HP (animals — armored bison) |
 
-Restrict all four with `restrictToUnitTypes` (Firebender / Earthbender) so
-animals and vehicles don't learn them. Mountain Breaker is deliberately the
-priciest — it deletes the Air Nomads' safest real estate.
+### Water — the Healing path vs. the Ice path
+
+| Node | Lv | Cost | Needs | Effect |
+|---|---|---|---|---|
+| Moonlight Discipline | 3 | 150 | — | +15% damage (infantry) |
+| Glacial Hide | 2 | 150 | — | +15% HP (animals/vehicles) |
+| Deep Ice | 3 | 175 | — | stronger ice shields (Q) |
+| **Healing Waters** | 3 | 200 | Moonlight Discipline · 🏛 Healing Hut · ⛔ Everfrost | every waterbender heals nearby allies (2 HP/s per level) |
+| Frozen Grasp | 2 | 220 | Moonlight Discipline · 🏛 Moon Shrine | freezes/chills last +35% per level |
+| **Everfrost** | 1 | 500 | Frozen Grasp · 🏛 Moon Shrine · ⛔ Healing Waters | freeze enemies solid ANYWHERE — no water source needed |
+| Reinforced Hulls | 2 | 200 | 🏛 Shipyard | +20% HP (warships) |
+
+### Earth — the Molten path vs. the Metal path (+ the shared Mountain path)
+
+| Node | Lv | Cost | Needs | Effect |
+|---|---|---|---|---|
+| Neutral Jing | 3 | 150 | — | +15% HP (infantry) |
+| Master Sculpting | 3 | 150 | — | +15% damage (infantry) |
+| Mountain's Patience | 3 | 175 | — | stronger stone shields (Q) |
+| Seismic Sensing | 2 | 180 | — | +30% sight through fog per level |
+| **Lavabending** | 1 | 500 | Master Sculpting · 🏛 Barracks · ⛔ Metalbending | strikes IGNITE victims, splash molten rock on packed enemies, melt buildings (+40%) |
+| **Metalbending** | 1 | 500 | Neutral Jing · 🏛 Deep Sanctum · ⛔ Lavabending | tear machines (+60%) and fortifications (+30%) apart |
+| **Mountain Breaker** | 1 | 650 | Seismic Sensing (either path may take it) | tremors shake apart hostile buildings PERCHED on mountainsides within ~25m |
+| Reinforced Hide Plates | 2 | 200 | — | +20% HP (beasts/tanks) |
+| Siege Engines | 2 | 220 | — | +20% damage (tanks) |
+
+### Fire — the Lightning path vs. the Inferno path
+
+| Node | Lv | Cost | Needs | Effect |
+|---|---|---|---|---|
+| Sozin's Doctrine | 3 | 160 | — | +15% damage (infantry) |
+| Forced March | 2 | 150 | — | +10% speed (infantry/cavalry) |
+| Lightning Mastery | 2 | 220 | Sozin's Doctrine · 🏛 War Academy | firebenders' bolts hit +10% harder per level |
+| **Lightning Redirection** | 2 | 350 | Lightning Mastery · 🏛 War Academy · ⛔ Flame Dive | catch enemy lightning (bolts AND tower strikes) and hurl it back — 25%/50% |
+| Inner Flame | 3 | 175 | — | stronger flame shields (Q) |
+| **Flame Dive** | 1 | 450 | Inner Flame · 🏛 War Academy · ⛔ Lightning Redirection | firebenders LEAP onto foes and slam down a burning fire ring |
+| Drill Plating | 2 | 200 | 🏛 War Factory | +20% HP (war machines) |
+| **Dragon's Breath Nozzles** | 1 | 400 | Drill Plating · 🏛 War Factory | war machines vent burning fuel — anything close is continuously scorched |
+
+### The Avatar (every nation) — Spirit vs. Fury
+
+| Node | Lv | Cost | Needs | Effect |
+|---|---|---|---|---|
+| **Spirit Communion** | 2 | 300 | ⛔ Elemental Fury | Avatar energy regenerates +30% per level (more Avatar States) |
+| **Elemental Fury** | 2 | 300 | ⛔ Spirit Communion | Avatar State damage +15% per level (bigger Avatar States) |
+
+Every nation also gets **Reinforced Battlements** (3 lv, 175, Building
+category): +15% tower damage & building HP per level. All bender-restricted
+nodes use `restrictToUnitTypes` so animals and machines don't learn them.
+Note: since Lavabending ⛔ Metalbending, their damage bonuses never coexist
+in normal play (campaign chi can still grant odd combinations — they stack
+harmlessly).
 
 **Tower & wall upgrades**: give every nation a **Reinforced Battlements**
 upgrade (3 levels, 175 base, categories = **Building**): per level

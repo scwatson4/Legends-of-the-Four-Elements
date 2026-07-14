@@ -79,6 +79,17 @@ VFX can even be a colored point light or default particle system — the
 
 ## Phase prompts (run in order)
 
+> **Do this first — it replaces most of P2–P4**: in Unity, run
+> **`Legends ► Bootstrap ALL`** (menu, from `Assets/Editor/LegendsBootstrap.cs`).
+> It deterministically creates the upgrade tech trees, greybox unit/building/
+> neutral prefabs, NationData ×4 and the NationDatabase — no AI involved, so
+> nothing to spot-check. Then use P2–P4 below only as VERIFICATION prompts
+> ("compare the created assets against ROSTERS.md and report mismatches")
+> or to fill anything the bootstrap warned it skipped. P1 and P5–P9 (scenes,
+> UI, multiplayer) still run as written. Generated placeholder sounds
+> auto-wire themselves (SoundManager loads Resources/Audio when slots are
+> empty), and the four nation emblems live in Assets/UI/Emblems.
+
 ### P1 — Layers sanity check
 > Check my Tags & Layers against Phase 1 of EDITOR_WIRING.md. Report the
 > actual names of my clickable/ground/attackable layers (read them from

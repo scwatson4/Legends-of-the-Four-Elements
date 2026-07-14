@@ -22,6 +22,9 @@ public class AirbenderMobility : MonoBehaviour
     public float scooterSpeedMultiplier = 1.6f;
 
     [Header("Staff Glider (very long moves)")]
+    [Tooltip("Learned, not innate: the Staff Gliders upgrade (grantsGliderFlight) " +
+             "sets this true for every airbender. The air scooter is always known.")]
+    public bool gliderUnlocked = false;
     public float glideMinDistance = 45f;
     public float glideSpeed = 11f;
     public float glideHeight = 7f;
@@ -47,7 +50,8 @@ public class AirbenderMobility : MonoBehaviour
     public bool ConsiderTravel(Vector3 destination)
     {
         if (IsGliding) { if (glider != null) glider.SetDestination(destination); return true; }
-        if (agent == null || Vector3.Distance(transform.position, destination) < glideMinDistance)
+        if (!gliderUnlocked ||
+            agent == null || Vector3.Distance(transform.position, destination) < glideMinDistance)
         {
             return false;
         }

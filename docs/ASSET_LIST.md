@@ -197,6 +197,23 @@ line with a tiny extension noted in `CAMPAIGN.md`.
   humanoid model)
 - Terrain textures & basic environment from Level1_Scene
 
+## 13. Already GENERATED (procedural placeholders shipped on this branch)
+
+Usable today, replace at leisure:
+
+- **25 sounds** in `Assets/Resources/Audio/` — element attacks, deaths,
+  stingers, barks, the colossus dirge, shield/heal/freeze/lightning/tremor
+  accents, superweapon alarm, portal whoosh. SoundManager auto-loads any of
+  them into empty inspector slots, so audio works with zero wiring.
+- **4 nation emblems** in `Assets/UI/Emblems/` (Air pinwheel, Water
+  crescent-wave, Earth square coin, Fire flame) — the bootstrap assigns
+  them to each NationData.
+- **5 OBJ props** in `Assets/Models/Greybox/` — Torii Gate, 3-tier Pagoda,
+  Wall Segment, Watch Tower, Perch Platform — drop them in as `Model`
+  children or scene dressing.
+- **Every greybox unit/building prefab** via the `Legends ► Bootstrap ALL`
+  editor menu (see AI_WIRING_PLAYBOOK.md).
+
 ---
 
 ### Priority order (if buying in passes)

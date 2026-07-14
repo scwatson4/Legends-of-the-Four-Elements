@@ -26,13 +26,137 @@ public static class UpgradeManager
         return level;
     }
 
-    /// <summary>Buys the next level of an upgrade for a faction. Pays via Economy.</summary>
+    /// <summary>
+    /// Tech-tree gate: can this faction buy the next level right now?
+    /// Checks max level, branch prerequisites, exclusive-branch locks, and
+    /// the research building requirement. `reason` explains a refusal.
+    /// (Money is NOT checked here - TryPurchase handles that.)
+    /// </summary>
+    public static bool CanPurchase(int factionId, UpgradeData upgrade, out string reason)
+    {
+        reason = "";
+        if (upgrade == null) { reason = "No such upgrade."; return false; }
+
+        if (GetLevel(factionId, upgrade) >= upgrade.maxLevel)
+        {
+            reason = $"{upgrade.displayName} is already mastered.";
+            return false;
+        }
+
+        NationData data = GetNationData(factionId);
+
+        // Branch prerequisites: every listed id must be owned at level 1+.
+        if (upgrade.prerequisiteUpgradeIds != null)
+        {
+            foreach (string prereqId in upgrade.prerequisiteUpgradeIds)
+            {
+                if (string.IsNullOrEmpty(prereqId)) continue;
+                UpgradeData prereq = FindById(data, prereqId);
+                if (prereq == null || GetLevel(factionId, prereq) <= 0)
+                {
+                    reason = $"{upgrade.displayName} requires {(prereq != null ? prereq.displayName : prereqId)} first.";
+                    return false;
+                }
+            }
+        }
+
+        // Exclusive branches: owning either side locks the other, permanently.
+        if (IsLockedOut(factionId, upgrade, data, out string lockedBy))
+        {
+            reason = $"{upgrade.displayName} is sealed - your benders chose {lockedBy}.";
+            return false;
+        }
+
+        // Research building: some branches are studied in a specific hall.
+        if (!string.IsNullOrEmpty(upgrade.requiredBuildingKeyword) &&
+            !FactionOwnsBuilding(factionId, upgrade.requiredBuildingKeyword))
+        {
+            reason = $"{upgrade.displayName} is researched at a {upgrade.requiredBuildingKeyword} - build one first.";
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>True when an exclusive rival branch is already owned.
+    /// Checked in BOTH directions so one side listing the other suffices.</summary>
+    public static bool IsLockedOut(int factionId, UpgradeData upgrade, NationData data, out string lockedBy)
+    {
+        lockedBy = "";
+        if (upgrade == null) return false;
+
+        if (upgrade.exclusiveWithUpgradeIds != null)
+        {
+            foreach (string rivalId in upgrade.exclusiveWithUpgradeIds)
+            {
+                UpgradeData rival = FindById(data, rivalId);
+                if (rival != null && GetLevel(factionId, rival) > 0)
+                {
+                    lockedBy = rival.displayName;
+                    return true;
+                }
+            }
+        }
+
+        if (data != null && data.upgrades != null)
+        {
+            foreach (UpgradeData other in data.upgrades)
+            {
+                if (other == null || other == upgrade || other.exclusiveWithUpgradeIds == null) continue;
+                if (GetLevel(factionId, other) <= 0) continue;
+                foreach (string rivalId in other.exclusiveWithUpgradeIds)
+                {
+                    if (rivalId == upgrade.upgradeId)
+                    {
+                        lockedBy = other.displayName;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static UpgradeData FindById(NationData data, string upgradeId)
+    {
+        if (data == null || data.upgrades == null || string.IsNullOrEmpty(upgradeId)) return null;
+        foreach (UpgradeData upgrade in data.upgrades)
+        {
+            if (upgrade != null && upgrade.upgradeId == upgradeId) return upgrade;
+        }
+        return null;
+    }
+
+    private static NationData GetNationData(int factionId)
+    {
+        Faction faction = FactionManager.Get(factionId);
+        NationDatabase db = NationDatabase.Load();
+        return db != null && faction != null ? db.Get(faction.nation) : null;
+    }
+
+    private static bool FactionOwnsBuilding(int factionId, string keyword)
+    {
+        foreach (Structure structure in Object.FindObjectsByType<Structure>(FindObjectsSortMode.None))
+        {
+            if (structure.FactionId == factionId &&
+                structure.gameObject.name.Contains(keyword)) return true;
+        }
+        foreach (CommandCenter cc in Object.FindObjectsByType<CommandCenter>(FindObjectsSortMode.None))
+        {
+            if (FactionUtility.GetFactionId(cc.gameObject) == factionId &&
+                cc.gameObject.name.Contains(keyword)) return true;
+        }
+        return false;
+    }
+
+    /// <summary>Buys the next level of an upgrade for a faction. Pays via Economy.
+    /// Enforces the tech tree (prerequisites, exclusive branches, research buildings).</summary>
     public static bool TryPurchase(int factionId, UpgradeData upgrade)
     {
         if (upgrade == null) return false;
+        if (!CanPurchase(factionId, upgrade, out _)) return false;
 
         int currentLevel = GetLevel(factionId, upgrade);
-        if (currentLevel >= upgrade.maxLevel) return false;
 
         int cost = upgrade.CostForLevel(currentLevel + 1);
         if (!Economy.TrySpend(factionId, cost)) return false;
@@ -85,6 +209,13 @@ public static class UpgradeManager
         bool metalBending = false;
         bool lavaBending = false;
         bool tremorAssault = false;
+        bool gliderFlight = false;
+        bool tornadoSummon = false;
+        bool everfrost = false;
+        bool flameDive = false;
+        bool fireSpray = false;
+        float avatarEnergyMult = 1f;
+        float avatarPowerMult = 1f;
 
         foreach (UpgradeData upgrade in data.upgrades)
         {
@@ -119,6 +250,13 @@ public static class UpgradeManager
             {
                 tremorAssault = true;
             }
+            if (upgrade.grantsGliderFlight) gliderFlight = true;
+            if (upgrade.grantsTornadoSummon) tornadoSummon = true;
+            if (upgrade.grantsEverfrost) everfrost = true;
+            if (upgrade.grantsFlameDive) flameDive = true;
+            if (upgrade.grantsFireSpray) fireSpray = true;
+            if (upgrade.improvesAvatarEnergy) avatarEnergyMult += level * upgrade.avatarEnergyRegenBonus;
+            if (upgrade.improvesAvatarPower) avatarPowerMult += level * upgrade.avatarStatePowerBonus;
         }
 
         if (grantedHealPerSecond > 0)
@@ -150,6 +288,37 @@ public static class UpgradeManager
         if (tremorAssault && unit.GetComponent<TremorAssault>() == null)
         {
             unit.gameObject.AddComponent<TremorAssault>();
+        }
+
+        // Branch abilities.
+        if (gliderFlight)
+        {
+            AirbenderMobility mobility = unit.GetComponent<AirbenderMobility>();
+            if (mobility != null) mobility.gliderUnlocked = true;
+        }
+        if (tornadoSummon && unit.GetComponent<TornadoSummon>() == null)
+        {
+            unit.gameObject.AddComponent<TornadoSummon>();
+        }
+        if (everfrost && unit.GetComponent<Everfrost>() == null)
+        {
+            unit.gameObject.AddComponent<Everfrost>();
+        }
+        if (flameDive && unit.GetComponent<FlameDive>() == null)
+        {
+            unit.gameObject.AddComponent<FlameDive>();
+        }
+        if (fireSpray && unit.GetComponent<FireSpray>() == null)
+        {
+            unit.gameObject.AddComponent<FireSpray>();
+        }
+
+        // Avatar tracks: recomputed totals, so reapplication never stacks.
+        AvatarUnit avatarUnit = unit.GetComponent<AvatarUnit>();
+        if (avatarUnit != null)
+        {
+            avatarUnit.energyRegenMultiplier = avatarEnergyMult;
+            avatarUnit.statePowerMultiplier = avatarPowerMult;
         }
 
         if (Mathf.Approximately(damageMult, 1f) &&
@@ -188,6 +357,25 @@ public static class UpgradeManager
             durationMult += level * upgrade.shieldDurationBonus;
             cooldownMult *= Mathf.Pow(1f - upgrade.shieldCooldownReduction, level);
         }
+    }
+
+    /// <summary>Frozen Grasp: how much longer this unit's freezes last (>= 1).</summary>
+    public static float GetFreezeDurationMultiplier(Unit unit)
+    {
+        float multiplier = 1f;
+        if (unit == null) return multiplier;
+
+        int factionId = unit.FactionId;
+        NationData data = GetNationData(factionId);
+        if (data == null || data.upgrades == null) return multiplier;
+
+        foreach (UpgradeData upgrade in data.upgrades)
+        {
+            if (upgrade == null || !upgrade.improvesFreezing || !upgrade.AppliesToUnit(unit)) continue;
+            int level = GetLevel(factionId, upgrade);
+            if (level > 0) multiplier += level * upgrade.freezeDurationBonus;
+        }
+        return multiplier;
     }
 
     /// <summary>Applies Building-category upgrades to a tower/wall/building.</summary>

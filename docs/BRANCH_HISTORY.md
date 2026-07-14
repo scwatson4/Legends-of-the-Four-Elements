@@ -186,12 +186,28 @@ still opens right after Boot Camp. Plus `ASSET_LIST.md` (the complete
 model/VFX/audio/sprite shopping list) and a latent `Mathf` compile fix in
 DefaultCampaign.
 
-### 24. *(latest)* — Mountain Breaker
+### 24. `977311d` — Mountain Breaker
 The counter to mountain perches: Earth's priciest elite upgrade
 (`grantsTremorAssault`). Earthbenders at a mountain's foot bend tremors up
 through the rock, steadily shaking apart hostile perched buildings within
 ~25m — damage stacks per earthbender. Perches are safe from swords, not
 from the mountain itself.
+
+### 25. *(latest)* — Upgrade tech trees, branch abilities, and the generated starter pack
+Upgrades became **branching tech trees**: prerequisites chain nodes,
+**exclusive branches permanently lock each other out** (Lavabending ⛔
+Metalbending, Healing Waters ⛔ Everfrost, Staff Gliders ⛔ Tornado
+Summoning, Lightning Redirection ⛔ Flame Dive, Avatar Spirit ⛔ Fury), and
+branch nodes are **researched at specific buildings** (Barracks vs Deep
+Sanctum, Healing Hut vs Moon Shrine...). New branch-end abilities:
+`TornadoSummon`, `FlameDive`, `FireSpray` (vehicle burn aura), `Everfrost`
+(freeze anywhere) + Frozen Grasp duration scaling, Avatar Spirit
+Communion/Elemental Fury tracks, and staff-glider flight became LEARNED
+(`grantsGliderFlight`). Vehicle/animal lines got armor/damage nodes.
+Plus the **generated starter pack**: `Legends ► Bootstrap ALL` editor menu
+(creates the full tree, greybox prefabs for every unit/building/neutral,
+NationData ×4, NationDatabase), 25 procedural WAV sounds auto-wired through
+SoundManager fallbacks, 4 nation emblem PNGs, and 5 OBJ props.
 
 ---
 

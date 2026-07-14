@@ -177,7 +177,11 @@ public class TutorialManager : MonoBehaviour
             () => TutorialSignals.ScooterSprints));
 
         steps.Add(Counter(
-            "STAFF GLIDER: order an airbender somewhere VERY far - they take flight, soaring over water, hills and buildings (around true mountains).",
+            "STAFF GLIDERS are learned, not innate: buy the Staff Gliders upgrade from your upgrade panel (harvest a little silver first if you must).",
+            () => TutorialSignals.UpgradesPurchased));
+
+        steps.Add(Counter(
+            "Now order an airbender somewhere VERY far - they take FLIGHT, soaring over water, hills and buildings (around true mountains).",
             () => TutorialSignals.GliderFlights));
 
         steps.Add(Counter(

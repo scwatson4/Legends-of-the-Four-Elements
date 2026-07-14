@@ -46,6 +46,15 @@ Clickable / Ground / Attackable). You need:
 
 ## Phase 2 — Data assets (the game's "database")
 
+> **Shortcut — the whole of Phase 2 (and most of Phase 3) is automated**:
+> run **`Legends ► Bootstrap ALL`** from the editor menu
+> (`Assets/Editor/LegendsBootstrap.cs`). It creates the complete upgrade
+> tech trees (~40 assets with prerequisites, exclusive branches and
+> research-building keywords), greybox prefabs for every unit/building/
+> neutral, the four NationData assets and the NationDatabase — idempotent,
+> re-runnable, and it never overwrites prefabs you've already customized.
+> The steps below remain the by-hand reference.
+
 Create folder `Assets/Nations/`.
 
 1. **Upgrades first** (Assets > Create > Legends > Upgrade). Make the

@@ -30,9 +30,11 @@ public class UpgradePurchaser : MonoBehaviour
         {
             SetFeedback($"{upgrade.displayName} → level {level + 1}");
         }
-        else if (level >= upgrade.maxLevel)
+        else if (!UpgradeManager.CanPurchase(factionId, upgrade, out string reason))
         {
-            SetFeedback($"{upgrade.displayName} is already mastered.");
+            // The tech tree said no: locked branch, missing prerequisite,
+            // missing research building, or already mastered.
+            SetFeedback(reason);
         }
         else
         {

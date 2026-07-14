@@ -10,7 +10,7 @@ All input currently implemented (classic Army Men RTS / Halo Wars style).
 | Left-drag | box-select your units |
 | Shift + left-click | add/remove a unit from the selection |
 | Double left-click a unit | select ALL your units of that type |
-| Right-click ground | move order (airbenders auto-scooter on long trips and glide on very long ones) |
+| Right-click ground | move order (airbenders auto-scooter on long trips; with the **Staff Gliders** upgrade they FLY on very long ones) |
 | Right-click enemy | attack order |
 | Right-click spirit | befriend/tame order (Avatar only — energy bending) |
 | Right-click resource node | send selected workers to harvest it |

@@ -160,10 +160,14 @@ public class AttackStyleSet : MonoBehaviour
             case StyleEffect.Freeze:
                 // Waterbending needs actual water to freeze someone solid;
                 // far from any source it's just a chilling splash (slow).
-                if (WaterProximity.IsNearWater(transform.position, waterSearchRadius))
+                // Everfrost masters carry their own winter - they freeze
+                // ANYWHERE - and Frozen Grasp levels make it last longer.
+                if (WaterProximity.IsNearWater(transform.position, waterSearchRadius) ||
+                    GetComponent<Everfrost>() != null)
                 {
-                    RootEffect.Apply(target, freezeDuration);
-                    SlowEffect.Apply(target, slowMultiplier, freezeDuration + 1.5f); // lingering chill
+                    float grip = UpgradeManager.GetFreezeDurationMultiplier(GetComponent<Unit>());
+                    RootEffect.Apply(target, freezeDuration * grip);
+                    SlowEffect.Apply(target, slowMultiplier, freezeDuration * grip + 1.5f); // lingering chill
                     if (playerAction) TutorialSignals.FreezesApplied++;
                 }
                 else

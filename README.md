@@ -67,3 +67,10 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
 - [`docs/ASSET_LIST.md`](docs/ASSET_LIST.md) — the complete asset shopping
   list: every model, VFX, sound and sprite the finished game wants, with
   buy-in-passes priorities (the game plays greybox without any of it).
+
+**Fastest start**: open the project in Unity 6000.0.43f1 and run
+**`Legends ► Bootstrap ALL`** from the menu bar — it creates the upgrade
+tech trees, greybox prefabs for every unit and building, the four nations
+and the NationDatabase in one click (generated placeholder sounds and
+nation emblems are already on this branch). Then wire the scenes per
+`EDITOR_WIRING.md` phases 4–9.

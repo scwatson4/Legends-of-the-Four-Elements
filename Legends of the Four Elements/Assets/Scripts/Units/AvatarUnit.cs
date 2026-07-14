@@ -49,6 +49,11 @@ public class AvatarUnit : MonoBehaviour, IDamageInterceptor
     [Tooltip("Extra regen per second while fighting - battle feeds the spirit.")]
     public float combatRegenBonus = 2.5f;
 
+    // Avatar tech-tree tracks (set by UpgradeManager, recomputed totals):
+    // Spirit Communion scales regen; Elemental Fury scales state damage.
+    [HideInInspector] public float energyRegenMultiplier = 1f;
+    [HideInInspector] public float statePowerMultiplier = 1f;
+
     [Header("Avatar State (G / Shift+G / Ctrl+G)")]
     public KeyCode avatarStateKey = KeyCode.G;
     public float quickCost = 30f, quickDuration = 5f, quickDamageMult = 1.75f;
@@ -116,7 +121,7 @@ public class AvatarUnit : MonoBehaviour, IDamageInterceptor
     {
         // Energy charges over time, faster while fighting.
         bool inCombat = attackController != null && attackController.targetToAttack != null;
-        float regen = energyRegenPerSecond + (inCombat ? combatRegenBonus : 0f);
+        float regen = (energyRegenPerSecond + (inCombat ? combatRegenBonus : 0f)) * energyRegenMultiplier;
         CurrentEnergy = Mathf.Min(maxEnergy, CurrentEnergy + regen * Time.deltaTime);
 
         defensiveRemaining = Mathf.Max(0f, defensiveRemaining - Time.deltaTime);
@@ -246,7 +251,7 @@ public class AvatarUnit : MonoBehaviour, IDamageInterceptor
         }
 
         CurrentEnergy -= cost;
-        StartCoroutine(AvatarStateRoutine(duration, damageMult, label));
+        StartCoroutine(AvatarStateRoutine(duration, damageMult * statePowerMultiplier, label));
     }
 
     private IEnumerator AvatarStateRoutine(float duration, float damageMult, string label)

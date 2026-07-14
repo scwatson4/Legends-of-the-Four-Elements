@@ -64,6 +64,51 @@ public class UpgradeData : ScriptableObject
     public float shieldDurationBonus = 0.2f;
     [Range(0f, 0.3f)] public float shieldCooldownReduction = 0.1f;
 
+    [Header("Tech Tree")]
+    [Tooltip("Upgrade ids that must be owned (level 1+) before this can be bought. " +
+             "Chains these into branches: basic -> advanced -> ultimate.")]
+    public string[] prerequisiteUpgradeIds;
+    [Tooltip("Owning THIS locks THOSE out (checked both directions) - branch " +
+             "choices are permanent. E.g. Lavabending vs Metalbending.")]
+    public string[] exclusiveWithUpgradeIds;
+    [Tooltip("Research building: you must OWN a building whose name contains this " +
+             "keyword to buy this upgrade (e.g. 'Barracks', 'Sanctum', 'Moon'). " +
+             "Empty = research anywhere. Different buildings anchor different branches.")]
+    public string requiredBuildingKeyword = "";
+
+    [Header("Branch Abilities")]
+    [Tooltip("Airbenders unlock STAFF GLIDER flight on very long move orders " +
+             "(the air scooter is innate; true flight is learned).")]
+    public bool grantsGliderFlight = false;
+
+    [Tooltip("Airbenders periodically SUMMON A TORNADO on their target in combat - " +
+             "AoE damage + scatters the pack.")]
+    public bool grantsTornadoSummon = false;
+
+    [Tooltip("Waterbenders' freezes last longer per level (Frozen Grasp).")]
+    public bool improvesFreezing = false;
+    public float freezeDurationBonus = 0.35f;
+
+    [Tooltip("EVERFROST: waterbenders can freeze enemies solid ANYWHERE - " +
+             "no river/lake/shoal needed (they carry their own winter).")]
+    public bool grantsEverfrost = false;
+
+    [Tooltip("Firebenders periodically FLAME DIVE: leap onto their target and slam " +
+             "into the ground, igniting a damaging fire ring around the impact.")]
+    public bool grantsFlameDive = false;
+
+    [Tooltip("War machines vent burning fuel: nearby enemies are scorched " +
+             "continuously (restrict to Vehicle category).")]
+    public bool grantsFireSpray = false;
+
+    [Header("Avatar Tracks")]
+    [Tooltip("SPIRIT COMMUNION: the Avatar's energy regenerates faster per level.")]
+    public bool improvesAvatarEnergy = false;
+    public float avatarEnergyRegenBonus = 0.3f;
+    [Tooltip("ELEMENTAL FURY: Avatar State damage multiplier grows per level.")]
+    public bool improvesAvatarPower = false;
+    public float avatarStatePowerBonus = 0.15f;
+
     [Header("Applies to")]
     public UnitCategory[] categories = { UnitCategory.Infantry };
     [Tooltip("Optional extra filter: only these unit types benefit " +

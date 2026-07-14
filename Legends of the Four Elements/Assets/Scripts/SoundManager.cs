@@ -76,6 +76,53 @@ public class SoundManager : MonoBehaviour
         dirgeChannel.volume = 0.35f;
         dirgeChannel.loop = true;
         dirgeChannel.playOnAwake = false;
+
+        AutoLoadGeneratedFallbacks();
+    }
+
+    /// <summary>
+    /// Any clip slot left empty in the inspector is filled from the
+    /// procedurally generated starter sounds in Resources/Audio (created by
+    /// the starter pack - see docs/ASSET_LIST.md). Assign real clips in the
+    /// inspector any time; they always win over these placeholders.
+    /// </summary>
+    private void AutoLoadGeneratedFallbacks()
+    {
+        firebenderAttackClip = firebenderAttackClip != null ? firebenderAttackClip : Resources.Load<AudioClip>("Audio/attack_fire");
+        airbenderAttackClip = airbenderAttackClip != null ? airbenderAttackClip : Resources.Load<AudioClip>("Audio/attack_air");
+        waterbenderAttackClip = waterbenderAttackClip != null ? waterbenderAttackClip : Resources.Load<AudioClip>("Audio/attack_water");
+        earthbenderAttackClip = earthbenderAttackClip != null ? earthbenderAttackClip : Resources.Load<AudioClip>("Audio/attack_earth");
+        spiritAttackClip = spiritAttackClip != null ? spiritAttackClip : Resources.Load<AudioClip>("Audio/attack_spirit");
+        unitDeathClip = unitDeathClip != null ? unitDeathClip : Resources.Load<AudioClip>("Audio/unit_death");
+        structureDestructionClip = structureDestructionClip != null ? structureDestructionClip : Resources.Load<AudioClip>("Audio/structure_collapse");
+        buildingPlacedClip = buildingPlacedClip != null ? buildingPlacedClip : Resources.Load<AudioClip>("Audio/building_placed");
+        victoryClip = victoryClip != null ? victoryClip : Resources.Load<AudioClip>("Audio/victory");
+        defeatClip = defeatClip != null ? defeatClip : Resources.Load<AudioClip>("Audio/defeat");
+        colossusDirgeClip = colossusDirgeClip != null ? colossusDirgeClip : Resources.Load<AudioClip>("Audio/colossus_dirge");
+
+        if (selectBarks == null || selectBarks.Length == 0)
+        {
+            selectBarks = LoadClips("Audio/bark_select_1", "Audio/bark_select_2");
+        }
+        if (moveBarks == null || moveBarks.Length == 0)
+        {
+            moveBarks = LoadClips("Audio/bark_move_1", "Audio/bark_move_2");
+        }
+        if (attackBarks == null || attackBarks.Length == 0)
+        {
+            attackBarks = LoadClips("Audio/bark_attack_1", "Audio/bark_attack_2");
+        }
+    }
+
+    private static AudioClip[] LoadClips(params string[] paths)
+    {
+        List<AudioClip> clips = new List<AudioClip>();
+        foreach (string path in paths)
+        {
+            AudioClip clip = Resources.Load<AudioClip>(path);
+            if (clip != null) clips.Add(clip);
+        }
+        return clips.ToArray();
     }
 
     // ------------------------------------------------------------------
