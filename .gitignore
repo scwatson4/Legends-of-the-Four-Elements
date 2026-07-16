@@ -75,3 +75,7 @@ crashlytics-build.properties
 
 # API keys - never commit
 **/Resources/openai_key.txt
+
+# Bulky unused third-party asset pack (325MB, long paths broke Windows clones)
+Legends of the Four Elements/Assets/Generals_2013_model_pack_v2/
+Legends of the Four Elements/Assets/Generals_2013_model_pack_v2.meta
