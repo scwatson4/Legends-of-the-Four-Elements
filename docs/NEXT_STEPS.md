@@ -95,8 +95,11 @@ tuning is now over — numbers can finally be balanced against real play.
 - [ ] Build Settings + full test matrix → EDITOR_WIRING Phase 9 / playbook P9
 - [ ] Quest 3 + voice command setup → VR_AND_VOICE.md — start with its
       **build pre-flight checklist** (the code side is audit-clean; only
-      device/editor config remains). Needs your OpenAI key in
-      `Assets/Resources/openai_key.txt` — gitignored, never commit.
+      device/editor config remains). Voice command needs an API key in
+      `Assets/Resources/openai_key.txt` — an OpenAI key OR any
+      OpenAI-compatible endpoint (LiteLLM etc.: also put the base URL in
+      `Assets/Resources/openai_base_url.txt`). Both gitignored — never
+      commit them. No key = voice quietly disables; the game is unaffected.
 - [ ] Browser demo → WEB_BUILD.md (single-player WebGL build for itch.io)
 - [ ] Art passes → ASSET_LIST.md (buy in the listed priority passes; swap
       via the Greybox Protocol's Model-child rule; the 5 OBJ props in

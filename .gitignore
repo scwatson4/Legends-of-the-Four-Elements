@@ -79,3 +79,4 @@ crashlytics-build.properties
 # Bulky unused third-party asset pack (325MB, long paths broke Windows clones)
 Legends of the Four Elements/Assets/Generals_2013_model_pack_v2/
 Legends of the Four Elements/Assets/Generals_2013_model_pack_v2.meta
+**/Resources/openai_base_url.txt

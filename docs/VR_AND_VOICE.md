@@ -36,13 +36,27 @@ Economy/spawner code the mouse uses. Implemented intents:
 | "Let's build a new sanctuary for flying bisons" | fuzzy-matches your building roster (→ Bison Stable), pays silver, finds clear ground nearby, constructs it |
 | "Get me 5 new earthbenders" | queues 5 at your command center like clicking the button 5 times |
 
-Setup: put your OpenAI API key in `Assets/Resources/openai_key.txt`
+Setup: put your API key in `Assets/Resources/openai_key.txt`
 (**gitignored** — never commit it) or the `OPENAI_API_KEY` env var, add a
 `VoiceCommander` to the level scene, optionally wire a status TMP label.
 Test without a mic: call `ExecuteText("get me three waterbenders")` from a
 UI button or the inspector. Expect ~2–4 s round-trip latency and normal
-OpenAI API billing per command. On Quest builds, enable the Microphone
-permission (Project Settings > Player > Android).
+per-command API billing. Quest builds request the microphone permission at
+runtime automatically.
+
+**No OpenAI account? Any OpenAI-COMPATIBLE endpoint works** — LiteLLM
+proxies, OpenRouter, Azure gateways. Two files, no wiring:
+1. `Assets/Resources/openai_key.txt` → your key (e.g. your LiteLLM key)
+2. `Assets/Resources/openai_base_url.txt` → your endpoint base URL, e.g.
+   `https://your-litellm-host/v1` (also gitignored)
+
+Then set the two model names on the VoiceCommander component to models
+your endpoint actually routes. Caveat: **transcription** needs your proxy
+to route an audio model (e.g. `whisper-1`) — many LiteLLM configs only
+route chat models. If yours doesn't, voice-to-text won't work, but every
+intent still works through `ExecuteText` (type instead of talk), which
+only needs a chat model. Voice is 100% optional — the game never requires
+a key; without one it just disables itself.
 
 ## Getting it onto the Quest 3 — two paths
 

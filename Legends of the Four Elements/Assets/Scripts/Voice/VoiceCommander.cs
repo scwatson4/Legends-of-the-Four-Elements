@@ -33,7 +33,15 @@ public class VoiceCommander : MonoBehaviour
     public int maxRecordSeconds = 8;
     public int sampleRate = 16000;
 
-    [Header("OpenAI")]
+    [Header("API (OpenAI or any OpenAI-compatible proxy)")]
+    [Tooltip("Base URL of an OpenAI-COMPATIBLE API. Works with api.openai.com, " +
+             "LiteLLM proxies, OpenRouter, Azure OpenAI gateways... Override " +
+             "without editor wiring by putting the URL in " +
+             "Assets/Resources/openai_base_url.txt (e.g. https://my-litellm.example.com/v1). " +
+             "The key goes in Assets/Resources/openai_key.txt either way.")]
+    public string apiBaseUrl = "https://api.openai.com/v1";
+    [Tooltip("Must exist on YOUR endpoint. LiteLLM: use a transcription model " +
+             "your proxy routes, e.g. 'whisper-1'.")]
     public string transcriptionModel = "gpt-4o-mini-transcribe";
     public string intentModel = "gpt-4o-mini";
 
@@ -62,6 +70,14 @@ public class VoiceCommander : MonoBehaviour
             TextAsset keyFile = Resources.Load<TextAsset>("openai_key");
             if (keyFile != null) apiKey = keyFile.text.Trim();
         }
+
+        // Optional endpoint override (LiteLLM proxy, OpenRouter, Azure...).
+        TextAsset baseUrlFile = Resources.Load<TextAsset>("openai_base_url");
+        if (baseUrlFile != null && !string.IsNullOrWhiteSpace(baseUrlFile.text))
+        {
+            apiBaseUrl = baseUrlFile.text.Trim();
+        }
+        apiBaseUrl = apiBaseUrl.TrimEnd('/');
 
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -136,7 +152,7 @@ public class VoiceCommander : MonoBehaviour
 
         string transcript = null;
         using (UnityWebRequest request = UnityWebRequest.Post(
-                   "https://api.openai.com/v1/audio/transcriptions", form))
+                   apiBaseUrl + "/audio/transcriptions", form))
         {
             request.SetRequestHeader("Authorization", "Bearer " + apiKey);
             yield return request.SendWebRequest();
@@ -189,7 +205,7 @@ public class VoiceCommander : MonoBehaviour
         string intentJson = null;
         byte[] body = Encoding.UTF8.GetBytes(JsonUtility.ToJson(chat));
         using (UnityWebRequest request = new UnityWebRequest(
-                   "https://api.openai.com/v1/chat/completions", "POST"))
+                   apiBaseUrl + "/chat/completions", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(body);
             request.downloadHandler = new DownloadHandlerBuffer();
