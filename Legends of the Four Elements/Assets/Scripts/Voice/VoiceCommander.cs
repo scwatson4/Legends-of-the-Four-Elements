@@ -49,6 +49,13 @@ public class VoiceCommander : MonoBehaviour
 
     private void Start()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // Browsers don't expose UnityEngine.Microphone - voice command is a
+        // desktop/Quest feature. Text commands (ExecuteText) still work.
+        SetStatus("Voice: not available in the browser build.");
+        enabled = false;
+        return;
+#else
         apiKey = System.Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -63,6 +70,16 @@ public class VoiceCommander : MonoBehaviour
             return;
         }
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+        // Quest/Android: the mic is permission-gated; ask before first use.
+        if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(
+                UnityEngine.Android.Permission.Microphone))
+        {
+            UnityEngine.Android.Permission.RequestUserPermission(
+                UnityEngine.Android.Permission.Microphone);
+        }
+#endif
+
         if (Microphone.devices.Length == 0)
         {
             SetStatus("Voice: no microphone found.");
@@ -72,10 +89,12 @@ public class VoiceCommander : MonoBehaviour
             micDevice = Microphone.devices[0];
             SetStatus($"Voice ready - hold {pushToTalkKey} and speak.");
         }
+#endif
     }
 
     private void Update()
     {
+#if !UNITY_WEBGL || UNITY_EDITOR
         if (Input.GetKeyDown(pushToTalkKey) && micDevice != null)
         {
             recording = Microphone.Start(micDevice, false, maxRecordSeconds, sampleRate);
@@ -98,6 +117,7 @@ public class VoiceCommander : MonoBehaviour
             }
             recording = null;
         }
+#endif
     }
 
     // ------------------------------------------------------------------

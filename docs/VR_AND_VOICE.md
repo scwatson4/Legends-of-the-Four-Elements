@@ -95,6 +95,40 @@ Honest recommendation: wire Path 1 first — it exercises embodiment, voice,
 and VR comfort with almost no risk. Attempt Path 2 once the flat game is
 content-complete.
 
+## Quest 3 build pre-flight (audited — code side is CLEAN)
+
+A full platform audit of this branch found and fixed everything in code
+that would break a Quest (Android/ARM64) build:
+
+- ✅ **No editor APIs in runtime code** — `TerrainMapLoader` (NavMeshGenA)
+  used `UnityEditor` from a runtime folder, which failed EVERY device
+  build; it's now compiled out of builds (`#if UNITY_EDITOR`).
+- ✅ **Microphone permission** — VoiceCommander now requests
+  `android.permission.RECORD_AUDIO` at runtime on Android/Quest (Unity
+  adds it to the manifest automatically because the Microphone API is
+  referenced).
+- ✅ **API key on Quest** — env vars don't exist on Android; put the key at
+  `Assets/Resources/openai_key.txt` (already the fallback, gitignored).
+- ✅ **URP-safe runtime primitives** — everything created with
+  `GameObject.CreatePrimitive` at runtime (scooters, tornadoes, couriers,
+  mounts, beacons...) goes through `GreyboxMaterial.Harmonize`, so nothing
+  renders magenta on device.
+- ✅ **No XR package dependency in code** — the project compiles with zero
+  XR packages; they're additive when you're ready (below).
+- ✅ **Saves** are PlayerPrefs (works on Quest), no `System.IO` writes.
+
+What's left is pure editor/device configuration (can't be done from code):
+1. Build Settings → **Android**, Texture Compression ASTC.
+2. Player Settings: **IL2CPP**, target **ARM64** only, Graphics API
+   **Vulkan** (or GLES3), Minimum API Level 29+.
+3. Package Manager: add **OpenXR Plugin** (`com.unity.xr.openxr`) + enable
+   the **Meta Quest** feature group in XR Plug-in Management (or use the
+   Oculus plugin) — then assign the `HeadAnchor` camera per the sections
+   above.
+4. Quest in Developer Mode + USB debugging; Build & Run.
+5. Internet access for voice: Player Settings → Internet Access
+   **Require** (voice command calls OpenAI over HTTPS).
+
 ## Quest 3 performance — should you worry?
 
 Short answer: **not for Path 1, yes-but-manageably for Path 2.**

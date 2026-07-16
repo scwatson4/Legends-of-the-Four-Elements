@@ -68,6 +68,7 @@ public class TornadoSummon : MonoBehaviour
 
         // Greybox funnel: a pale spinning cone that fades out on its own.
         GameObject funnel = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+        GreyboxMaterial.Harmonize(funnel); // URP-safe material for runtime primitives
         funnel.name = "Tornado";
         Destroy(funnel.GetComponent<Collider>());
         funnel.transform.position = center + Vector3.up * 2f;
@@ -166,6 +167,7 @@ public class FlameDive : MonoBehaviour
         }
 
         GameObject ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        GreyboxMaterial.Harmonize(ring); // URP-safe material for runtime primitives
         ring.name = "FireRing";
         Destroy(ring.GetComponent<Collider>());
         ring.transform.position = transform.position + Vector3.up * 0.1f;

@@ -87,6 +87,7 @@ public class MountainPerch : MonoBehaviour
 
         // The platform the building stands on.
         GameObject platform = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        GreyboxMaterial.Harmonize(platform); // URP-safe material for runtime primitives
         platform.name = "PerchPlatform";
         Object.Destroy(platform.GetComponent<Collider>());
         platform.transform.SetParent(transform, false);
@@ -103,6 +104,7 @@ public class MountainPerch : MonoBehaviour
             Vector3 direction = Quaternion.AngleAxis(angle, Vector3.up) * downSlope;
 
             GameObject strut = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            GreyboxMaterial.Harmonize(strut); // URP-safe material for runtime primitives
             strut.name = "PerchStrut";
             Object.Destroy(strut.GetComponent<Collider>());
             strut.transform.SetParent(transform, false);

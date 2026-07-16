@@ -198,6 +198,7 @@ public class CampaignManager : MonoBehaviour
     private static void CreateBeacon(Vector3 position)
     {
         GameObject beacon = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        GreyboxMaterial.Harmonize(beacon); // URP-safe material for runtime primitives
         beacon.name = "EscortBeacon";
         Object.Destroy(beacon.GetComponent<Collider>());
         beacon.transform.position = position + Vector3.up * 0.1f;

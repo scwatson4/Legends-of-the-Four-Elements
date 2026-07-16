@@ -75,6 +75,7 @@ public class FishingPier : MonoBehaviour
         {
             // Greybox boat: a flat hull that reads instantly.
             boat = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GreyboxMaterial.Harmonize(boat); // URP-safe material for runtime primitives
             boat.name = "Fishing Boat";
             boat.transform.position = launchPos + Vector3.up * 0.4f;
             boat.transform.localScale = new Vector3(1f, 0.5f, 2.2f);

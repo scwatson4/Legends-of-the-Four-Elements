@@ -93,8 +93,11 @@ tuning is now over — numbers can finally be balanced against real play.
 - [ ] Random-map scene → EDITOR_WIRING Phase 7 / playbook P7
 - [ ] Multiplayer LAN test → MULTIPLAYER_SETUP.md / playbook P8
 - [ ] Build Settings + full test matrix → EDITOR_WIRING Phase 9 / playbook P9
-- [ ] Quest 3 + voice command setup → VR_AND_VOICE.md (needs your OpenAI
-      key in `Assets/Resources/openai_key.txt` — gitignored, never commit)
+- [ ] Quest 3 + voice command setup → VR_AND_VOICE.md — start with its
+      **build pre-flight checklist** (the code side is audit-clean; only
+      device/editor config remains). Needs your OpenAI key in
+      `Assets/Resources/openai_key.txt` — gitignored, never commit.
+- [ ] Browser demo → WEB_BUILD.md (single-player WebGL build for itch.io)
 - [ ] Art passes → ASSET_LIST.md (buy in the listed priority passes; swap
       via the Greybox Protocol's Model-child rule; the 5 OBJ props in
       `Assets/Models/Greybox/` are ready as set dressing)

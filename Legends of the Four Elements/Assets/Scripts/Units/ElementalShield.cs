@@ -149,6 +149,7 @@ public class ElementalShield : MonoBehaviour, IDamageInterceptor
         if (visual == null)
         {
             visual = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            GreyboxMaterial.Harmonize(visual); // URP-safe material for runtime primitives
             visual.name = "ShieldVisual";
             Destroy(visual.GetComponent<Collider>());
             visual.transform.SetParent(transform, false);

@@ -129,6 +129,7 @@ public class AirbenderMobility : MonoBehaviour
         if (scooterBall == null)
         {
             scooterBall = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            GreyboxMaterial.Harmonize(scooterBall); // URP-safe material for runtime primitives
             scooterBall.name = "AirScooter";
             Destroy(scooterBall.GetComponent<Collider>());
             scooterBall.transform.SetParent(transform, false);

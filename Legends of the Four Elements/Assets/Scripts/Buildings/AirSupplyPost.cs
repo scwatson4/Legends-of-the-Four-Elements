@@ -73,6 +73,7 @@ public class AirSupplyPost : MonoBehaviour
         {
             // Greybox bison: broad, gentle, and about to be shot at.
             courier = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            GreyboxMaterial.Harmonize(courier); // URP-safe material for runtime primitives
             courier.name = "Bison Courier";
             courier.transform.position = homePosition + Vector3.up * courierAltitude;
             courier.transform.localScale = new Vector3(2.2f, 1.1f, 3.2f);

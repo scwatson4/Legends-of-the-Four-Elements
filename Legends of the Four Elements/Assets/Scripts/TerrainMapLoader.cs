@@ -1,3 +1,8 @@
+// Editor-only NavMesh generation helper. The whole file is compiled out of
+// device builds (Quest/Android, WebGL, standalone players): it depends on
+// UnityEditor + EditorCoroutines, which do not exist outside the editor -
+// without this guard every device build fails to compile.
+#if UNITY_EDITOR
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -197,3 +202,4 @@ public class NavMeshGenA : MonoBehaviour
         return maxIndex;
     }
 }
+#endif

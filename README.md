@@ -62,8 +62,11 @@ In the Era of the Four Kingdoms, the balance between the physical and spirit wor
 - [`docs/CONTROLS.md`](docs/CONTROLS.md) — every mouse/keyboard control,
   control groups, attack-move, Avatar hotkeys, and the tower element table.
 - [`docs/VR_AND_VOICE.md`](docs/VR_AND_VOICE.md) — hero/embodiment mode,
-  OpenAI voice command setup, the Meta Quest 3 integration plan, and Quest
-  performance budgets.
+  OpenAI voice command setup, the Meta Quest 3 integration plan (incl. the
+  audited build pre-flight checklist), and Quest performance budgets.
+- [`docs/WEB_BUILD.md`](docs/WEB_BUILD.md) — shipping a lightweight
+  single-player browser version (Unity Web/WebGL): what works, what
+  doesn't, the 30-minute recipe, itch.io hosting.
 - [`docs/AI_WIRING_PLAYBOOK.md`](docs/AI_WIRING_PLAYBOOK.md) — copy-paste
   prompts for having Claude + Unity MCP do the editor wiring for you,
   phase by phase.

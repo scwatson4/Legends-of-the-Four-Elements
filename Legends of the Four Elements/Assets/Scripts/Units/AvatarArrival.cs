@@ -175,6 +175,7 @@ public static class AvatarArrival
 
         // Greybox mount: readable silhouettes until real models arrive.
         GameObject mount = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+        GreyboxMaterial.Harmonize(mount); // URP-safe material for runtime primitives
         mount.name = origin + "AvatarMount";
         Object.Destroy(mount.GetComponent<Collider>());
 

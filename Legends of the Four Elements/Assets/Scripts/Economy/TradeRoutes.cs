@@ -63,6 +63,7 @@ public class TradeRouteDirector : MonoBehaviour
         // Greybox cart assembled at runtime - swap for a real cart prefab by
         // replacing this block later if you like.
         GameObject cart = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        GreyboxMaterial.Harmonize(cart); // URP-safe material for runtime primitives
         cart.name = "Trade Cart";
         cart.transform.position = from + Vector3.up * 0.5f;
         cart.transform.localScale = new Vector3(1.2f, 1f, 1.8f);

@@ -216,7 +216,7 @@ in the README. Staleness fixes: ROSTERS' airbender row now says glider
 flight is learned (tech tree), FINISHING_GUIDE points at the bootstrap
 menu, CAMPAIGN notes the academies need upgrade buttons wired.
 
-### 27. *(latest)* — One-click playable scene, self-building HUD, more generated art
+### 27. `8ff139a` — One-click playable scene, self-building HUD, more generated art
 `GameHUD` builds and wires the ENTIRE in-game control panel in code
 (Train/Build/Upgrade tabs reading the nation roster, Silver + Population
 counters, tech-tree-aware upgrade buys) — zero manual UnityEvent wiring.
@@ -229,6 +229,28 @@ the generated scene be Play-tested directly. Command centers gained a
 glyphs, 5 more OBJ props (tree/rock/crystal/dragon/wave-serpent mounts),
 2 seamless ambient music loops. NEXT_STEPS/EDITOR_WIRING now lead with the
 scene builder as the fast path.
+
+### 28. `3d0aa0a` (+ a matching commit on main) — Windows clone fix
+Removed the unused 325MB Command & Conquer Generals model pack whose
+203-character paths exceeded Windows MAX_PATH and broke `git clone` on
+Windows — from BOTH branches (GitHub Desktop clones main first). Full
+Windows-hazard sweep of every tracked path (illegal chars, reserved device
+names, trailing dots/spaces, case-collisions): zero remaining issues;
+longest path is now 181 chars.
+
+### 29. *(latest)* — Platform audit: Unity Editor / Quest 3 / WebGL all build-clean
+Extensive static audit with fixes: `TerrainMapLoader` (NavMeshGenA) used
+UnityEditor APIs from runtime code — it broke EVERY device build (Quest,
+Web, standalone) and is now `#if UNITY_EDITOR`-guarded. VoiceCommander
+compiles itself out of WebGL (no Microphone class there) and requests the
+Android mic permission on Quest. New `GreyboxMaterial.Harmonize` applied at
+all 11 runtime `CreatePrimitive` sites so nothing renders magenta under URP
+on device. Verified: no duplicate types, no `System.IO` writes, both input
+handlers active, no XR package needed to compile, packages manifest sane.
+Docs: **WEB_BUILD.md** (yes — a lightweight single-player browser build
+works; recipe + itch.io hosting + what web can't do: UDP multiplayer
+without WebSockets, voice, VR) and a Quest pre-flight checklist in
+VR_AND_VOICE.md.
 
 ---
 
