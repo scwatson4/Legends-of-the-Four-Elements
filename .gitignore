@@ -72,3 +72,7 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Bulky unused third-party asset pack (325MB, long paths broke Windows clones)
+Legends of the Four Elements/Assets/Generals_2013_model_pack_v2/
+Legends of the Four Elements/Assets/Generals_2013_model_pack_v2.meta
